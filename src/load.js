@@ -17,7 +17,7 @@ class LoadState extends Phaser.State {
 
     this.game.load.pack('characters', 'assets/characters.json', null, this)
 
-    this.game.load.pack('carparts', 'assets/carparts.json', null, this)
+    this.game.load.pack('boatparts', 'assets/boatparts.json', null, this)
 
     this.game.load.pack('shared', 'assets/shared.json', null, this)
     // this.game.load.pack('voices', 'assets_new/voices.json', null, this);
@@ -76,7 +76,7 @@ class LoadState extends Phaser.State {
 
     this.game.mulle.addAudio('shared')
 
-    this.game.mulle.addAudio('carparts')
+    this.game.mulle.addAudio('boatparts')
 
     this.game.mulle.loadData()
   }

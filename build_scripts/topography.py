@@ -7,11 +7,13 @@ from PIL import Image, ImageDraw
 from palette import parse_palette
 
 
-def build_topography(source_path, output_path):
+def build_topography(source_path, output_path, first=693, last=748):
     """
     Build topography images from director data
     :param source_path: Director data path (CDDATA.CXT)
     :param output_path: Image output path
+    :param first: First member number of the topography pairs
+    :param last: Last member number of the topography pairs
     """
 
     palette_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'grayscale.pal')
@@ -21,7 +23,7 @@ def build_topography(source_path, output_path):
         os.mkdir(output_path)
 
     metadata = json.load(open(os.path.join(source_path, "..", "metadata.json")))
-    for num in range(693, 748 + 1, 2):
+    for num in range(first, last + 1, 2):
         data = metadata["libraries"][0]["members"][str(num)]
         data2 = metadata["libraries"][0]["members"][str(num + 1)]
         if data["name"] != data2["name"][:-2]:
