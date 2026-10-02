@@ -1,0 +1,134 @@
+property spriteList, junkHandler, mouseObjectList, FirstTime, loopCounter, firstDialogList, genDialogList, dorisDialogList, giftDialogList, OKToTalk, dialogClosed, gotGifts, giftMouseObject
+global gMulleGlobals
+global gCursor
+global gSound
+
+on new me
+    set OKToTalk = 1
+    set dialogClosed = 1
+    set mouseObjectList = []
+    set spriteList = [#Sky: 1, #Mulle: 4, #JunkStart: 7, #Gift: 38, #dialog: 40, #DialogOverlay: 41, #DragPart: 100]
+    set giftDialogList = ["GiftSnd1", "GiftSnd2", "GiftSnd3"]
+    set firstDialogList = ["03d001v0", "03d002v0", "03d006v0", "03d007v0"]
+    set genDialogList = ["00d001v0", "00d002v0", "00d003v0", "00d004v0", "00d005v0"]
+    set dorisDialogList = ["03d003v0", "03d004v0", "03d005v0"]
+    set loopCounter = random(360)
+    set FirstTime = getaProp(the firstTimeList of gMulleGlobals, #Yard)
+    if not voidp(FirstTime) then
+        if FirstTime then
+            set loopCounter = 12
+            setaProp the firstTimeList of gMulleGlobals, #Yard, 0
+        end if
+    else
+        set FirstTime = 0
+    end if
+    safePreload "00e110v0"
+    return me
+end
+
+on init me
+    init gCursor
+    add mouseObjectList, new(script("mouseObject"), me, [rect(29, 0, 124, 300)], 301, [#click: [#frame: "Quay"], #cursor: [#rollOver: #GoLeft, #DragRollover: #DropLeft], #dragToWhere: #Quay])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(131, 43, 206, 307)], 302, [#click: [#frame: "Shelf1"], #cursor: [#rollOver: #GoForward, #DragRollover: #DropForward], #dragToWhere: #Shelf1])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(207, 40, 288, 314)], 303, [#click: [#frame: "Shelf2"], #cursor: [#rollOver: #GoForward, #DragRollover: #DropForward], #dragToWhere: #Shelf2])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(289, 34, 380, 322)], 304, [#click: [#frame: "Shelf3"], #cursor: [#rollOver: #GoForward, #DragRollover: #DropForward], #dragToWhere: #Shelf3])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(381, 31, 479, 329)], 305, [#click: [#frame: "Shelf4"], #cursor: [#rollOver: #GoForward, #DragRollover: #DropForward], #dragToWhere: #Shelf4])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(480, 28, 579, 335)], 306, [#click: [#frame: "Shelf5"], #cursor: [#rollOver: #GoForward, #DragRollover: #DropForward], #dragToWhere: #Shelf5])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(580, 25, 640, 343)], 307, [#click: [#frame: "Shelf6"], #cursor: [#rollOver: #GoForward, #DragRollover: #DropForward], #dragToWhere: #Shelf6])
+    set gotGifts = (count(the gifts of the user of gMulleGlobals) > 0)
+    if gotGifts then
+        set tmpSP = getaProp(spriteList, #Gift)
+        set the loc of sprite tmpSP = point(320, 430)
+        set the UNKNOWN37 of sprite tmpSP = member("03b999v0")
+        set giftMouseObject = new(script("mouseObject"), me, [rect(262, 383, 379, 478)], 308, [#cursor: [#rollOver: #Clickable], #dragToWhere: #Gift, #report: 1])
+    end if
+    setSky the weather of gMulleGlobals
+    set junkHandler = new(script("JunkHandler"), #Yard)
+    drawParts junkHandler
+    addObject the loopMaster of gMulleGlobals, me
+end
+
+on startMovie me
+end
+
+on kill me
+    set junkHandler = kill(junkHandler)
+    repeat with tmpObj in mouseObjectList
+        kill tmpObj
+    end repeat
+    set mouseObjectList = 0
+    if objectp(giftMouseObject) then
+        kill giftMouseObject
+    end if
+    deleteObject the loopMaster of gMulleGlobals, me
+    set the volume of sound 1 = 255
+    set the WhereFrom of gMulleGlobals = "03"
+    return 0
+end
+
+on mouse me, argObj, argWhat
+    if (argWhat = #click) then
+        if (the dragToWhere of argObj = #Gift) then
+            set tmpList = the gifts of the user of gMulleGlobals
+            repeat with partId in tmpList
+                if not addJunkPart(the user of gMulleGlobals, #Yard, partId) then
+                    addNewPart the user of gMulleGlobals, partId
+                end if
+            end repeat
+            set the gifts of the user of gMulleGlobals = []
+            go "Gift"
+        end if
+    end if
+end
+
+on makeMulleTalk me, argSnd
+    sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #PrioTalk, argSnd
+end
+
+on loop me
+    if (OKToTalk and dialogClosed) then
+        if (loopCounter > 0) then
+            set loopCounter = (loopCounter - 1)
+        end if
+        if the gotNewParts of gMulleGlobals then
+            set tmpRandomSound = getAt(dorisDialogList, random(count(dorisDialogList)))
+            sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, tmpRandomSound
+            set the gotNewParts of gMulleGlobals = 0
+            if FirstTime then
+                set loopCounter = (120 + random(120))
+            else
+                set loopCounter = (360 + random(720))
+            end if
+        else
+            if gotGifts then
+                set tmpRandomSound = getAt(giftDialogList, random(count(giftDialogList)))
+                sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, tmpRandomSound
+                set gotGifts = 0
+                if FirstTime then
+                    set loopCounter = (120 + random(120))
+                else
+                    set loopCounter = (360 + random(720))
+                end if
+            else
+                if FirstTime then
+                    if (loopCounter = 0) then
+                        if (count(firstDialogList) > 0) then
+                            set tmpRandomSound = random(count(firstDialogList))
+                            sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, getAt(firstDialogList, tmpRandomSound)
+                            deleteAt firstDialogList, tmpRandomSound
+                            set loopCounter = (120 + random(120))
+                        else
+                            set FirstTime = 0
+                        end if
+                    end if
+                else
+                    if (loopCounter = 0) then
+                        set tmpRandomSound = getAt(genDialogList, random(count(genDialogList)))
+                        sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, tmpRandomSound
+                        set loopCounter = (360 + random(720))
+                    end if
+                end if
+            end if
+        end if
+    end if
+end

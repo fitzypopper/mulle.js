@@ -1,0 +1,8 @@
+on exitFrame
+    global gMulleGlobals
+    global gSound
+
+    stopAll gSound
+    set the enterShelf of gMulleGlobals = #Shelf1
+    go 1, "02"
+end

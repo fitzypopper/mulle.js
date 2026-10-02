@@ -1,0 +1,12 @@
+property endTime
+on beginSprite me
+    set endTime = ((3 * 60) + the ticks)
+end
+
+on exitFrame me
+    if (the ticks < endTime) then
+        go the frame
+    else
+        go 1, "03"
+    end if
+end

@@ -1,0 +1,62 @@
+property Mode, SP, currentAnimChart
+global gDir
+
+on beginSprite me
+    set Mode = #Wait
+    set currentAnimChart = #Yard
+    set SP = spriteNum
+    sendSprite SP, #setAnimNormal
+    sendSprite SP, #setAnimChart, "Yard"
+    sendSprite SP, #setAnimAction, Mode
+end
+
+on makeMulleTalk me, argAction, argExtraInfo
+    if (argAction = #NormalTalk) then
+        if (Mode = #Wait) then
+            set the OKToTalk of gDir = 0
+            if (random(2) = 1) then
+                set Mode = #Talk
+            else
+                set Mode = #Talk
+                set currentAnimChart = #TalkToMe
+                sendSprite SP, #setAnimChart, "TalkToMe"
+            end if
+            sendSprite SP, #makeAnimSpeech, argExtraInfo
+        end if
+    else
+        if (argAction = #InfoTalk) then
+            if (Mode = #Wait) then
+                set the OKToTalk of gDir = 0
+                set Mode = #Talk
+                set currentAnimChart = #TalkToMe
+                sendSprite SP, #setAnimChart, "TalkToMe"
+                sendSprite SP, #makeAnimSpeech, argExtraInfo
+            end if
+        else
+            if (argAction = #PrioTalk) then
+                if ((Mode = #Wait) or (Mode = #Talk)) then
+                    sendSprite SP, #playAnimSound, EMPTY
+                    set the OKToTalk of gDir = 0
+                    set Mode = #Talk
+                    sendSprite SP, #makeAnimSpeech, argExtraInfo
+                end if
+            end if
+        end if
+    end if
+    sendSprite SP, #setAnimAction, Mode
+end
+
+on Stopped me
+    if (Mode = #Talk) then
+        if (currentAnimChart = #TalkToMe) then
+            set currentAnimChart = #Yard
+            sendSprite the currentSpriteNum, #setAnimChart, "Yard"
+        end if
+        sendSprite SP, #setAnimNormal
+        set Mode = #Wait
+        set the OKToTalk of gDir = 1
+    else
+        set Mode = #Wait
+    end if
+    sendSprite SP, #setAnimAction, Mode
+end
