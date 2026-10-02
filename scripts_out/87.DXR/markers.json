@@ -1,0 +1,18 @@
+[
+    {
+        "frame": 2,
+        "name": "start"
+    },
+    {
+        "frame": 24,
+        "name": "cantDoit"
+    },
+    {
+        "frame": 33,
+        "name": "JustDoit"
+    },
+    {
+        "frame": 96,
+        "name": "leave"
+    }
+]

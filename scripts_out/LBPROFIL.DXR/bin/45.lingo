@@ -1,0 +1,9 @@
+global gDir
+
+on cursorPointing
+    set the cursor of sprite 1 = the cursPointing of gDir
+end
+
+on cursorRestore
+    set the cursor of sprite 1 = 0
+end

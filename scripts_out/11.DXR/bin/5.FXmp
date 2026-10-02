@@ -1,0 +1,148 @@
+; Copyright 1994-1996, Macromedia, Inc.  All Rights Reserved.
+;
+;=================================================================
+;
+; Default Font Mapping Table for Director 5.0 Macintosh and Windows.
+;
+; This file provides a font mapping table for Director 5.0 for Windows 
+; and Macintosh.
+;
+; If a copy of this file is in the same folder or directory as the 
+; Director application, Director will automatically include this font 
+; mapping table in every new movie you create.
+;
+; To add this font mapping table to an existing movie, choose 
+; Movie:Properties... from the Modify menu.  Then click Load from File.  
+; Use the dialog box that appears to locate this file.
+; 
+; Note: In this file, a semicolon at the beginning of a line indicates
+; a comment.
+;
+;=================================================================
+;
+; FONT MAPPINGS 
+;
+; Font mappings specify which font and size substitutions to make when
+; moving a movie from one platform to another.
+;
+; The format for font mapping definitions is:
+;
+; Platform:FontName => Platform:FontName [MAP NONE] [oldSize => newSize]
+;
+;    Specifying MAP NONE turns off character mapping for this font.
+;    If you specify size mappings, they apply for THAT FONT ONLY.
+;
+; Here are some typical mappings for the standard Macintosh fonts:
+;
+
+Mac:Chicago       => Win:System
+Mac:Courier       => Win:"Courier New"
+Mac:Geneva        => Win:"MS Sans Serif"
+Mac:Helvetica     => Win:Arial
+Mac:Monaco        => Win:Terminal
+Mac:"New York"    => Win:"MS Serif"
+Mac:Symbol        => Win:Symbol  Map None
+Mac:Times         => Win:"Times New Roman" 14=>12 18=>14 24=>18 30=>24
+
+;
+; Here are some typical mappings for the standard Windows fonts:
+;
+
+Win:Arial             => Mac:Helvetica Map None 12=>14 18=>24 24=>30
+Win:"Courier"         => Mac:Courier
+Win:"Courier New"     => Mac:Courier
+Win:"MS Serif"        => Mac:"New York"
+Win:"MS Sans Serif"   => Mac:Geneva
+Win:Symbol            => Mac:Symbol  Map None
+Win:System            => Mac:Chicago
+Win:Terminal          => Mac:Monaco
+Win:"Times New Roman" => Mac:"Times" 12=>14 14=>18 18=>24 24=>30
+Win:"SteelFont"       => Mac:"SteelFont" 12=>11 8=>11 9=>11 10=>11 11=>11
+
+; Note: When mapping from Windows to Macintosh, Courier and Courier New 
+; map onto Courier.  When coming back to Windows only Courier New
+; will be used.
+
+; Japanese Font Mappings
+; 
+; The Macintosh Japanese Osaka font is mapped to a Windows font, and 
+; all Windows fonts are mapped to Macintosh's Osaka.  Map None is used
+; because only Roman fonts need upper-ASCII characters mapped.  To prevent 
+; mapping of any additional Japanese fonts, add them to this list.
+;
+; Note: If you do not have a Japanese system, the font names below 
+; will appear to be unreadable.
+
+Mac:Osaka=>Win:"•W€ƒSƒVƒbƒN" Map None
+
+Win:"‚l‚r ƒSƒVƒbƒN"=>Mac:Osaka Map None
+Win:"‚l‚r –¾’©"=>Mac:Osaka Map None
+Win:"•W€ƒSƒVƒbƒN"=>Mac:Osaka Map None
+Win:"•W€–¾’©"=>Mac:Osaka Map None
+Win:"–¾’©"=>Mac:Osaka Map None
+
+;=================================================================
+;
+; CHARACTER MAPPINGS
+;
+; Character mapping ensures that characters such as bullets, 
+; quote marks, and accented characters always appear correctly 
+; when text is moved from one platform to another.  When a 
+; character is mapped, a different ASCII value is substituted 
+; in order to preserve the appearance of the character.  
+;
+; Character mappings are used for all fonts EXCEPT those declared 
+; above as Map None.  
+;
+; The format for character mappings is:
+;
+; Platform: => Platform:  oldChar => oldChar ...
+;
+; The following table provides a full set of bi-directional 
+; mappings for all ASCII values between 128 and 255.
+;
+; Note: Some characters are not available in both character sets. 
+; However, the bi-directional mapping table below preserves these 
+; characters even if they are mapped to a different platform and 
+; later re-mapped back to the original platform.
+
+Mac: => Win: 128=>128 129=>129 130=>130 131=>131 132=>132 133=>133 134=>134 
+Mac: => Win: 135=>135 136=>136 137=>137 138=>138 139=>139 140=>140 141=>141 
+Mac: => Win: 142=>142 143=>143 144=>144 145=>145 146=>146 147=>147 148=>148 
+Mac: => Win: 149=>149 150=>150 151=>151 152=>152 153=>153 154=>154 155=>155 
+Mac: => Win: 156=>156 157=>157 158=>158 159=>159 160=>160 161=>161 162=>162 
+Mac: => Win: 163=>163 164=>164 165=>165 166=>166 167=>167 168=>168 169=>169 
+Mac: => Win: 170=>170 171=>171 172=>172 173=>173 174=>174 175=>175 176=>176 
+Mac: => Win: 177=>177 178=>178 179=>179 180=>180 181=>181 182=>182 183=>183 
+Mac: => Win: 184=>184 185=>185 186=>186 187=>187 188=>188 189=>189 190=>190 
+Mac: => Win: 191=>191 192=>192 193=>193 194=>194 195=>195 196=>196 197=>197 
+Mac: => Win: 198=>198 199=>199 200=>200 201=>201 202=>202 203=>203 204=>204 
+Mac: => Win: 205=>205 206=>206 207=>207 208=>208 209=>209 210=>210 211=>211 
+Mac: => Win: 212=>212 213=>213 214=>214 215=>215 216=>216 217=>217 218=>218 
+Mac: => Win: 219=>219 220=>220 221=>221 222=>222 223=>223 224=>224 225=>225 
+Mac: => Win: 226=>226 227=>227 228=>228 229=>229 230=>230 231=>231 232=>232 
+Mac: => Win: 233=>233 234=>234 235=>235 236=>236 237=>237 238=>238 239=>239 
+Mac: => Win: 240=>240 241=>241 242=>242 243=>243 244=>244 245=>245 246=>246 
+Mac: => Win: 247=>247 248=>248 249=>249 250=>250 251=>251 252=>252 253=>253 
+Mac: => Win: 254=>254 255=>255
+
+Win: => Mac: 128=>128 129=>129 130=>130 131=>131 132=>132 133=>133 134=>134 
+Win: => Mac: 135=>135 136=>136 137=>137 138=>138 139=>139 140=>140 141=>141 
+Win: => Mac: 142=>142 143=>143 144=>144 145=>145 146=>146 147=>147 148=>148 
+Win: => Mac: 149=>149 150=>150 151=>151 152=>152 153=>153 154=>154 155=>155 
+Win: => Mac: 156=>156 157=>157 158=>158 159=>159 160=>160 161=>161 162=>162 
+Win: => Mac: 163=>163 164=>164 165=>165 166=>166 167=>167 168=>168 169=>169 
+Win: => Mac: 170=>170 171=>171 172=>172 173=>173 174=>174 175=>175 176=>176 
+Win: => Mac: 177=>177 178=>178 179=>179 180=>180 181=>181 182=>182 183=>183 
+Win: => Mac: 184=>184 185=>185 186=>186 187=>187 188=>188 189=>189 190=>190 
+Win: => Mac: 191=>191 192=>192 193=>193 194=>194 195=>195 196=>196 197=>197 
+Win: => Mac: 198=>198 199=>199 200=>200 201=>201 202=>202 203=>203 204=>204 
+Win: => Mac: 205=>205 206=>206 207=>207 208=>208 209=>209 210=>210 211=>211 
+Win: => Mac: 212=>212 213=>213 214=>214 215=>215 216=>216 217=>217 218=>218 
+Win: => Mac: 219=>219 220=>220 221=>221 222=>222 223=>223 224=>224 225=>225 
+Win: => Mac: 226=>226 227=>227 228=>228 229=>229 230=>230 231=>231 232=>232 
+Win: => Mac: 233=>233 234=>234 235=>235 236=>236 237=>237 238=>238 239=>239 
+Win: => Mac: 240=>240 241=>241 242=>242 243=>243 244=>244 245=>245 246=>246 
+Win: => Mac: 247=>247 248=>248 249=>249 250=>250 251=>251 252=>252 253=>253 
+Win: => Mac: 254=>254 255=>255 
+

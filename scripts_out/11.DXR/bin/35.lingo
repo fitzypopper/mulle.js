@@ -1,0 +1,10 @@
+on startMovie
+    global gDir
+
+    startMovie gDir
+end
+
+on CuePassed whichChannel, cuePointNumber, cuePointName
+    set tmpCh = whichChannel
+    put tmpCh
+end

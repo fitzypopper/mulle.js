@@ -1,0 +1,24 @@
+on exitFrame
+    global gStartNext
+    global gSystem
+
+    if listp(gStartNext) then
+        set nextFile = getaProp(gStartNext, #dir)
+        if stringp(nextFile) then
+            go 1, (the exePath of gSystem & nextFile)
+        else
+            if (the platform contains "Windows") then
+                set nextFile = getaProp(gStartNext, #pc)
+                open (the exePath of gSystem & nextFile)
+                halt
+            else
+                set nextFile = getaProp(gStartNext, #mac)
+                open (the exePath of gSystem & nextFile)
+                halt
+            end if
+        end if
+    else
+        alert ("gStartNext: " & gStartNext)
+        go 1, "Intro_1"
+    end if
+end

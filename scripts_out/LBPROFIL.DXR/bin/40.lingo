@@ -1,0 +1,25 @@
+global gDir
+global gSystem
+
+on openDialogWebConfirm
+    set the locV of sprite accessor = 0
+    set the dialog of gDir = window("DialogWeb")
+    set the rect of the dialog of gDir = rect(100, 100, 420, 340)
+    set the title of the dialog of gDir = the dialogWebCaption of gDir
+    set the fileName of the dialog of gDir = "LBWebOK"
+    set the titleVisible of the dialog of gDir = 1
+    open the dialog of gDir
+end
+
+on closeDialogWebConfirm foundBrowser
+    if foundBrowser then
+        set the WEBbrowser of gSystem = the posibleWEBbrowser of gDir
+        set the posibleWEBbrowser of gDir = EMPTY
+        writeLBfamily_safe
+    else
+        set the posibleWEBbrowser of gDir = EMPTY
+    end if
+    close window("DialogWeb")
+    forget window("DialogWeb")
+    set the locV of sprite accessor = -2000
+end

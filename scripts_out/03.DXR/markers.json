@@ -1,0 +1,34 @@
+[
+    {
+        "frame": 10,
+        "name": "Quay"
+    },
+    {
+        "frame": 16,
+        "name": "Shelf1"
+    },
+    {
+        "frame": 22,
+        "name": "Shelf2"
+    },
+    {
+        "frame": 28,
+        "name": "Shelf3"
+    },
+    {
+        "frame": 34,
+        "name": "Shelf4"
+    },
+    {
+        "frame": 40,
+        "name": "Shelf5"
+    },
+    {
+        "frame": 46,
+        "name": "Shelf6"
+    },
+    {
+        "frame": 56,
+        "name": "Gift"
+    }
+]

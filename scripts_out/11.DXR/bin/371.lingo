@@ -1,0 +1,9 @@
+on enterFrame
+    updateStage
+end
+
+on exitFrame
+    updateStage
+    cursor -1
+    go 1, "01"
+end

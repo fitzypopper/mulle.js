@@ -1,0 +1,50 @@
+[
+    {
+        "frame": 1,
+        "name": "Start"
+    },
+    {
+        "frame": 11,
+        "name": "noMissionTank"
+    },
+    {
+        "frame": 25,
+        "name": "justDoItWeed"
+    },
+    {
+        "frame": 43,
+        "name": "noMission"
+    },
+    {
+        "frame": 54,
+        "name": "JustDoIttank"
+    },
+    {
+        "frame": 66,
+        "name": "cantDoIt"
+    },
+    {
+        "frame": 74,
+        "name": "Done1"
+    },
+    {
+        "frame": 80,
+        "name": "Done2"
+    },
+    {
+        "frame": 86,
+        "name": "Done3"
+    },
+    {
+        "frame": 93,
+        "name": "Done4"
+    },
+    {
+        "frame": 99,
+        "name": "Done5"
+    },
+    {
+        "frame": 133,
+        "name": "leave"
+    }
+]

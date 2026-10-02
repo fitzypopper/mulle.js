@@ -1,0 +1,7 @@
+on exitFrame
+    if (the platform contains "Windows") then
+        go "Pc"
+    else
+        go "Mac"
+    end if
+end

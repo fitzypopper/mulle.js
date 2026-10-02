@@ -1,0 +1,54 @@
+[
+    {
+        "frame": 1,
+        "name": "main"
+    },
+    {
+        "frame": 7,
+        "name": "Lek&Ler"
+    },
+    {
+        "frame": 8,
+        "name": "Lek&Ler2"
+    },
+    {
+        "frame": 16,
+        "name": "Lesa&Skriva"
+    },
+    {
+        "frame": 26,
+        "name": "Matte"
+    },
+    {
+        "frame": 27,
+        "name": "Matte2"
+    },
+    {
+        "frame": 34,
+        "name": "Skapa"
+    },
+    {
+        "frame": 41,
+        "name": "Fakta"
+    },
+    {
+        "frame": 42,
+        "name": "Fakta"
+    },
+    {
+        "frame": 47,
+        "name": "Sagor"
+    },
+    {
+        "frame": 53,
+        "name": "Spela&Tenka"
+    },
+    {
+        "frame": 62,
+        "name": "Sprak"
+    },
+    {
+        "frame": 63,
+        "name": "Sprak2"
+    }
+]

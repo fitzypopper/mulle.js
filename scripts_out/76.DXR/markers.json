@@ -1,0 +1,30 @@
+[
+    {
+        "frame": 1,
+        "name": "Start"
+    },
+    {
+        "frame": 16,
+        "name": "one"
+    },
+    {
+        "frame": 24,
+        "name": "two"
+    },
+    {
+        "frame": 34,
+        "name": "Three"
+    },
+    {
+        "frame": 44,
+        "name": "four"
+    },
+    {
+        "frame": 54,
+        "name": "five"
+    },
+    {
+        "frame": 68,
+        "name": "leave"
+    }
+]

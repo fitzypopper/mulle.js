@@ -1,0 +1,150 @@
+[
+    {
+        "frame": 1,
+        "name": "Start"
+    },
+    {
+        "frame": 6,
+        "name": "JustDoit1"
+    },
+    {
+        "frame": 16,
+        "name": "JustDoitBagNoRing"
+    },
+    {
+        "frame": 32,
+        "name": "JustDoitRing"
+    },
+    {
+        "frame": 43,
+        "name": "JustDoitBag"
+    },
+    {
+        "frame": 52,
+        "name": "DeliverMapRing"
+    },
+    {
+        "frame": 62,
+        "name": "DeliverMap"
+    },
+    {
+        "frame": 72,
+        "name": "DeliverMapBagNoring"
+    },
+    {
+        "frame": 84,
+        "name": "DeliverMapBag"
+    },
+    {
+        "frame": 99,
+        "name": "JustDoit2"
+    },
+    {
+        "frame": 107,
+        "name": "CantDoItDog"
+    },
+    {
+        "frame": 124,
+        "name": "JustDoiTDog"
+    },
+    {
+        "frame": 138,
+        "name": "JustDoItDogRing"
+    },
+    {
+        "frame": 158,
+        "name": "JustDoItDogBag"
+    },
+    {
+        "frame": 177,
+        "name": "JustDoItDogBagNoRing"
+    },
+    {
+        "frame": 199,
+        "name": "CantDoItDogBag"
+    },
+    {
+        "frame": 216,
+        "name": "CantDoItDogRing"
+    },
+    {
+        "frame": 234,
+        "name": "CantDoItDogBagNoRing"
+    },
+    {
+        "frame": 262,
+        "name": "JustDoItPrimaRing"
+    },
+    {
+        "frame": 286,
+        "name": "JustDoItPrimaBag"
+    },
+    {
+        "frame": 303,
+        "name": "JustDoItPrimaBagNoRing"
+    },
+    {
+        "frame": 341,
+        "name": "cantDoItPrimaBagNoRing"
+    },
+    {
+        "frame": 369,
+        "name": "cantDoiTPrimaBag"
+    },
+    {
+        "frame": 386,
+        "name": "CantDoitPrimaRing"
+    },
+    {
+        "frame": 403,
+        "name": "JustDoItPrima"
+    },
+    {
+        "frame": 420,
+        "name": "cantDoItPrima"
+    },
+    {
+        "frame": 480,
+        "name": "SCJustDoItPrimaRing"
+    },
+    {
+        "frame": 505,
+        "name": "SCJustDoItPrimaBag"
+    },
+    {
+        "frame": 522,
+        "name": "SCJustDoItPrimaBagNoRing"
+    },
+    {
+        "frame": 560,
+        "name": "SCcantDoItPrimaBagNoRing"
+    },
+    {
+        "frame": 588,
+        "name": "SCcantDoiTPrimaBag"
+    },
+    {
+        "frame": 605,
+        "name": "SCCantDoitPrimaRing"
+    },
+    {
+        "frame": 622,
+        "name": "SCJustDoItPrima"
+    },
+    {
+        "frame": 639,
+        "name": "SCcantDoItPrima"
+    },
+    {
+        "frame": 674,
+        "name": "Trip"
+    },
+    {
+        "frame": 689,
+        "name": "NoTrip"
+    },
+    {
+        "frame": 706,
+        "name": "Leave"
+    }
+]

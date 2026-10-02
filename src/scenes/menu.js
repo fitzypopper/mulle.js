@@ -1,115 +1,117 @@
 import MulleState from './base'
-
 import MulleSprite from '../objects/sprite'
 import MulleActor from '../objects/actor'
-// import MulleAudio from '../objects/audio'
-
-import MulleSave from '../struct/savedata'
 import DirectorHelper from '../objects/DirectorHelper'
 
 class MenuState extends MulleState {
   preload () {
-    // this.game.load.pack('menu', 'assets/menu.json', null, this);
     this.game.load.pack('menu', 'assets/menu.json', null, this)
-  }
-
-  toilet() {
-    //this.game.state.start('lbstart')
   }
 
   create () {
     this.game.mulle.addAudio('menu')
 
-    var background = new MulleSprite(this.game, 320, 240)
-    // background.setFrameId('11b001v0');
-    background.setDirectorMember('10.DXR', 2)
+    // Background: 11.DXR member 86 = 11b001v1 (640x480)
+    const background = new MulleSprite(this.game, 320, 240)
+    background.setDirectorMember('11.DXR', 86)
     this.game.add.existing(background)
 
-    var mulleBase = new MulleSprite(this.game, 139, 296)
-    mulleBase.setDirectorMember('10.DXR', 125)
-    this.game.add.existing(mulleBase)
+    // Border frame: 11.DXR score ch83-86 use castId 3 (member 4 = 10a001v0, 42x19)
+    // Stretched to 640x4 (top/bottom) and 4x472 (left/right) at center (320,240)
+    // We'll draw this as graphics since it's just colored lines
+    const border = this.game.add.graphics(0, 0)
+    border.lineStyle(4, 0x888888, 1)
+    border.moveTo(0, 0)
+    border.lineTo(640, 0)
+    border.lineTo(640, 480)
+    border.lineTo(0, 480)
+    border.lineTo(0, 0)
 
-    var mulleHead = new MulleActor(this.game, 139, 296, 'mulleMenuHead')
-    mulleHead.animations.play('idle')
-    this.game.add.existing(mulleHead)
-    // this.game.mulle.actors.mulle = mulle;
+    // Mulle body: members 125-132 (87a001v2, 02-08) 180x346
+    this.mulleBody = new MulleActor(this.game, 320, 320, 'mulleBody')
+    this.mulleBody.animations.play('still')
+    this.game.add.existing(this.mulleBody)
 
-    var mulleMouth = new MulleActor(this.game, 139, 296, 'mulleMenuMouth')
-    mulleMouth.animations.play('idle')
-    this.game.add.existing(mulleMouth)
+    // Mulle head: members 133-143 (87a001v0, 10-19) ~118x128
+    this.mulleHead = new MulleActor(this.game, 320, 180, 'mulleHead')
+    this.mulleHead.animations.play('idle')
+    this.game.add.existing(this.mulleHead)
 
-    const toilet = DirectorHelper.button(this.game, 550, 375, this.toilet, this, '10.DXR', 170, 169)
-    this.game.add.existing(toilet)
-
+    // Name input field (HTML overlay) - positioned like car game
     this.nameInput = document.createElement('input')
     this.nameInput.style.position = 'absolute'
-    this.nameInput.style.top = '60px'
-    this.nameInput.style.left = '90px'
-    this.nameInput.style.border = 'none'
-    this.nameInput.style.font = '28px serif'
-    this.nameInput.style.padding = '4px'
-    this.nameInput.style.background = 'none'
+    this.nameInput.style.top = '320px'
+    this.nameInput.style.left = '230px'
     this.nameInput.style.width = '180px'
+    this.nameInput.style.height = '32px'
+    this.nameInput.style.font = '24px serif'
+    this.nameInput.style.padding = '4px 8px'
+    this.nameInput.style.border = '2px solid #888'
+    this.nameInput.style.background = 'rgba(255,255,255,0.9)'
+    this.nameInput.style.borderRadius = '4px'
+    this.nameInput.style.zIndex = '1000'
+    this.nameInput.placeholder = 'Ditt namn...'
+    this.nameInput.maxLength = 20
 
-    this.nameInput.addEventListener('keyup', (ev) => {
-      let name = this.nameInput.value
+    const canvas = this.game.canvas
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    this.nameInput.style.left = `${rect.left + 230 / scaleX}px`
+    this.nameInput.style.top = `${rect.top + 320 / scaleY}px`
+    this.nameInput.style.width = `${180 / scaleX}px`
+    this.nameInput.style.height = `${32 / scaleY}px`
+    this.nameInput.style.fontSize = `${24 / Math.max(scaleX, scaleY)}px`
 
-      if (ev.keyCode === 13) {
-        if (this.game.mulle.UsersDB[ name ]) {
-          this.game.mulle.user = this.game.mulle.UsersDB[ name ]
-        } else {
-          let save = new MulleSave(this.game)
-          save.UserId = name
+    document.body.appendChild(this.nameInput)
 
-          this.game.mulle.UsersDB[ name ] = save
-          this.game.mulle.saveData()
-
-          this.game.mulle.user = save
-        }
-
-        this.game.mulle.activeCutscene = '00b011v0'
-
-        this.game.mulle.net.send({ name: name })
-
-        this.game.state.start('garage')
+    this.nameInput.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        this.handleLogin()
       }
     })
 
-    document.getElementById('player').appendChild(this.nameInput)
+    // OK button - simple graphics button since 11.DXR lacks dedicated button frames
+    // (car game used 10.DXR #169/#170 for toilet button)
+    const btnGfx = this.game.add.graphics(420, 330)
+    btnGfx.beginFill(0x88cc88, 0.9)
+    btnGfx.drawRoundedRect(0, 0, 80, 36, 6)
+    btnGfx.endFill()
+    btnGfx.inputEnabled = true
+    btnGfx.events.onInputUp.add(() => this.handleLogin(), this)
+    this.okButtonText = this.game.add.text(460, 348, 'OK', {
+      font: '20px serif',
+      fill: '#fff',
+      fontWeight: 'bold'
+    })
+    this.okButtonText.anchor.set(0.5)
+    this.okButton = btnGfx
 
-    let y = 60
-    for (let name in this.game.mulle.UsersDB) {
-      let text = this.game.add.text(350, y, name, { font: '24px serif' })
+    // Existing users list (like car game)
+    this.userList = []
+    let y = 370
+    for (const name in this.game.mulle.UsersDB) {
+      const text = this.game.add.text(230, y, name, {
+        font: '20px serif',
+        fill: '#333',
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        padding: { x: 8, y: 4 }
+      })
       text.inputEnabled = true
-      // text.useHandCursor = true;
-
-      text.events.onInputOver.add((e) => {
-        this.game.canvas.className = 'cursor-point'
-      }, this)
-
-      text.events.onInputOut.add((e) => {
-        this.game.canvas.className = ''
-      }, this)
-
-      text.events.onInputUp.add((e) => {
-        this.game.canvas.className = ''
-
-        this.game.mulle.user = this.game.mulle.UsersDB[ name ]
-
-        this.game.mulle.activeCutscene = '00b011v0'
-
-        this.game.mulle.net.send({ name: name })
-
+      text.events.onInputUp.add(() => {
+        this.game.mulle.user = this.game.mulle.UsersDB[name]
+        this.game.mulle.activeCutscene = '11d001v0'
         this.game.state.start('garage')
       }, this)
-
-      y += 25
+      this.userList.push(text)
+      y += 28
     }
 
+    // Subtitle lines (from 11d001v0 - member 90)
     this.game.mulle.subtitle.setLines('11d001v0', 'swedish', [
       '- Hej!',
       '- Jag heter {Mulle Meck}!',
-      '- Vill du bygga bilar med mig?',
+      '- Vill du bygga båtar med mig?',
       '- Skriv ditt namn så kan vi sätta igång.',
       '- Har du byggt förr så klickar du på ditt namn i {listan}.'
     ], 'mulle')
@@ -117,38 +119,79 @@ class MenuState extends MulleState {
     this.game.mulle.subtitle.setLines('11d001v0', 'english', [
       '- Hello!',
       '- My name is {Mulle Meck}!',
-      '- Do you want to build cars with me?',
+      '- Do you want to build boats with me?',
       '- Write down your name so we can start.',
       "- If you've been here before, click your name in the {list}."
     ], 'mulle')
 
+    // Play intro audio and start Mulle animation
     this.game.mulle.playAudio('10e001v0', () => {
-      if (!mulleMouth) return
+      this.mulleHead.animations.play('talk')
+      this.mulleBody.animations.play('talk')
 
-      this.game.mulle.playAudio('10e002v0')
+      // Simulate the Talk marker (frame 3) → Wait (frame 4) → IntroStart (frame 5)
+      this.game.time.events.add(3000, () => {
+        this.mulleHead.animations.play('idle')
+        this.mulleBody.animations.play('still')
+      }, this)
 
-      mulleMouth.talk('11d001v0', null, c => {
-        if (c[1] === 'silence') mulleMouth.animations.play('idle', 0)
-        if (c[1] === 'talk') mulleMouth.animations.play('talkPlayer')
-
-        if (c[1] === 'point') {
-          mulleHead.animations.play('point')
-          console.log('do point')
-        }
-      })
+      this.game.time.events.add(5000, () => {
+        this.mulleHead.animations.play('point')
+      }, this)
     })
+
+    // Cursor handling
+    this.setupCursors()
+  }
+
+  handleLogin () {
+    const name = this.nameInput.value.trim()
+    if (!name) return
+
+    if (this.game.mulle.UsersDB[name]) {
+      this.game.mulle.user = this.game.mulle.UsersDB[name]
+    } else {
+      const save = new (require('../struct/savedata'))(this.game)
+      save.UserId = name
+      this.game.mulle.UsersDB[name] = save
+      this.game.mulle.saveData()
+      this.game.mulle.user = save
+    }
+
+    this.game.mulle.activeCutscene = '11d001v0'
+    this.game.state.start('garage')
+  }
+
+  setupCursors () {
+    // Load cursor sprites from 11.DXR members 101-109
+    // C_standard (101), C_Grab (102), C_Left (103), C_Click (104), C_Back (105), C_Right (106), C_MoveLeft (107), C_MoveRight (108), C_MoveIn (109)
+    // For now use default cursor
+    this.game.canvas.style.cursor = 'default'
+  }
+
+  update () {
+    // Update cursor position for custom cursors if needed
   }
 
   shutdown () {
-    if (this.nameInput) this.nameInput.parentNode.removeChild(this.nameInput)
-
-    this.game.sound.stopAll()
-
-    // this.game.mulle.stopAudio('10e002v0');
-
+    if (this.nameInput && this.nameInput.parentNode) {
+      this.nameInput.parentNode.removeChild(this.nameInput)
+    }
     this.nameInput = null
 
-    // this.game.mulle.stopAudio('02e010v0');
+    if (this.okButton) {
+      this.okButton.destroy()
+      this.okButton = null
+    }
+    if (this.okButtonText) {
+      this.okButtonText.destroy()
+      this.okButtonText = null
+    }
+
+    this.userList.forEach(t => t.destroy())
+    this.userList = []
+
+    this.game.sound.stopAll()
   }
 }
 

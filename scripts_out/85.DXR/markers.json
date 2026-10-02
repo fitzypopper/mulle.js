@@ -1,0 +1,22 @@
+[
+    {
+        "frame": 2,
+        "name": "start"
+    },
+    {
+        "frame": 15,
+        "name": "Diary"
+    },
+    {
+        "frame": 27,
+        "name": "startDiary"
+    },
+    {
+        "frame": 45,
+        "name": "Suit"
+    },
+    {
+        "frame": 314,
+        "name": "leave"
+    }
+]

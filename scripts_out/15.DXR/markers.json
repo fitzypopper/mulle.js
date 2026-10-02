@@ -1,0 +1,22 @@
+[
+    {
+        "frame": 1,
+        "name": "MainMenu"
+    },
+    {
+        "frame": 10,
+        "name": "Small"
+    },
+    {
+        "frame": 19,
+        "name": "Medium"
+    },
+    {
+        "frame": 28,
+        "name": "Large"
+    },
+    {
+        "frame": 37,
+        "name": "Shipyard"
+    }
+]

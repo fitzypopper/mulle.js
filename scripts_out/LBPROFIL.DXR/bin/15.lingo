@@ -1,0 +1,287 @@
+property App1, App2, App3, App4, App5, httpReg, httpWeb1, httpWeb2, httpWeb3, httpWeb4, httpWeb6, needHDspace, needColors, needProcessor, processorList, needCDspeed, needResolution, recomRes, checkCDpath, err_monocrome, err_colors_many, err_colors_few, err_resolution_high, err_findCD, err_diskspace, err_notinstalled, err_installUnsuccessful, buttonsList1, buttonsList2, buttonsIndex3, activeButton, rolloverTimer, warningsTimer, warningsSprite, bubbleSprite, bubbleUp, catchClickSprite, cursPointing, interfaceActive, LBfamily, LBfamilyOK, InstalledOK, LBfamilySections, CPUknown, OSknown, bytesToCopy, SectionMachine, SectionProject, MacPath, MacFolders, MacInstallFile, criticalFile, dummyfile, posibleWEBbrowser, dialogWebCaption, dialog, ShowWebDialogAgain, dialogWebInfoCaption, dialogWebInfo, trimChars
+global gSystem
+
+on new me
+    set buttonsList1 = []
+    set buttonsList2 = [:]
+    set buttonsIndex3 = [:]
+    set App1 = [:]
+    set App2 = [:]
+    set App3 = [:]
+    set App4 = [:]
+    set App5 = [:]
+    set httpReg = [:]
+    set httpWeb1 = [:]
+    set httpWeb2 = [:]
+    set httpWeb3 = [:]
+    set httpWeb4 = [:]
+    set httpWeb6 = [:]
+    set activeButton = 0
+    set CPUknown = []
+    set OSknown = []
+    set MacInstallFile = []
+    set autopositN = 0
+    set autopositT = 0
+    set LBfamilyOK = 0
+    set LBfamilySections = [:]
+    set rolloverTimer = 0
+    set bubbleSprite = 40
+    set warningsSprite = 19
+    set catchClickSprite = 20
+    set dialog = 0
+    set trimChars = [numToChar(10), " ", RETURN]
+    set ShowWebDialogAgain = 1
+    set cursPointing = [member("cursorPHand"), member("cursMaskPHand")]
+    set the puppet of sprite bubbleSprite = 1
+    set the puppet of sprite warningsSprite = 1
+    set the UNKNOWN37 of sprite warningsSprite = member("Dummy")
+    set the locV of sprite warningsSprite = -2000
+    set posibleWEBbrowser = EMPTY
+    set checkCDpath = 0
+    do the text of member("Stringtable1")
+    return me
+end
+
+on delete me
+    set the puppet of sprite warningsSprite = 0
+    set the puppet of sprite 1 = 0
+    set the puppet of sprite 2 = 0
+    set the puppet of sprite bubbleSprite = 0
+    set the puppet of sprite catchClickSprite = 0
+    set activeButton = 0
+    repeat with tempButtonID in buttonsList1
+        set tempButton = getProp(buttonsList2, tempButtonID)
+        set tempButton = delete(tempButton)
+        deleteProp buttonsList2, tempButtonID
+    end repeat
+    set buttonsList1 = []
+    set buttonsList2 = [:]
+    set buttonsIndex3 = [:]
+    set App1 = [:]
+    set App2 = [:]
+    set App3 = [:]
+    set App4 = [:]
+    set App5 = [:]
+    set httpReg = [:]
+    set httpWeb1 = [:]
+    set httpWeb2 = [:]
+    set httpWeb3 = [:]
+    set httpWeb4 = [:]
+    set httpWeb6 = [:]
+    set activeButton = 0
+    set buttonList1 = 0
+    set buttonList2 = 0
+    set buttonsIndex3 = 0
+    set App1 = 0
+    set App2 = 0
+    set App3 = 0
+    set App4 = 0
+    set App5 = 0
+    set httpReg = 0
+    set httpWeb1 = 0
+    set httpWeb2 = 0
+    set httpWeb3 = 0
+    set httpWeb4 = 0
+    set LBfamilySections = [:]
+    set LBfamilySections = 0
+    return 0
+end
+
+on loadInterface me
+    preloadMember
+    loadButton me, "BStart", 5, #bubble, 223, 162, -80, 25
+    loadButton me, "Bweb2", 6, #bubble, 127, 390, 0, 0
+    loadButton me, "Bhelp", 7, #bubble, 228, 388, 0, 0
+    loadButton me, "Bweb1", 8, #bubble, 501, 389, 0, 0
+    loadButton me, "Bapp4", 9, #bubble, 504, 88, 0, 0
+    loadButton me, "Breg", 10, #bubble, 477, 128, 0, 0
+    loadButton me, "Bweb3", 11, #bubble, 515, 171, 0, 0
+    loadButton me, "Bweb4", 12, #bubble, 481, 206, 0, 0
+    loadButton me, "Bquit", 13, #bubble, 617, 458, -50, 15
+    set the puppet of sprite bubbleSprite = 1
+    set the locV of sprite bubbleSprite = -2000
+    set the puppet of sprite catchClickSprite = 1
+    set the locV of sprite catchClickSprite = -2000
+end
+
+on loadButton me, p_name, p_sp, p_type, p_x, p_y, xCorr, yCorr
+    set tempButton = new(script("LButton"), p_name, p_sp, p_type, p_x, p_y, xCorr, yCorr)
+    set tempButtonID = value(("#" & p_name))
+    addProp buttonsList2, tempButtonID, tempButton
+    addProp buttonsIndex3, p_sp, tempButtonID
+    add buttonsList1, tempButtonID
+    if (p_x < 0) then
+        if (p_type = #normal) then
+            set autopositN = (autopositN + 1)
+        else
+            set autopositT = (autopositT + 1)
+        end if
+    end if
+end
+
+on buttonClick me, buttonID
+    global gStartNext
+
+    if (buttonID = #Bstart) then
+        set gStartNext = App1
+        closeDown me, 1
+        go "ExitApp1"
+    else
+        if (buttonID = #Bhelp) then
+            if (the platform contains "Windows") then
+                open (the CDpath of gSystem & the helpFile of gSystem), "Winhelp.exe"
+            else
+                open the helpFile of gSystem, "Skriv text"
+            end if
+        else
+            if (buttonID = #Breg) then
+                set uName = splitName(the userName of gSystem)
+                if (the platform contains "Windows") then
+                    set commandLine = ((((((((((((getaProp(httpReg, #Web) & "?Fnamn=") & getAt(uName, 1)) & "&Enamn=") & getAt(uName, 2)) & "&ISBN=") & the ISBN of gSystem) & "&Dator=PC&OS=") & the OS of gSystem) & "&Processor=") & the CPU of gSystem) & "&Minne=") & the Memory of gSystem)
+                else
+                    set tFnamn = getAt(uName, 1)
+                    if (tFnamn > EMPTY) then
+                        set commandLine = ((commandLine & "&Fnamn=") & tFnamn)
+                    end if
+                    set tEnamn = getAt(uName, 2)
+                    if (tFnamn > EMPTY) then
+                        set commandLine = ((commandLine & "&Enamn=") & tEnamn)
+                    end if
+                    set commandLine = (((commandLine & "&ISBN=") & the ISBN of gSystem) & "&Dator=MAC")
+                    if ((the OS of gSystem > EMPTY) and (the OS of gSystem <> "Unknown")) then
+                        set commandLine = ((commandLine & "&OS=") & the OS of gSystem)
+                    end if
+                    if ((the CPU of gSystem > EMPTY) and (the CPU of gSystem <> "Unknown")) then
+                        set commandLine = ((commandLine & "&Processor=") & the CPU of gSystem)
+                    end if
+                    if (the Memory of gSystem > 0) then
+                        set commandLine = ((commandLine & "&Minne=") & the Memory of gSystem)
+                    end if
+                    set commandLine = chars(commandLine, 2, length(commandLine))
+                    set commandLine = ((getaProp(httpReg, #Web) & "?") & commandLine)
+                end if
+                set commandLine = SpaceTo20(commandLine)
+                set gStartNext = [:]
+                setaProp gStartNext, #Web, commandLine
+                openWEB gStartNext
+            else
+                if (buttonID = #Bquit) then
+                    closeDown me, 0
+                    go "quit"
+                else
+                    if (buttonID = #Bapp3) then
+                        set gStartNext = App2
+                        closeDown me, 1
+                        go "ExitApp2"
+                    else
+                        if (buttonID = #Bapp4) then
+                            set gStartNext = App4
+                            closeDown me, 1
+                            go "ExitApp2"
+                        else
+                            if (buttonID = #Bweb1) then
+                                if the optionDown then
+                                    openDialogWeb
+                                else
+                                    openWEB httpWeb1
+                                end if
+                            else
+                                if (buttonID = #Bweb2) then
+                                    openWEB httpWeb2
+                                else
+                                    if (buttonID = #Bweb3) then
+                                        openWEB httpWeb3
+                                    else
+                                        if (buttonID = #Bweb4) then
+                                            openWEB httpWeb4
+                                        else
+                                            if (buttonID = #Bweb6) then
+                                                openWEB httpWeb6
+                                            else
+                                                alert "Action demand on unregistred button"
+                                            end if
+                                        end if
+                                    end if
+                                end if
+                            end if
+                        end if
+                    end if
+                end if
+            end if
+        end if
+    end if
+end
+
+on bad_screen_or_colors me
+    set tempBad = 0
+    if (the platform contains "Windows") then
+        if (the colorDepth = 1) then
+            alert err_monocrome
+            set tempBad = 1
+        else
+            if (the colorDepth < 8) then
+                set the colorDepth = 8
+            else
+                if (the colorDepth > 8) then
+                    set the UNKNOWN37 of sprite warningsSprite = member("Err_col")
+                end if
+            end if
+        end if
+    else
+        if (the colorDepth < 8) then
+            alert err_colors_few
+            set tempBad = 1
+        end if
+        if (the colorDepth > 8) then
+            set the UNKNOWN37 of sprite warningsSprite = member("Err_col")
+        end if
+    end if
+    if (the width of getAt(the deskTopRectList, 1) > 640) then
+        if (the UNKNOWN37 of sprite warningsSprite = member("Err_col")) then
+            set the UNKNOWN37 of sprite warningsSprite = member("Err_cores")
+        else
+            set the UNKNOWN37 of sprite warningsSprite = member("Err_res")
+        end if
+    end if
+    return tempBad
+end
+
+on setupMenu me
+    repeat with tempButtonID in buttonsList1
+        set tempButton = getProp(buttonsList2, tempButtonID)
+        ButtonVisible tempButton, 1
+    end repeat
+    if (the platform contains "Windows") then
+    else
+        go "MAC"
+        puppetTransition 23
+    end if
+    set the mouseDownScript = "ButtonMouseDown"
+    set the mouseUpScript = "ButtonMouseUp"
+    set interfaceActive = 1
+end
+
+on closeDown me, white
+    set interfaceActive = 0
+    set the mouseDownScript = EMPTY
+    set the mouseUpScript = EMPTY
+    set the locV of sprite warningsSprite = -2000
+    set the locV of sprite bubbleSprite = -2000
+    set activeButton = 0
+    repeat with tempButtonID in buttonsList1
+        set tempButton = getProp(buttonsList2, tempButtonID)
+        ButtonVisible tempButton, 0
+    end repeat
+    if not white then
+        set the puppet of sprite 1 = 1
+        set the UNKNOWN37 of sprite 1 = member("Dummy")
+    end if
+    set the puppet of sprite 2 = 1
+    set the UNKNOWN37 of sprite 2 = member("Dummy")
+    if (the platform contains "Windows") then
+        puppetTransition 1, 2, 5
+    else
+        puppetTransition 23
+    end if
+    updateStage
+end

@@ -220,6 +220,20 @@ class MulleActor extends MulleSprite {
       var f = []
       for (var i = 0; i < 4; i++) f.push([b, 42 + i])
       this.addAnimation('jump2', f, 10, false)
+    // Boat game menu actors (11.DXR)
+    } else if (this.actorName === 'mulleBody') {
+      // Members 125-132: 87a001v2 (125), 02(126), 03(127), 04(128), 05(129), 06(130), 07(131), 08(132) - 180x346
+      this.setDirectorMember('11.DXR', 125)
+
+      this.addAnimation('still', [ ['11.DXR', 125] ], 1, true, false)
+      this.addAnimation('talk', [ ['11.DXR', 126], ['11.DXR', 127], ['11.DXR', 128], ['11.DXR', 129], ['11.DXR', 130], ['11.DXR', 131], ['11.DXR', 132] ], 8, false, false)
+    } else if (this.actorName === 'mulleHead') {
+      // Members 133-143: 87a001v0 (133), 10(134), 11(135), 12(136), 13(137), 14(138), 15(139), 16(140), 17(141), 18(142), 19(143) - ~118x128
+      this.setDirectorMember('11.DXR', 133)
+
+      this.addAnimation('idle', [ ['11.DXR', 133] ], 1, true, false)
+      this.addAnimation('talk', [ ['11.DXR', 134], ['11.DXR', 135], ['11.DXR', 136], ['11.DXR', 137], ['11.DXR', 138], ['11.DXR', 139], ['11.DXR', 140], ['11.DXR', 141], ['11.DXR', 142], ['11.DXR', 143] ], 10, false, false)
+      this.addAnimation('point', [ ['11.DXR', 143] ], 1, true, false)
     } else if(!ignore) {
       console.error('invalid actor', this.actorName)
     }

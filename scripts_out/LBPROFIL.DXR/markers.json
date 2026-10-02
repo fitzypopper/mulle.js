@@ -1,0 +1,26 @@
+[
+    {
+        "frame": 2,
+        "name": "Pc"
+    },
+    {
+        "frame": 3,
+        "name": "Mac"
+    },
+    {
+        "frame": 4,
+        "name": "MainLoop"
+    },
+    {
+        "frame": 27,
+        "name": "ExitApp1"
+    },
+    {
+        "frame": 36,
+        "name": "ExitApp2"
+    },
+    {
+        "frame": 50,
+        "name": "Quit"
+    }
+]

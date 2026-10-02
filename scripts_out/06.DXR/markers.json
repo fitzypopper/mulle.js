@@ -1,0 +1,14 @@
+[
+    {
+        "frame": 1,
+        "name": "Save"
+    },
+    {
+        "frame": 13,
+        "name": "Load"
+    },
+    {
+        "frame": 22,
+        "name": "Leave"
+    }
+]

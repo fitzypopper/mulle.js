@@ -1,0 +1,58 @@
+[
+    {
+        "frame": 1,
+        "name": "start"
+    },
+    {
+        "frame": 17,
+        "name": "cantDoit"
+    },
+    {
+        "frame": 21,
+        "name": "justDoITluck"
+    },
+    {
+        "frame": 26,
+        "name": "justDoITluck2"
+    },
+    {
+        "frame": 31,
+        "name": "JustDoit"
+    },
+    {
+        "frame": 33,
+        "name": "JustDoIt2"
+    },
+    {
+        "frame": 40,
+        "name": "InfiniteJustDoiT"
+    },
+    {
+        "frame": 42,
+        "name": "InfiniteJustDoiT2"
+    },
+    {
+        "frame": 54,
+        "name": "noMission"
+    },
+    {
+        "frame": 71,
+        "name": "Done"
+    },
+    {
+        "frame": 88,
+        "name": "Boatride"
+    },
+    {
+        "frame": 93,
+        "name": "boatride3"
+    },
+    {
+        "frame": 98,
+        "name": "Boatride2"
+    },
+    {
+        "frame": 110,
+        "name": "leave"
+    }
+]

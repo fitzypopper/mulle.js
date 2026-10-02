@@ -1,0 +1,72 @@
+global gSystem
+global gDir
+
+on openWEB weblink
+    if ((the platform contains "Macintosh") and (the WEBbrowser of gSystem = "Unknown")) then
+        set url = getaProp(weblink, #Web)
+        put "clipBoard" into field 0
+        copyToClipBoard member("clipBoard")
+        gotoNetPage url
+        exit
+    end if
+    if (the WEBbrowser of gSystem = "Unknown") then
+        if (the posibleWEBbrowser of gDir > EMPTY) then
+            set url = getaProp(weblink, #Web)
+            if stringp(url) then
+                if (the platform contains "Macintosh") then
+                    openDialogWebConfirm
+                    openDialogWebInfo url
+                else
+                    open url, the posibleWEBbrowser of gDir
+                    openDialogWebConfirm
+                end if
+            end if
+        else
+            openDialogWeb
+        end if
+    else
+        if (the WEBbrowser of gSystem <> "None") then
+            set url = getaProp(weblink, #Web)
+            if stringp(url) then
+                if (the platform contains "Macintosh") then
+                    openDialogWebInfo url
+                else
+                    open url, the WEBbrowser of gSystem
+                end if
+            end if
+        end if
+    end if
+end
+
+on trim sLine
+    set p1 = 1
+    set L = length(sLine)
+    repeat with p1 = 1 to L
+        if not getPos(the trimChars of gDir, chars(sLine, p1, p1)) then
+            exit repeat
+        end if
+    end repeat
+    if (p1 > L) then
+        return EMPTY
+    end if
+    set p2 = L
+    repeat with p2 = L down to 1
+        if not getPos(the trimChars of gDir, chars(sLine, p2, p2)) then
+            exit repeat
+        end if
+    end repeat
+    if (p2 = 0) then
+        return EMPTY
+    end if
+    return chars(sLine, p1, p2)
+end
+
+on SpaceTo20 sInput
+    set sOutput = sInput
+    set p = offset(" ", sOutput)
+    repeat while p > 0
+        set sOutput = ((chars(sOutput, 1, (p - 1)) & "%20") & chars(sOutput, (p + 1), length(sOutput)))
+        set p = offset(" ", sOutput)
+    end repeat
+    return sOutput
+end

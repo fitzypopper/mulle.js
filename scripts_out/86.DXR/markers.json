@@ -1,0 +1,30 @@
+[
+    {
+        "frame": 2,
+        "name": "start"
+    },
+    {
+        "frame": 6,
+        "name": "medalStart"
+    },
+    {
+        "frame": 13,
+        "name": "noMission"
+    },
+    {
+        "frame": 31,
+        "name": "JustDoit"
+    },
+    {
+        "frame": 44,
+        "name": "Done"
+    },
+    {
+        "frame": 57,
+        "name": "CantDoIt"
+    },
+    {
+        "frame": 71,
+        "name": "leave"
+    }
+]

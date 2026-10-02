@@ -1,0 +1,159 @@
+property name, SP, rec, state, type, x, Y, bubbleX, bubbleY, autoplaced, graphic_n, graphic_d, graphic_r, graphic_b
+global gDir
+
+on new me, p_name, p_sp, p_type, p_x, p_y, xCorr, yCorr
+    set name = p_name
+    set SP = p_sp
+    set the puppet of sprite SP = 1
+    set the visible of sprite SP = 1
+    set state = #normal
+    set type = p_type
+    if ((p_x < 0) and (p_y < 0)) then
+        set autoplaced = 1
+    else
+        set x = p_x
+        set Y = p_y
+    end if
+    if (type = #normal) then
+        set graphic_n = member((name & "-n"))
+        set graphic_r = member((name & "-r"))
+        if (the number of cast 0 > 0) then
+            set graphic_d = member((name & "-d"))
+        else
+            set graphic_d = member((name & "-r"))
+        end if
+        set x = p_x
+        set Y = p_y
+        set the locH of sprite SP = x
+        set the locV of sprite SP = -2000
+        set the UNKNOWN37 of sprite SP = graphic_n
+        set xd2 = (the width of member(graphic_n) / 2)
+        set yd2 = (the height of member(graphic_n) / 2)
+        set rec = rect((x - xd2), (Y - yd2), (x + xd2), (Y + yd2))
+        set graphic_b = member("Dummy")
+        set bubbleX = -2000
+        set bubbleY = -2000
+    else
+        if (type = #bubble) then
+            set graphic_n = member((name & "-n"))
+            if (the number of cast 0 > 0) then
+                set graphic_r = member((name & "-r"))
+            else
+                set graphic_r = member((name & "-n"))
+            end if
+            if (the number of cast 0 > 0) then
+                set graphic_d = member((name & "-d"))
+            else
+                set graphic_d = member((name & "-r"))
+            end if
+            set x = p_x
+            set Y = p_y
+            set the locH of sprite SP = x
+            set the locV of sprite SP = -2000
+            set the UNKNOWN37 of sprite SP = graphic_n
+            set xd2 = (the width of member(graphic_n) / 2)
+            set yd2 = (the height of member(graphic_n) / 2)
+            set rec = rect((x - xd2), (Y - yd2), (x + xd2), (Y + yd2))
+            if (the number of cast 0 > 0) then
+                set graphic_b = member((name & "-b"))
+                if (the type of member(graphic_b) = #richText) then
+                    set bubbleX = (x - (the width of member(graphic_b) / 2))
+                    set bubbleY = (((Y - (the height of member(graphic_n) / 2)) - the height of member(graphic_b)) + 2)
+                    if (bubbleY < 0) then
+                        set bubbleY = 5
+                    end if
+                else
+                    set bubbleX = ((x + 15) + xCorr)
+                    set tempH = (the height of member(graphic_b) / 2)
+                    set bubbleY = ((((Y - yd2) - tempH) + 2) + yCorr)
+                    if (bubbleY < tempH) then
+                        set bubbleY = (tempH + 5)
+                    end if
+                end if
+            else
+                set graphic_b = member("Dummy")
+                set bubbleX = -2000
+                set bubbleY = -2000
+            end if
+        else
+            return me
+        end if
+    end if
+    return me
+end
+
+on ButtonVisible me, troggle
+    if (troggle = 1) then
+        set the locV of sprite SP = Y
+    else
+        cursorRestore
+        set the locV of sprite SP = -2000
+    end if
+end
+
+on delete me
+    set the puppet of sprite SP = 0
+    return 0
+end
+
+on buttonDown me
+    puppetSound "Click1"
+    set the UNKNOWN37 of sprite SP = graphic_d
+end
+
+on buttonUp me
+    puppetSound "Click2"
+    set the UNKNOWN37 of sprite SP = graphic_r
+    buttonClick gDir, value(("#" & name))
+end
+
+on buttonUpOutside me
+    set the UNKNOWN37 of sprite SP = graphic_n
+end
+
+on mouseOver me
+    if not objectp(the activeButton of gDir) then
+        puppetSound "Swoch"
+        set the activeButton of gDir = me
+        set the rolloverTimer of gDir = (the ticks + 60)
+        cursorPointing
+        set the UNKNOWN37 of sprite SP = graphic_r
+    else
+        if (the activeButton of gDir <> me) then
+            mouseLeave the activeButton of gDir
+            set the activeButton of gDir = me
+            set the rolloverTimer of gDir = (the ticks + 60)
+            set the UNKNOWN37 of sprite SP = graphic_r
+        else
+            if (the ticks > the rolloverTimer of gDir) then
+                if ((type = #bubble) and not the bubbleUp of gDir) then
+                    set tempSP = the bubbleSprite of gDir
+                    set the UNKNOWN37 of sprite tempSP = graphic_b
+                    set the locH of sprite tempSP = bubbleX
+                    set the locV of sprite tempSP = bubbleY
+                    set the bubbleUp of gDir = 1
+                end if
+            end if
+        end if
+    end if
+end
+
+on mouseLeave me
+    set the UNKNOWN37 of sprite SP = graphic_n
+    set the activeButton of gDir = 0
+    set the rolloverTimer of gDir = 0
+    cursorRestore
+    if the bubbleUp of gDir then
+        set the locV of sprite accessor = -2000
+        set the bubbleUp of gDir = 0
+    end if
+end
+
+on show me
+    put ("name: " & name)
+    put ("sp: " & SP)
+    put ("rec: " & rec)
+    put ("state: " & state)
+    put ("type: " & type)
+    put ("autoplaced: " & autoplaced)
+end

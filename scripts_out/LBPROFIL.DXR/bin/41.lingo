@@ -1,0 +1,30 @@
+global gDir
+global gSystem
+global gStartNext
+
+on openDialogWebInfo url
+    set gStartNext = [:]
+    setaProp gStartNext, #Web, url
+    set the locV of sprite accessor = 0
+    set the dialogWebInfo of gDir = window("DialogWebInfo")
+    set the rect of the dialogWebInfo of gDir = rect(100, 100, 420, 340)
+    set the title of the dialogWebInfo of gDir = the dialogWebInfoCaption of gDir
+    set the fileName of the dialogWebInfo of gDir = "LBWebinf"
+    set the titleVisible of the dialogWebInfo of gDir = 1
+    open the dialogWebInfo of gDir
+end
+
+on closeDialogWebInfo answer, url
+    if (the paramCount > 0) then
+        if answer then
+            if (the posibleWEBbrowser of gDir > EMPTY) then
+                open the posibleWEBbrowser of gDir
+            else
+                open the WEBbrowser of gSystem
+            end if
+        end if
+    end if
+    close window("DialogWebInfo")
+    forget window("DialogWebInfo")
+    set the locV of sprite accessor = -2000
+end

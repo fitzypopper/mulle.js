@@ -1,0 +1,50 @@
+global gDir
+global gSystem
+
+on ButtonMouseDown
+    repeat with tempButton in the buttonsList2 of gDir
+        if inside(point(the mouseH, the mouseV), the rec of tempButton) then
+            buttonDown tempButton
+            exit
+        end if
+    end repeat
+    if objectp(the activeButton of gDir) then
+        mouseLeave the activeButton of gDir
+    end if
+end
+
+on ButtonMouseUp
+    repeat with tempButton in the buttonsList2 of gDir
+        if inside(point(the mouseH, the mouseV), the rec of tempButton) then
+            buttonUp tempButton
+            exit
+        end if
+    end repeat
+    if objectp(the activeButton of gDir) then
+        mouseLeave the activeButton of gDir
+    end if
+end
+
+on idle
+    if objectp(gDir) then
+        if the interfaceActive of gDir then
+            if listp(the buttonsList2 of gDir) then
+                repeat with tempButton in the buttonsList2 of gDir
+                    if inside(point(the mouseH, the mouseV), the rec of tempButton) then
+                        mouseOver tempButton
+                        exit
+                    end if
+                end repeat
+                if objectp(the activeButton of gDir) then
+                    mouseLeave the activeButton of gDir
+                end if
+            end if
+            if (the warningsTimer of gDir > 0) then
+                if ((the ticks - the warningsTimer of gDir) > 600) then
+                    set the warningsTimer of gDir = 0
+                    set the locV of sprite accessor = -2000
+                end if
+            end if
+        end if
+    end if
+end

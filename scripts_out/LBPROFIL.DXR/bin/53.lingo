@@ -1,0 +1,33 @@
+on debug atext
+    put atext
+end
+
+on buttons
+    go 3
+    set scr = EMPTY
+    repeat with SP = 5 to 13
+        set scr = ((((((((((((scr & "loadButton(me, ") & QUOTE) & buttonName(SP)) & QUOTE) & ", ") & SP) & ", #bubble, ") & the locH of sprite SP) & ", ") & the locV of sprite SP) & ", 0, 0)") & RETURN)
+    end repeat
+    set the text of member("ButtonsX") = scr
+end
+
+on buttonName SP
+    set sN = the name of member(the UNKNOWN37 of sprite SP)
+    return chars(sN, 1, (length(sN) - 2))
+end
+
+on Pos SP
+    put ((("X: " & the locH of sprite SP) & "  Y: ") & the locV of sprite SP)
+end
+
+on init
+    global gDir
+
+    if objectp(gDir) then
+        set gDir = delete(gDir)
+    end if
+    if objectp(gSystem) then
+        set gSystem = delete(gSystem)
+    end if
+    clearGlobals
+end

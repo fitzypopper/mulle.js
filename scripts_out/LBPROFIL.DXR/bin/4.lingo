@@ -1,0 +1,81 @@
+global gSystem
+global gDir
+
+on startMovie
+    if (string(0.0) = "a") then
+        nothing
+    end if
+    if not objectp(gSystem) then
+        defaultIni gSystem
+    end if
+    set gDir = 0
+    set gDir = new(script("GDir"))
+    if not listp(gStartNext) then
+        if bad_screen_or_colors(gDir) then
+            halt
+        end if
+    end if
+    loadInterface gDir
+    if not listp(gStartNext) then
+        readLBfamilyIni gSystem
+    end if
+    setupMenu gDir
+end
+
+on stopMovie
+    if objectp(gDir) then
+        set gDir = delete(gDir)
+    end if
+end
+
+on keyDown
+    if (the platform contains "Windows") then
+        if ((the keyCode = 53) and the optionDown) then
+            buttonClick gDir, #Bquit
+        end if
+    else
+        if ((the key = "q") and the commandDown) then
+            buttonClick gDir, #Bquit
+        end if
+    end if
+end
+
+on splitName sName
+    if not stringp(sName) then
+        return [EMPTY, EMPTY]
+    else
+        set sEname = sName
+        set L = length(sEname)
+        repeat while (sEname start " ") and (L > 1)
+            set sEname = chars(sEname, 2, L)
+            set L = length(sEname)
+        end repeat
+        if (sEname = EMPTY) then
+            return [EMPTY, EMPTY]
+        else
+            set L = length(sEname)
+            repeat while chars(sEname, L, L) = " "
+                set sEname = chars(sEname, 1, (L - 1))
+                set L = length(sEname)
+            end repeat
+            set sName = sEname
+            if (length(sEname) > 0) then
+                set p = offset(" ", sEname)
+                if (p > 0) then
+                    set p2 = p
+                    repeat while p2 > 0
+                        set sEname = chars(sEname, (p2 + 1), length(sEname))
+                        set p = p2
+                        set p2 = offset(" ", sEname)
+                    end repeat
+                    set sFname = chars(sName, 1, ((length(sName) - length(sEname)) - 1))
+                else
+                    set sFname = EMPTY
+                end if
+            else
+                set sFname = EMPTY
+            end if
+            return [sFname, sEname]
+        end if
+    end if
+end

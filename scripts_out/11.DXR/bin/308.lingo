@@ -1,0 +1,25 @@
+property name, prio, sndId, WaitForSound
+global gSound
+
+on beginSprite me
+    set sndId = play(gSound, name, prio)
+end
+
+on exitFrame me
+    if not (WaitForSound = #none) then
+        if finished(gSound, sndId) then
+            if (WaitForSound = #GoNextFrame) then
+                go (the frame + 1)
+            else
+                if (WaitForSound = #GoNextMarker) then
+                    go (the marker + 1)
+                end if
+            end if
+        end if
+    end if
+end
+
+on getPropertyDescriptionList me
+    set p_list = [#name: [#comment: "Enter member name:", #format: #string, #default: EMPTY], #prio: [#comment: "Priority:", #format: #symbol, #range: [#EFFECT, #BG, #OPEFFECT], #default: #EFFECT], #WaitForSound: [#comment: "Wait for sound to finish, do:", #format: #symbol, #range: [#none, #GoNextFrame, #GoNextMarker], #default: #none]]
+    return p_list
+end

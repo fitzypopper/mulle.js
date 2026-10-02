@@ -1,0 +1,30 @@
+[
+    {
+        "frame": 1,
+        "name": "start"
+    },
+    {
+        "frame": 6,
+        "name": "p01"
+    },
+    {
+        "frame": 10,
+        "name": "p02"
+    },
+    {
+        "frame": 14,
+        "name": "p03"
+    },
+    {
+        "frame": 18,
+        "name": "p04"
+    },
+    {
+        "frame": 22,
+        "name": "p05"
+    },
+    {
+        "frame": 26,
+        "name": "quit"
+    }
+]

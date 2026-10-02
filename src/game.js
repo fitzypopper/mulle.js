@@ -84,7 +84,9 @@ class MulleGame extends Phaser.Game {
     this.mulle.debug = false
     this.mulle.cheats = true
 
-    this.mulle.networkEnabled = true
+    // Multiplayer is off for the boat game until the server is set up for it:
+    // with this on, boot.js waits for a WebSocket and alerts on failure.
+    this.mulle.networkEnabled = false
 
     this.mulle.networkServer = 'mulle.datagutten.net:8765'
     this.mulle.networkDevServer = 'localhost:8765'

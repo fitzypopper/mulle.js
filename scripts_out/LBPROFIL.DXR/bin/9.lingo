@@ -1,0 +1,16 @@
+on exitFrame
+    global gDir
+
+    if (the name of the UNKNOWN37 of sprite accessor <> "Dummy") then
+        set the locH of sprite accessor = 320
+        if (the height of the UNKNOWN37 of sprite accessor < 40) then
+            set the locV of sprite accessor = 37
+        else
+            set the locV of sprite accessor = 45
+        end if
+        set the warningsTimer of gDir = the ticks
+    else
+        set the warningsTimer of gDir = 0
+    end if
+    go "MainLoop"
+end

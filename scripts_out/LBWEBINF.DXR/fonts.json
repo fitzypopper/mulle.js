@@ -1,0 +1,26 @@
+[
+    {
+        "id": 21,
+        "name": "Arial"
+    },
+    {
+        "id": 4,
+        "name": "Courier"
+    },
+    {
+        "id": 1,
+        "name": "Geneva"
+    },
+    {
+        "id": 1002,
+        "name": "Helvetica"
+    },
+    {
+        "id": 1001,
+        "name": "Monaco"
+    },
+    {
+        "id": 202,
+        "name": "TheMixSemiBold-Plain"
+    }
+]

@@ -1,0 +1,48 @@
+property isInside, masterSP, withName, myMember, SP, dragging
+global gSound
+global gDir
+
+on beginSprite me
+    set SP = spriteNum
+    set dragging = 0
+    set ScrollBHType = #trash
+end
+
+on init me, theMasterSP
+    set masterSP = theMasterSP
+end
+
+on scrollThrowHere me, theSpriteNum, theStr
+    set dragging = 0
+    if (theSpriteNum = masterSP) then
+        if isInside then
+            sendSprite masterSP, #deleteLine, theStr
+        end if
+    end if
+end
+
+on mouseEnter me
+    if dragging then
+        sendSprite getProp(the spriteList of gDir, #MulleHead), #WarnOfThrowing
+    end if
+    set isInside = 1
+end
+
+on mouseLeave me
+    set isInside = 0
+end
+
+on startDrag me
+    set dragging = 1
+end
+
+on endDrag me
+    set dragging = 0
+end
+
+on mouseUp me
+    play gSound, "70e001v0", #OPEFFECT
+end
+
+on mouseUpOutSide me
+end

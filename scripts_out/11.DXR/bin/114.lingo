@@ -1,0 +1,10 @@
+on exitFrame
+    go the frame
+end
+
+on CuePassed me, whichChannel, cuePointNumber, cuePointName
+    set whichChannel = value(the last char of string(whichChannel))
+    if ((whichChannel = 1) and (cuePointName = "Mulle")) then
+        go (the frame + 1)
+    end if
+end

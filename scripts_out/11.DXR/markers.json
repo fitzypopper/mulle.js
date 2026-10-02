@@ -1,0 +1,18 @@
+[
+    {
+        "frame": 2,
+        "name": "Still"
+    },
+    {
+        "frame": 3,
+        "name": "Talk"
+    },
+    {
+        "frame": 4,
+        "name": "Wait"
+    },
+    {
+        "frame": 5,
+        "name": "IntroStart"
+    }
+]

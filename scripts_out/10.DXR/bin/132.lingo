@@ -1,0 +1,53 @@
+global gPathGlobals
+global gMulleGlobals
+global gCursor
+global gSound
+
+on prepareMovie
+    unloadMember
+end
+
+on startMovie me
+    set the volume of sound 1 = 150
+    puppetSound 1, "10e001v0"
+    if not objectp(gPathGlobals) then
+        set gPathGlobals = new(script("PathGlobals"))
+    end if
+    set tempPlugs = checkForPlugins
+    set plugCasts = getProp(tempPlugs, #cast)
+    if count(plugCasts) then
+        set transfer = 1
+        set the UNKNOWN37 of sprite 4 = member("10b008v0")
+        set the loc of sprite 4 = point(320, 240)
+        updateStage
+        repeat with index in plugCasts
+            xferPluginCasts index
+        end repeat
+        set the UNKNOWN37 of sprite 4 = member("Dummy")
+        updateStage
+    end if
+    if not objectp(gMulleGlobals) then
+        set gMulleGlobals = new(script("MulleGlobals"))
+        init gMulleGlobals
+    end if
+    if not objectp(gCursor) then
+        set gCursor = new(script("CursorHandler"))
+    end if
+    if not objectp(gSound) then
+        set gSound = new(script("Sound"))
+    end if
+    set the mouseDownScript = "virtualMouseDown"
+    set the mouseUpScript = "virtualMouseUp"
+    puppetSound 1, 0
+    set the volume of sound 1 = 255
+    go 1, "11"
+end
+
+on setProgressMeter argProgress
+    if (argProgress < 0.0) then
+        set tmpMeterMember = the number of cast 0
+        set tmpValue = (13 * argProgress)
+        set the UNKNOWN37 of sprite 2 = member((tmpMeterMember + tmpValue))
+        updateStage
+    end if
+end

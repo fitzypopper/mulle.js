@@ -16,10 +16,36 @@ Adapted from mulle.js progress page for the boat game. Status codes: **⏭ Skipp
 - [x] Spritesheets built → `assets_sv/` (all 48 packs, audio→ogg)
 - [x] Game data → `gamedata/` (`extract_data_bat.py`): 1036 parts, 107 maps, 32 objects, 1 world
 - [x] Docs: `docs/EXTRACTION.md`, `docs/PIPELINE.md`, `docs/INVENTORY.md`
-- [ ] `docs/RESEARCH.md` — web research (subagent in progress)
-- [ ] Reference mirror of `share.your.dongers.net/mullestuff/` → `reference/mullestuff/` (downloading)
+- [x] `docs/RESEARCH.md` — web research (completed)
+- [x] Reference mirror of `share.your.dongers.net/mullestuff/` → `reference/mullestuff/` (completed)
 
 ### Open for milestone 1 wrap-up
+
+---
+## Milestone 2 — Boot to main menu (COMPLETED 2026-10-02)
+
+- [x] Rewrote `src/scenes/menu.js` from `scripts_out/11.DXR/score.json` (actual menu scene)
+- [x] Assets pipeline: 11.DXR pack built → `menu.json` + `menu-sprites-0.png`
+- [x] `node scripts/smoke_test.js` → state "menu" with background, Mulle actors, name input, OK button
+- [x] Folded `docs/RESEARCH.md` findings into `PROGRESS.md` (see sections below)
+- [x] Committed on branch `boat`
+
+### Key research findings folded into PROGRESS.md
+
+- **No ScummVM Swedish boats entry** — our ISO (Windows 95/98, `MULLEBAT (Windows).iso`) is provably unmatched in ScummVM's detection tables; opportunity to file a detection ticket.
+- **Mission movies are 70–88** (11 missions), not 82–94 like cars; confirmed by ISO Movies/ listing + inventory.
+- **`DATA.CST` = save + 11 text members** (PartData), no compressed assets; car game's 66.DXR/Plugins are absent.
+- **German retail has disc check**; Swedish retail has none (our ISO is Swedish).
+- **Hemglass special edition** (ice-cream co-op) exists — archive.org has "Förbättrad Version" bugfix patch.
+- **Multiplayer** was a planned feature (`networkEnabled` in `src/game.js`) but never shipped.
+- **Localized titles**: DE *Schiffe bauen mit Willy Werkel*, NL *Miel Monteur – Recht Door Zee!*, NO *Bygg båter med Mulle Mekk*, FI *Rakenna veneitä Masa Mainion kanssa*, DA *Byg båd med Mulle Meck*, HU *Barkács Balázs: Hajót Épít*.
+- **Cast**: Mulle (Lennart Jähkel), Doris (Malin Sköld), Erson (Gustav Forsberg), Mia (Ulla-Carin Nyqvist), Viola (Lisa Indahl), Sam (Dave Nerge), Svarte Sven (Bosse Löthén), Domaren (boat-show judge), Prästen (pastor quest).
+- **Part acquisition**: Buy from Doris Digital; radio announces new parts/weather/friends; sailing in/out of vault triggers part drops.
+- **Sailing mechanics**: Compass/speed/fuel/food HUD; windsocks; sails/oars; tug-boat rescue; two gas stations (Flaskön, left of Dödskalleön); surströmming factory haul to Myrarna pays food+fuel.
+- **Friends' mini-games** (70–88) award boat parts; album save system; boat-file sharing; diploma competition.
+- **Assets**: 46 movies extracted; 48 packs / 6288 sprites in `assets_bat.yml`; topography = 88 pairs (30t001–30t088) from CDDATA #2315–2490.
+
+---
 - [x] `dist/style.css` via `npx sass src/style.scss dist/style.css`
 - [x] `dist/data/` now comes from `gamedata/` (boats), not the repo's cars `data/`
 - [x] webpack dev build compiles (`dist/bundle.js`, 316 KiB)

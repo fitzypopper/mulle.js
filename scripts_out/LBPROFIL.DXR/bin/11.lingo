@@ -1,0 +1,5 @@
+on exitFrame
+    global gSystem
+
+    go 1, (((the exePath of gSystem & "Movies") & the delim of gSystem) & "LBstart")
+end
