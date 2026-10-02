@@ -1,0 +1,7 @@
+on exitFrame
+    global gSound
+
+    stopAll gSound
+    set tmpList = leavingForWhichDrivingMovie
+    go getAt(tmpList, 1), getAt(tmpList, 2)
+end

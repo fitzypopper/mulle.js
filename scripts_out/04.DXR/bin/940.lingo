@@ -1,0 +1,62 @@
+property SP, goForLaunch, animList, firstFrame, animPos, currentPoint, loopCounter, soundID, resetOkToTalk
+global gMulleGlobals
+global gSound
+global gDir
+
+on beginSprite me
+    if (random(500) = 1) then
+        set goForLaunch = 1
+        set animList = [[#OPEFFECT: "04e998v0"], 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, [#EFFECT: "04d055v0", #frame: 1], 1, 2, 2, 3, 3, 4, 4, 5, 5, 4, 4, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1]
+        set SP = spriteNum
+        set firstFrame = the number of cast 0
+        set animPos = 1
+        set currentPoint = point(-160, 240)
+        set loopCounter = (random(360) + 360)
+        set soundID = 0
+        set resetOkToTalk = 0
+    else
+        set goForLaunch = 0
+    end if
+end
+
+on exitFrame
+    if goForLaunch then
+        if (loopCounter = 0) then
+            if (animPos <= count(animList)) then
+                set tmpAnimInfo = getAt(animList, animPos)
+                if listp(tmpAnimInfo) then
+                    set tmpEffect = getaProp(tmpAnimInfo, #EFFECT)
+                    if (not voidp(tmpEffect) and the OKToTalk of gDir) then
+                        set the OKToTalk of gDir = 0
+                        set resetOkToTalk = 1
+                        play gSound, tmpEffect, #EFFECT
+                    end if
+                    set tmpOpEffect = getaProp(tmpAnimInfo, #OPEFFECT)
+                    if not voidp(tmpOpEffect) then
+                        set soundID = play(gSound, tmpOpEffect, #OPEFFECT)
+                    end if
+                    set tmpFrame = getaProp(tmpAnimInfo, #frame)
+                    if not voidp(tmpFrame) then
+                        set the loc of sprite SP = currentPoint
+                        set the UNKNOWN37 of sprite SP = member((firstFrame + (tmpFrame - 1)))
+                        set currentPoint = (currentPoint + point(4, 0))
+                    end if
+                else
+                    set the loc of sprite SP = currentPoint
+                    set the UNKNOWN37 of sprite SP = member((firstFrame + (tmpAnimInfo - 1)))
+                    set currentPoint = (currentPoint + point(4, 0))
+                end if
+                set animPos = (animPos + 1)
+            else
+                set goForLaunch = 0
+                set the UNKNOWN37 of sprite SP = "Dummy"
+                stop gSound, soundID
+                if resetOkToTalk then
+                    set the OKToTalk of gDir = 1
+                end if
+            end if
+        else
+            set loopCounter = (loopCounter - 1)
+        end if
+    end if
+end

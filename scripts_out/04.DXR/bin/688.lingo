@@ -1,0 +1,279 @@
+property spriteList, boatHandler, junkHandler, mouseObjectList, FirstTime, loopCounter, firstDialogList, genDialogList, dorisBluePrintList, dorisPartList, radioCount, radioReport, radioDialogList, windReport, OKToTalk, makeDelivery, dialogClosed, mulleIntroTalk
+global gCursor
+global gMulleGlobals
+global gSound
+
+on new me
+    set dialogClosed = 1
+    set makeDelivery = 0
+    set mulleIntroTalk = 0
+    set radioCount = 0
+    set radioReport = 0
+    set windReport = 0
+    set OKToTalk = 1
+    set mouseObjectList = []
+    set spriteList = [#Sky: 1, #Figge: 3, #Buffa: 5, #PhotoBook: 6, #Camera: 7, #Radio: 8, #Windmeter: 9, #BoatStart: 10, #Water: 63, #Pole: 65, #Mulle: 66, #ToolBox: 67, #JunkStart: 68, #DragPart: 98, #dialog: 99, #DialogOverlay: 100, #BigRadio: 109]
+    set firstDialogList = ["04d010v0", "04d012v0", "04d047v0", "04d051v0", "04d052v0"]
+    set genDialogList = ["00d001v0", "00d002v0", "00d003v0", "00d004v0", "00d005v0", "04d001v0", "04d002v0", "04d003v0", "04d004v0", "04d007v0", "04d013v0", "04d014v0", "04d015v0", "04d016v0", "04d017v0", "04d018v0", "04d019v0", "04d020v0", "04d022v0", "04d023v0", "04d027v0", "04d028v0", "04d029v0", "04d030v0", "04d032v0"]
+    set dorisBluePrintList = ["04d040v0", "04d044v0"]
+    set dorisPartList = ["04d034v0", "04d035v0", "04d036v0", "04d037v0", "04d038v0", "04d039v0", "04d041v0", "04d042v0", "04d043v0", "04d045v0", "04d046v0"]
+    set radioDialogList = []
+    set loopCounter = random(360)
+    set FirstTime = getaProp(the firstTimeList of gMulleGlobals, #Quay)
+    if not voidp(FirstTime) then
+        if FirstTime then
+            setaProp the firstTimeList of gMulleGlobals, #Quay, 0
+            if isItTheVeryFirstTime(the user of gMulleGlobals) then
+                set radioReport = 1
+                set radioDialogList = ["00d075v0", "50d012v0"]
+                set radioCount = count(radioDialogList)
+            end if
+        end if
+    else
+        set FirstTime = 0
+    end if
+    setInInventory the user of gMulleGlobals, #Belly, [#nr: 1000]
+    if isMissionCompleted(the user of gMulleGlobals, 20) then
+        addGivenMission the user of gMulleGlobals, 1
+    end if
+    if isMissionCompleted(the user of gMulleGlobals, 2) then
+        addGivenMission the user of gMulleGlobals, 2
+    end if
+    if isMissionCompleted(the user of gMulleGlobals, 13) then
+        addGivenMission the user of gMulleGlobals, 13
+    end if
+    safePreload "04e005v0"
+    safePreload "04e006v0"
+    safePreload "04e999v0"
+    safePreload "04e1000v0"
+    safePreload "00e110v0"
+    return me
+end
+
+on init me
+    init gCursor
+    add mouseObjectList, new(script("mouseObject"), me, [rect(0, 0, 508, 155)], 0, [#cursor: [#rollOver: #GoForward], #dragToWhere: #world, #report: 1])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(602, 97, 1640, 302)], 301, [#click: [#frame: "Yard"], #cursor: [#rollOver: #GoRight, #DragRollover: #DropRight], #dragToWhere: #Yard])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(4, 322, 56, 433)], 200, [#click: [#frame: "Shipyard"], #cursor: [#rollOver: #GoLeft]])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(477, 331, 509, 379)], 201, [#cursor: [#rollOver: #GoForward], #enter: [#Pic: "04b005v0", #sound: "04e005v0"], #Leave: [#Pic: "Dummy"], #SP: getaProp(spriteList, #Pole), #dragToWhere: #world, #report: 1])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(554, 115, 592, 157)], 202, [#cursor: [#rollOver: #Clickable], #click: [#frame: "PhotoBook"], #enter: [#Pic: "04b006v0", #sound: "04e1000v0"], #Leave: [#Pic: "Dummy"], #SP: getaProp(spriteList, #PhotoBook), #Wait: [#Times: 12], #dragToWhere: #PhotoBook, #report: 1])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(550, 184, 587, 230)], 203, [#cursor: [#rollOver: #Clickable], #click: [#frame: "Camera"], #enter: [#Pic: "04b007v0", #sound: "RollOver"], #Leave: [#Pic: "Dummy"], #SP: getaProp(spriteList, #Camera), #Wait: [#Times: 12], #dragToWhere: #Camera, #report: 1])
+    add mouseObjectList, new(script("mouseObject"), me, [rect(479, 18, 536, 70)], 204, [#cursor: [#rollOver: #Clickable], #dragToWhere: #Windmeter, #report: 1])
+    set tmpBuiltBoats = getNrOfBuiltBoats(the user of gMulleGlobals)
+    if ((((tmpBuiltBoats = 2) or ((tmpBuiltBoats mod 4) = 0)) and (tmpBuiltBoats > 0)) and not the deliveryMade of the user of gMulleGlobals) then
+        set makeDelivery = 1
+    end if
+    setSky the weather of gMulleGlobals
+    if (the machineType <> 256) then
+        if (getType(the weather of gMulleGlobals) = 1) then
+            set the volume of sound 1 = 200
+            play gSound, "00e108v0", #BG
+        else
+            if (getType(the weather of gMulleGlobals) = 2) then
+                set the volume of sound 1 = 200
+                play gSound, "00e109v0", #BG
+            else
+                if (getType(the weather of gMulleGlobals) = 3) then
+                    set the volume of sound 1 = 150
+                    play gSound, "00e104v0", #BG
+                else
+                    if (getType(the weather of gMulleGlobals) = 4) then
+                        set the volume of sound 1 = 150
+                        play gSound, "00e107v0", #BG
+                    end if
+                end if
+            end if
+        end if
+    end if
+    set boatHandler = new(script("BoatHandler"))
+    set junkHandler = new(script("JunkHandler"), #Quay)
+    drawParts boatHandler
+    drawParts junkHandler
+    startreportRadioToMe the radioHandler of gMulleGlobals, me
+    addObject the loopMaster of gMulleGlobals, me
+end
+
+on startMovie me
+    setWindMeter me, getWindspeed(the weather of gMulleGlobals)
+end
+
+on kill me
+    stopReportRadioToMe the radioHandler of gMulleGlobals, me
+    set boatHandler = kill(boatHandler)
+    set junkHandler = kill(junkHandler)
+    repeat with tmpObj in mouseObjectList
+        kill tmpObj
+    end repeat
+    set mouseObjectList = 0
+    deleteObject the loopMaster of gMulleGlobals, me
+    set the volume of sound 1 = 255
+    set the WhereFrom of gMulleGlobals = "04"
+    return 0
+end
+
+on setWindMeter me, argWindSpeed
+    sendSprite getaProp(spriteList, #Windmeter), #setAnimAction, symbol(("Speed" & argWindSpeed))
+end
+
+on weatherReport me, argWeather
+    if (getaProp(argWeather, #TimeLeft) = 0) then
+        setSky the weather of gMulleGlobals
+        setWindMeter me, getaProp(argWeather, #speed)
+    end if
+end
+
+on radioReport me, argReport
+    if OKToTalk then
+        set radioReport = 1
+        set radioDialogList = argReport
+        set radioCount = count(radioDialogList)
+        return 1
+    end if
+    return 0
+end
+
+on mouse me, argObj, argWhat
+    if (argWhat = #click) then
+        if (the dragToWhere of argObj = #Windmeter) then
+            set windReport = 1
+        else
+            if (the dragToWhere of argObj = #world) then
+                set tmpBoat = getBoat(the user of gMulleGlobals)
+                if ((getProperty(tmpBoat, #engine) or getProperty(tmpBoat, #SailWithPole)) or getProperty(tmpBoat, #Oar)) then
+                    addNrOfBuiltBoats the user of gMulleGlobals
+                    set the deliveryMade of the user of gMulleGlobals = 0
+                    stopAll gSound
+                    set tmpBoat = getBoat(the user of gMulleGlobals)
+                    if (getProperty(tmpBoat, #Material) = 1) then
+                        go "WoodWorld"
+                    else
+                        go "MetalWorld"
+                    end if
+                else
+                    sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #PrioTalk, "04d049v0"
+                end if
+            end if
+        end if
+    else
+        if (argWhat = #Wait) then
+            if (the dragToWhere of argObj = #PhotoBook) then
+                if (OKToTalk and dialogClosed) then
+                    sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, "04d054v0"
+                end if
+            else
+                if (the dragToWhere of argObj = #Camera) then
+                    if (OKToTalk and dialogClosed) then
+                        sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, "04d053v0"
+                    end if
+                end if
+            end if
+        end if
+    end if
+end
+
+on makeMulleTalk me, argSnd
+    sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #PrioTalk, argSnd
+end
+
+on doDelivery me
+    set returnValue = 0
+    set tmpBuiltBoats = getNrOfBuiltBoats(the user of gMulleGlobals)
+    if (tmpBuiltBoats = 2) then
+        set tmpIndex = 1
+    else
+        set tmpIndex = (1 + (tmpBuiltBoats / 4))
+    end if
+    set tmpParts = getParts(the externalParts of gMulleGlobals, #Delivery)
+    if (tmpIndex <= count(tmpParts)) then
+        set tmpDelivery = getAt(tmpParts, tmpIndex)
+        if (count(tmpDelivery) > 0) then
+            set tmpFirst = getAt(tmpDelivery, 1)
+            if symbolp(tmpFirst) then
+                setInInventory the user of gMulleGlobals, tmpFirst, [:]
+                set the gotNewHull of gMulleGlobals = 1
+                sendSprite getaProp(spriteList, #Radio), #makeRadioTalk, #smallTalk, getAt(dorisBluePrintList, random(count(dorisBluePrintList)))
+            else
+                repeat with tmpRkn = 1 to count(tmpDelivery)
+                    addNewPart the user of gMulleGlobals, getAt(tmpDelivery, tmpRkn)
+                end repeat
+                set the gotNewParts of gMulleGlobals = 1
+                sendSprite getaProp(spriteList, #Radio), #makeRadioTalk, #smallTalk, getAt(dorisPartList, random(count(dorisPartList)))
+            end if
+            set returnValue = 1
+            set the deliveryMade of the user of gMulleGlobals = 1
+        end if
+    end if
+    set makeDelivery = 0
+    return returnValue
+end
+
+on loop me
+    if (OKToTalk and dialogClosed) then
+        if (loopCounter > 0) then
+            set loopCounter = (loopCounter - 1)
+        end if
+        if makeDelivery then
+            set OKToTalk = 0
+            if not doDelivery(me) then
+                set OKToTalk = 1
+            end if
+        else
+            if radioReport then
+                set tmpCount = count(radioDialogList)
+                if (tmpCount > 0) then
+                    if (tmpCount = radioCount) then
+                        sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #NormalTalk, getAt(radioDialogList, 1)
+                    else
+                        sendSprite getaProp(spriteList, #Radio), #makeRadioTalk, #smallTalk, getAt(radioDialogList, 1)
+                    end if
+                    deleteAt radioDialogList, 1
+                else
+                    set loopCounter = (360 + random(720))
+                    set radioCount = 0
+                    set radioReport = 0
+                end if
+            else
+                if windReport then
+                    if (getWindspeed(the weather of gMulleGlobals) = 0) then
+                        set tmpSound = "00d010v0"
+                    else
+                        if (getWindspeed(the weather of gMulleGlobals) = 1) then
+                            set tmpSound = "00d011v0"
+                        else
+                            if (getWindspeed(the weather of gMulleGlobals) = 2) then
+                                set tmpSound = "00d012v0"
+                            else
+                                if (getWindspeed(the weather of gMulleGlobals) = 3) then
+                                    set tmpSound = "00d013v0"
+                                end if
+                            end if
+                        end if
+                    end if
+                    if stringp(tmpSound) then
+                        sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #NormalTalk, tmpSound
+                    end if
+                    set windReport = 0
+                else
+                    if FirstTime then
+                        if (loopCounter = 0) then
+                            if (count(firstDialogList) > 0) then
+                                set tmpRandomSound = random(count(firstDialogList))
+                                sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #InfoTalk, getAt(firstDialogList, tmpRandomSound)
+                                deleteAt firstDialogList, tmpRandomSound
+                                set loopCounter = (120 + random(120))
+                            else
+                                set FirstTime = 0
+                            end if
+                        end if
+                    else
+                        if (loopCounter = 0) then
+                            set tmpRandomSound = getAt(genDialogList, random(count(genDialogList)))
+                            sendSprite getaProp(spriteList, #Mulle), #makeMulleTalk, #NormalTalk, tmpRandomSound
+                            set loopCounter = (360 + random(720))
+                        end if
+                    end if
+                end if
+            end if
+        end if
+    end if
+end

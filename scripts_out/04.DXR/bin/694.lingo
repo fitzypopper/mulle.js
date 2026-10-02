@@ -1,0 +1,10 @@
+on exitFrame
+    global gSound
+
+    if soundBusy(1) then
+        go the frame
+    else
+        stopAll gSound
+        go 1, "01"
+    end if
+end

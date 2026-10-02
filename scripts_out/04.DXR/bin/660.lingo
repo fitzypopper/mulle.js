@@ -1,0 +1,6 @@
+on exitFrame
+    global gSound
+
+    stopAll gSound
+    go "load", "06"
+end

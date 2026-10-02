@@ -1,0 +1,7 @@
+on exitFrame
+    if soundBusy(2) then
+        go the frame
+    else
+        go 1, "04"
+    end if
+end

@@ -1,0 +1,101 @@
+property Mode, SP, currentAnimChart, launchMullePee, loopCounter
+global gDir
+
+on beginSprite me
+    set Mode = #Wait
+    set currentAnimChart = #Quay
+    set SP = spriteNum
+    sendSprite SP, #setAnimNormal
+    sendSprite SP, #setAnimChart, "Quay"
+    sendSprite SP, #setAnimAction, Mode
+    if (random(500) = 1) then
+        set loopCounter = (random(360) + 360)
+        set launchMullePee = 1
+    else
+        set loopCounter = 0
+        set launchMullePee = 0
+    end if
+end
+
+on makeMulleTalk me, argAction, argExtraInfo
+    if (argAction = #NormalTalk) then
+        if (Mode = #Wait) then
+            set the OKToTalk of gDir = 0
+            if (random(2) = 1) then
+                set Mode = #Talk
+            else
+                set Mode = #Talk
+                set currentAnimChart = #TalkToMe
+                sendSprite SP, #setAnimChart, "TalkToMe"
+            end if
+            sendSprite SP, #makeAnimSpeech, argExtraInfo
+        end if
+    else
+        if (argAction = #InfoTalk) then
+            if (Mode = #Wait) then
+                set the OKToTalk of gDir = 0
+                set Mode = #Talk
+                set currentAnimChart = #TalkToMe
+                sendSprite SP, #setAnimChart, "TalkToMe"
+                sendSprite SP, #makeAnimSpeech, argExtraInfo
+            end if
+        else
+            if (argAction = #PrioTalk) then
+                if ((Mode = #Wait) or (Mode = #Talk)) then
+                    sendSprite SP, #playAnimSound, EMPTY
+                    set the OKToTalk of gDir = 0
+                    set Mode = #Talk
+                    sendSprite SP, #makeAnimSpeech, argExtraInfo
+                end if
+            end if
+        end if
+    end if
+    sendSprite SP, #setAnimAction, Mode
+end
+
+on exitFrame me
+    if launchMullePee then
+        if (loopCounter = 0) then
+            if (Mode = #Wait) then
+                set launchMullePee = 0
+                sendSprite SP, #setAnimFirstFrame, "04a002v0"
+                if (currentAnimChart = #TalkToMe) then
+                    set currentAnimChart = #Quay
+                    sendSprite the currentSpriteNum, #setAnimChart, "Quay"
+                end if
+                sendSprite SP, #setAnimNormal
+                set Mode = #GoPee
+                set the OKToTalk of gDir = 0
+                sendSprite SP, #setAnimLoc, point(320, 240)
+                sendSprite SP, #setAnimAction, Mode
+            end if
+        else
+            set loopCounter = (loopCounter - 1)
+        end if
+    end if
+end
+
+on Stopped me
+    if (Mode = #Talk) then
+        if (currentAnimChart = #TalkToMe) then
+            set currentAnimChart = #Quay
+            sendSprite the currentSpriteNum, #setAnimChart, "Quay"
+        end if
+        sendSprite SP, #setAnimNormal
+        set Mode = #Wait
+        set the OKToTalk of gDir = 1
+    else
+        if (Mode = #GoPee) then
+            set currentAnimChart = #Quay
+            sendSprite the currentSpriteNum, #setAnimChart, "Quay"
+            sendSprite SP, #setAnimNormal
+            set Mode = #Wait
+            set the OKToTalk of gDir = 1
+            sendSprite SP, #setAnimLoc, point(557, 327)
+            sendSprite SP, #setAnimFirstFrame, "00a001v0"
+        else
+            set Mode = #Wait
+        end if
+    end if
+    sendSprite SP, #setAnimAction, Mode
+end
