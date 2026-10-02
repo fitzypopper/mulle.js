@@ -1,0 +1,6 @@
+on exitFrame
+    global gSound
+
+    stopAll gSound
+    go 1, "04"
+end

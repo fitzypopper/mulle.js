@@ -26,14 +26,9 @@ class GarageState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Mulle actor: uses YardAnimChart (17) and TalkToMeAnimChart (18)
-    // Member 17 = YardAnimChart, 18 = TalkToMeAnimChart
-    this.mulle = new MulleActor(this.game, 320, 300, 'mulleGarage')
-    // The animation charts are cast type 3 (animation chart) - need special handling
-    // For now use base mulle animations
+    // Mulle body sprite (simplified - no complex animation charts yet)
+    this.mulle = new MulleSprite(this.game, 320, 300)
     this.mulle.setDirectorMember('03.DXR', 1)
-    this.mulle.animations.add('idle', [ ['03.DXR', 1] ], 1, true, false)
-    this.mulle.animations.play('idle')
     this.game.add.existing(this.mulle)
 
     // Navigation hotspots (invisible clickable areas)

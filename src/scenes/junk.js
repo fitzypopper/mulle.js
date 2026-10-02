@@ -1,303 +1,128 @@
-'use strict'
-
 import MulleState from './base'
-
 import MulleSprite from '../objects/sprite'
-import MulleButton from '../objects/button'
-import MulleCarPart from '../objects/carpart'
-import MulleJunkActor from '../objects/JunkActor'
 import DirectorHelper from '../objects/DirectorHelper'
-import SubtitleLoader from '../objects/SubtitleLoader'
-
-/* rects = [
-
-    Pile1:[rect(193, 260, 637, 400), rect(291, 193, 637, 263), rect(361, 153, 636, 194)],
-    Pile2:[rect(210, 252, 654, 380), rect(256, 174, 651, 262), rect(365, 120, 667, 188)],
-    Pile3:[rect(150, 281, 639, 380), rect(127, 162, 643, 291), rect(183, 100, 639, 164)],
-    Pile4:[rect(0, 324, 425, 404), rect(3, 174, 425, 325), rect(3, 90, 425, 182)],
-    Pile5:[rect(6, 268, 450, 412), rect(5, 180, 411, 275), rect(0, 100, 303, 189)],
-    Pile6:[rect(0, 275, 400, 390), rect(1, 201, 368, 283), rect(4, 135, 270, 203)],
-    shopFloor:[rect(20, 400, 600, 460)],
-    yard:[rect(290, 400, 580, 445)],
-
-    PileDoors:[rect(8, 106, 56, 323), rect(44, 84, 115, 224), rect(111, 41, 151, 103), rect(463, 47, 503, 107), rect(512, 69, 592, 208), rect(572, 94, 637, 312)]]
-*/
 
 class JunkState extends MulleState {
-  constructor () {
-    super()
-
-    this.piles = {
-      1: { bg: '02b001v0', door: 85, right: 162, left: 174, rect: [ [193, 260, 637, 400], [291, 193, 637, 263], [361, 153, 636, 194] ] },
-      2: { bg: '02b002v0', door: 87, right: 164, left: 176, rect: [ [210, 252, 654, 380], [256, 174, 651, 262], [365, 120, 667, 188] ] },
-      3: { bg: '02b003v0', door: 89, right: 166, left: 178, rect: [ [150, 281, 639, 380], [127, 162, 643, 291], [183, 100, 639, 164] ] },
-      4: { bg: '02b004v0', door: 91, right: 168, left: 180, rect: [ [0, 324, 425, 404], [3, 174, 425, 325], [3, 90, 425, 182] ] },
-      5: { bg: '02b005v0', door: 93, right: 170, left: 182, rect: [ [6, 268, 450, 412], [5, 180, 411, 275], [0, 100, 303, 189] ] },
-      6: { bg: '02b006v0', door: 95, right: 172, left: 184, rect: [ [0, 275, 400, 390], [1, 201, 368, 283], [4, 135, 270, 203] ] }
-    }
-
-    this.pile_actors = {
-      1: { mulle: { pos: [90, 309] } },
-      2: { mulle: { pos: [86, 290] } },
-      3: { mulle: { pos: [90, 309] } },
-      4: { mulle: { pos: [561, 229] } },
-      5: { mulle: { pos: [570, 270] } },
-      6: { mulle: { pos: [520, 297] } }
-    }
-
-    this.thoughtSounds = ["02d001v0", "02d002v0", "02d003v0", "02d004v0", "02d005v0"]
-    this.sortSounds = ["02d006v0", "02d007v0", "02d008v0"]
-    this.shopFullSounds = ["02d009v0", "02d010v0", "02d011v0"]
-    this.pileFullSounds = ["02d013v0", "02d014v0", "02d015v0"]
-  }
-
   preload () {
-    super.preload()
-
     this.game.load.pack('junk', 'assets/junk.json', null, this)
-    this.subtitles = new SubtitleLoader(this.game, 'junk', ['english'])
-    //this.subtitles.preload()
-    this.subtitles.preload('carparts')
-
-    // this.game.load.pack('partdesc', 'assets_new/partdesc.json', null, this);
-  }
-
-  savePile () {
-    console.log('save junk parts', this.currentPile)
-
-    this.game.mulle.user.Junk['Pile' + this.currentPile] = {}
-
-    this.junkParts.forEach((obj) => {
-      this.game.mulle.user.Junk['Pile' + this.currentPile][obj.part_id] = {
-        x: obj.x,
-        y: obj.y
-      }
-    })
-
-    this.game.mulle.user.save()
-  }
-
-  setPile (num) {
-    if (this.junkParts) {
-      this.savePile()
-      this.junkParts.destroy()
-      this.game.mulle.user.save()
-    }
-
-    this.currentPile = num
-
-    var pile = this.piles[ this.currentPile ]
-
-    if (this.background) this.background.destroy()
-
-    this.background = new MulleSprite(this.game, 320, 240)
-    this.background.setDirectorMember('02.DXR', pile.bg)
-    this.game.add.existing(this.background)
-
-    var leftPile = this.currentPile - 1
-    if (leftPile < 1) leftPile = 6
-
-    var rightPile = this.currentPile + 1
-    if (rightPile > 6) rightPile = 1
-
-    if (this.doorShop) this.doorShop.destroy()
-
-    this.doorShop = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['02.DXR', pile.door],
-      imageHover: ['02.DXR', pile.door + 1],
-      soundDefault: '02e015v0',
-      soundHover: '02e016v0',
-      click: () => {
-        this.game.mulle.activeCutscene = 71
-        this.game.state.start('garage')
-      }
-    })
-    this.game.add.existing(this.doorShop)
-
-    if (this.arrowRight) this.arrowRight.destroy()
-
-    this.arrowRight = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['02.DXR', pile.right],
-      imageHover: ['02.DXR', pile.right + 1],
-      click: () => {
-        this.setPile(rightPile)
-      }
-    })
-    this.game.add.existing(this.arrowRight)
-
-    if (this.arrowLeft) this.arrowLeft.destroy()
-
-    this.arrowLeft = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['02.DXR', pile.left],
-      imageHover: ['02.DXR', pile.left + 1],
-      click: () => {
-        this.setPile(leftPile)
-      }
-    })
-
-    this.game.add.existing(this.arrowLeft)
-
-    this.dropRects = []
-
-    for (var i = 0; i < pile.rect.length; i++) {
-      var rect = new Phaser.Rectangle()
-      rect.left = pile.rect[i][0]
-      rect.top = pile.rect[i][1]
-      rect.right = pile.rect[i][2]
-      rect.bottom = pile.rect[i][3]
-      this.dropRects.push(rect)
-      // game.debug.geom(rect,'rgba(255,0,0,.6)')
-    }
-
-    const actor = this.pile_actors[this.currentPile]
-
-    this.game.mulle.actors.mulle = new MulleJunkActor(this.game, actor['mulle']['pos'][0], actor['mulle']['pos'][1], this.currentPile > 3 )
-    this.game.add.existing(this.game.mulle.actors.mulle)
-
-    let member
-    if (this.currentPile > 3)
-      member = 210
-    else
-      member = 209
-
-    const [key, frame] = DirectorHelper.getDirectorImage(this.game, '02.DXR', member)
-    //const mulle_body = this.game.add.sprite(actor['mulle']['pos'][0], actor['mulle']['pos'][1], key, frame)
-    const mulle_body = new MulleSprite(this.game, actor['mulle']['pos'][0], actor['mulle']['pos'][1], key, frame)
-    mulle_body.setDirectorMember('02.DXR', member)
-    this.game.add.existing(mulle_body)
-
-
-    /*this.buffaActor = new MulleActor(this.game, 320, 222, 'buffa')
-    this.game.add.existing(this.buffaActor)*/
-
-    /*
-    this.junkPile = this.game.mulle.user.Junk['Pile' + this.currentPile]
-
-    this.junkParts = this.junkPile.makeContainer()
-
-    this.junkPile.addJunkLocation(this.doorShop, 'shopFloor')
-    this.junkPile.addJunkLocation(this.arrowLeft, 'Pile' + leftPile)
-    this.junkPile.addJunkLocation(this.arrowRight, 'Pile' + rightPile)
-
-    this.junkPile.spawnParts()
-    */
-
-    this.junkParts = this.game.add.group()
-
-    // var jnk = game.mulle.UsersDB[ game.mulle.activeProfile ].Junk['Pile' + this.currentPile]
-
-    console.log('spawn junk parts')
-
-    var jnk = this.game.mulle.user.Junk['Pile' + this.currentPile]
-
-    for (let partId in jnk) {
-      console.log(partId)
-
-      // let jp = jnk[partId];
-
-      let p = new MulleCarPart(this.game, partId, jnk[partId].x, jnk[partId].y, true)
-
-      p.dropRects = this.dropRects
-
-      // p.setJunkPile('Pile' + this.currentPile);
-
-      // door
-      p.dropTargets.push([this.doorShop, (d) => {
-        d.destroy()
-
-        this.game.mulle.user.Junk.shopFloor[partId] = { x: this.game.rnd.integerInRange(0, 640), y: 240 }
-
-        this.savePile()
-
-        this.game.mulle.playAudio('00e004v0')
-
-        return true
-      }])
-
-      // arrow left
-      p.dropTargets.push([this.arrowLeft, (d) => {
-        d.destroy()
-
-        this.game.mulle.user.Junk['Pile' + leftPile][partId] = {
-          x: this.game.rnd.integerInRange(0, 640),
-          y: 240
-        }
-
-        this.savePile()
-
-        this.game.mulle.playAudio('00e004v0')
-
-        return true
-      }])
-
-      // arrow right
-      p.dropTargets.push([this.arrowRight, (d) => {
-        d.destroy()
-
-        this.game.mulle.user.Junk['Pile' + rightPile][partId] = {
-          x: this.game.rnd.integerInRange(0, 640),
-          y: 240
-        }
-
-        this.savePile()
-
-        this.game.mulle.playAudio('00e004v0')
-
-        return true
-      }])
-
-      this.junkParts.addChild(p)
-    }
-
-    /*
-    var poly = new Phaser.Polygon()
-    poly.setTo([ new Phaser.Point(200, 100), new Phaser.Point(350, 100), new Phaser.Point(375, 200), new Phaser.Point(150, 200) ])
-    */
   }
 
   create () {
-    super.create()
-
-    this.background = null
-    this.doorShop = null
-    this.arrowRight = null
-    this.arrowLeft = null
-    this.dropRects = null
-
-    this.junkPile = null
-    this.junkParts = null
-
-    this.setPile(1)
-
     this.game.mulle.addAudio('junk')
-    //this.subtitles.load()
-    this.subtitles.load('carparts')
 
-    this.game.mulle.playAudio('02e010v0')
+    // Background: 02.DXR member 1 = 02b001v1 (640x480)
+    const background = new MulleSprite(this.game, 320, 240)
+    background.setDirectorMember('02.DXR', 1)
+    this.game.add.existing(background)
 
-    /*
-    var go_road = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['yard-sprites-0', '16'],
-      click: () => {
-        game.state.start('world')
-      }
+    // Border frame
+    const border = this.game.add.graphics(0, 0)
+    border.lineStyle(4, 0x888888, 1)
+    border.moveTo(0, 0)
+    border.lineTo(640, 0)
+    border.lineTo(640, 480)
+    border.lineTo(0, 480)
+    border.lineTo(0, 0)
+
+    // Junk pile doors: members 2-7 (02b002v0-02b007v0, 26x61)
+    // Position them roughly where the shelves were in garage
+    // In original, these are the "doors" to each shelf area
+    this.shelfDoors = []
+    const shelfPositions = [
+      { x: 150, y: 100, shelf: 'Shelf1' },
+      { x: 230, y: 95, shelf: 'Shelf2' },
+      { x: 320, y: 90, shelf: 'Shelf3' },
+      { x: 410, y: 88, shelf: 'Shelf4' },
+      { x: 500, y: 85, shelf: 'Shelf5' },
+      { x: 590, y: 82, shelf: 'Shelf6' },
+    ]
+
+    shelfPositions.forEach((pos, i) => {
+      const door = new MulleSprite(this.game, pos.x, pos.y)
+      door.setDirectorMember('02.DXR', i + 2) // members 2-7
+      door.inputEnabled = true
+      door.events.onInputUp.add(() => this.enterShelf(pos.shelf), this)
+      door.events.onInputOver.add(() => this.game.canvas.style.cursor = 'pointer', this)
+      door.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
+      this.game.add.existing(door)
+      this.shelfDoors.push(door)
     })
-    this.game.add.existing(go_road)
-    */
+
+    // Exit to yard (04.DXR) - right side
+    const yardExit = this.game.add.graphics(600, 0)
+    yardExit.beginFill(0x0000ff, 0)
+    yardExit.drawRect(0, 0, 40, 480)
+    yardExit.endFill()
+    yardExit.inputEnabled = true
+    yardExit.events.onInputUp.add(() => this.game.state.start('yard'), this)
+
+    // Exit to garage (03.DXR) - left side
+    const garageExit = this.game.add.graphics(0, 0)
+    garageExit.beginFill(0xff0000, 0)
+    garageExit.drawRect(0, 0, 40, 480)
+    garageExit.endFill()
+    garageExit.inputEnabled = true
+    garageExit.events.onInputUp.add(() => this.game.state.start('garage'), this)
+
+    // Handle enterShelf from garage
+    this.currentShelf = this.game.mulle.user.enterShelf || 'Shelf1'
+    this.game.mulle.user.enterShelf = null
+
+    // Init part sprites array
+    this.partSprites = []
+
+    // Show parts on current shelf (placeholder)
+    this.showShelfParts(this.currentShelf)
+
+    // Subtitle for PartData (member 25)
+    this.game.mulle.subtitle.setLines('PartData', 'swedish', [
+      '- Välj ett hyllfack för att se delarna.',
+    ], 'mulle')
+    this.game.mulle.subtitle.setLines('PartData', 'english', [
+      '- Select a shelf compartment to see parts.',
+    ], 'mulle')
+
+    // Play ambient sound
+    this.game.mulle.playAudio('02d002v0')
+  }
+
+  enterShelf (shelf) {
+    this.currentShelf = shelf
+    this.showShelfParts(shelf)
+  }
+
+  showShelfParts (shelf) {
+    // Clear existing part sprites
+    if (this.partSprites) {
+      this.partSprites.forEach(s => s.destroy())
+    }
+    this.partSprites = []
+
+    // In the original, this draws parts from the user's junk pile for this shelf
+    // For now show placeholder text
+    const text = this.game.add.text(320, 400, `Hylla: ${shelf}`, {
+      font: '24px serif',
+      fill: '#fff',
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      padding: { x: 16, y: 8 }
+    })
+    text.anchor.set(0.5)
+    this.partSprites.push(text)
+
+    // Play shelf sound
+    this.game.mulle.playAudio('02e003v0')
   }
 
   shutdown () {
-    console.log('junk shutdown')
-
-    this.game.mulle.stopAudio('02e010v0')
-
-    this.savePile()
-
-    this.game.mulle.user.save()
-  }
-
-  render () {
-    // if(this.rect) game.debug.geom(this.rect,'#0fffff');
+    if (this.shelfDoors) {
+      this.shelfDoors.forEach(d => d.destroy())
+      this.shelfDoors = []
+    }
+    if (this.partSprites) {
+      this.partSprites.forEach(s => s.destroy())
+      this.partSprites = []
+    }
+    this.game.sound.stopAll()
   }
 }
 
