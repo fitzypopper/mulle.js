@@ -1,5 +1,28 @@
 'use strict'
 
+/**
+ * Lingo properties are case insensitive, but the extracted part data keeps the
+ * original cast member names (`Offset`, `Master`, `JunkView`) while older
+ * callers expect camelCase. Look the key up case insensitively.
+ *
+ * @param  {Object} data Raw part entry
+ * @param  {...string} names Candidate key spellings
+ * @return {*}           First match, or undefined
+ */
+function pick (data, ...names) {
+  for (const n of names) {
+    if (data[n] !== undefined) return data[n]
+  }
+
+  const wanted = names.map((n) => n.toLowerCase())
+
+  for (const key in data) {
+    if (wanted.indexOf(key.toLowerCase()) >= 0) return data[key]
+  }
+
+  return undefined
+}
+
 class MullePartData {
   constructor (game, partId, partData) {
     this.game = game
@@ -8,23 +31,24 @@ class MullePartData {
 
     this.data = partData // game.mulle.PartsDB[ partId ];
 
-    this.junkView = this.data.junkView
-    this.UseView = this.data.UseView
-    this.UseView2 = this.data.UseView2
+    this.junkView = pick(this.data, 'junkView', 'JunkView')
+    this.UseView = pick(this.data, 'UseView')
+    this.UseView2 = pick(this.data, 'UseView2')
 
-    this.description = this.data.description
+    this.description = pick(this.data, 'description', 'Description') || ''
 
-    this.Requires = this.data.Requires
-    this.Covers = this.data.Covers
+    this.Requires = pick(this.data, 'Requires')
+    this.Covers = pick(this.data, 'Covers')
 
-    if (this.data.master !== 0) {
-      this.master = this.data.master
+    const master = pick(this.data, 'master', 'Master')
+    if (master) {
+      this.master = master
       // this.master = new MulleCarpart( this._master );
     } else {
       this.master = false
     }
 
-    this.MorphsTo = this.data.MorphsTo ? this.data.MorphsTo : false
+    this.MorphsTo = pick(this.data, 'MorphsTo') || false
 
     this.new = []
     if (this.data.new) {
@@ -40,12 +64,13 @@ class MullePartData {
     }
 
     // car offset
-    this.offset = new Phaser.Point(this.data.offset[0], this.data.offset[1])
+    const offset = pick(this.data, 'offset', 'Offset') || [0, 0]
+    this.offset = new Phaser.Point(offset[0], offset[1])
 
     // lowercase properties, thanks lingo
     this.properties = {}
 
-    if (this.data.Properties) {
+    if (this.data.Properties && !Array.isArray(this.data.Properties)) {
       for (var n in this.data.Properties) {
         this.properties[ n.toLowerCase() ] = this.data.Properties[n]
       }

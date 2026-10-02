@@ -63,8 +63,10 @@ map:
   CDDATA.CXT:
     Standalone:
       members:
-        - [2023, 2109]
-      opaque:
+        - [1927, 1937]
+        - 1939
+        - [1945, 1948]
+        - 1991
         - [2023, 2109]
 
 intro:
@@ -198,35 +200,14 @@ diploma:
         - 108
 
 menu:
-  11.DXR:
+  10.DXR:
     Internal:
       members:
-        # Background
-        - 86
-        # Name entry fields
-        - [32, 36]
-        # Small Mulle frames
-        - [68, 72]
-        # Animation charts
-        - 81
-        - [83, 84]
-        # Background/sound refs
-        - [88, 90]
-        - [92, 95]
-        - [97, 98]
-        # Cursors
-        - [101, 109]
-        # Mulle body animation (87a001v2 + 02-08)
-        - [125, 132]
-        # Mulle head/mouth animation (87a001v0 + 10-19)
-        - [133, 143]
-        # More body frames
-        - [144, 149]
-        # Sound
-        - 151
+        - [2, 19]
+        - 21
       opaque:
-        - 86
-        - 151
+        - 2
+        - 21
 
 solhem:
   11.DXR:

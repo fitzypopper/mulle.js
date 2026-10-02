@@ -74,6 +74,10 @@ CURSORS = {11: [(101, 109)]}
 # CDDATA.CXT member ranges (verified against metadata.json, see docs/INVENTORY.md)
 CDDATA_BOATPARTS = [(1053, 1711), (1721, 1871)]  # 20b* part images + 20d* part sounds
 CDDATA_MAP = [(2023, 2109)]                      # 30b* world map tiles
+# World map objects (`Object<N>DB` FrameList members): 31n001v0-1..11,
+# Bensinmack and the 31b00xv0 pickups. They are drawn on the map sprites,
+# so they live in the same pack. 1938 / 1940-1944 do not exist on disk.
+CDDATA_OBJECTS = [(1927, 1937), (1939, 1939), (1945, 1948), (1991, 1991)]
 # 2315..2490 = 30t* topography pairs -> build_scripts/topography.py (not a pack)
 # 9..1043   = Part*DB text casts -> mulle.py data generation (not a pack)
 
@@ -191,8 +195,14 @@ def main():
     # --- CDDATA.CXT: boatparts + map ---------------------------------------
     packs.append(emit_pack('boatparts', 'CDDATA.CXT', sorted(expand(CDDATA_BOATPARTS)),
                            set()))
-    map_nums = sorted(expand(CDDATA_MAP))
-    packs.append(emit_pack('map', 'CDDATA.CXT', map_nums, set(map_nums)))
+    # The 30b* world map tiles (and the 31b*/31n* map object pictures) are
+    # drawn on top of the animated water (Weather1): their palette index 255
+    # is the Director colour key and must stay transparent, so the whole pack
+    # must NOT be listed as opaque.
+    have = set(members_of('CDDATA.CXT'))
+    map_nums = sorted((set(expand(CDDATA_MAP)) |
+                       {n for n in have if in_ranges(n, CDDATA_OBJECTS)}) & have)
+    packs.append(emit_pack('map', 'CDDATA.CXT', map_nums, set()))
 
     # --- one pack per remaining movie ---------------------------------------
     for movie, name in PACKS.items():

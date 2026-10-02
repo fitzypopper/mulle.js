@@ -105,12 +105,12 @@ class SpriteSheetBuilder:
 
     def save_images(self):
         if len(self._image_rects) > 0:
-            if self.name == 'map':  # opaque
-                packer = Packer.create(max_width=2048, max_height=2048, bg_color=0xffffffff, trim_mode=1,
-                                       enable_rotated=False)
-            else:
-                packer = Packer.create(max_width=2048, max_height=2048, bg_color=0x00ffffff, trim_mode=1,
-                                       enable_rotated=False)
+            # Transparent background: the frame rect covers the whole source
+            # image, so the colour here only shows in the padding between
+            # frames - it must not be opaque or it would win over alpha when
+            # the atlas is dumped.
+            packer = Packer.create(max_width=2048, max_height=2048, bg_color=0x00ffffff, trim_mode=1,
+                                   enable_rotated=False)
 
             atlas_list = packer._pack(self._image_rects)
 
