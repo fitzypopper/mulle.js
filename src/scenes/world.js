@@ -515,13 +515,104 @@ class MapObject {
       }
       if (this.sounds.length) g.dir.sounds.play(this.sounds[1] || this.sounds[0], '#EFFECT')
     } else if (custom === 'compass') {
-      // The compass object only drives the on screen compass sprite, which
-      // has no art in this build.
-    } else if (custom === 'fogedge' || custom === 'nomotor' ||
-               custom === 'bridge' || custom === 'riverenter' ||
-               custom === 'randomanim' || custom === 'racing' ||
-               custom === 'mullecomment') {
-      // Requires object art / the Object behaviour script - not shipped.
+      // The compass object shows a compass at the object location
+      // This is handled by the ObjectCompassScript - here we just trigger it
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const compassFrames = frameList.normal || frameList.Normal || []
+        if (compassFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], compassFrames[0])
+        }
+      }
+    } else if (custom === 'fogedge') {
+      // Fog edge - visual effect, could show fog particles
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const fogFrames = frameList.normal || frameList.Normal || []
+        if (fogFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], fogFrames[0])
+        }
+      }
+    } else if (custom === 'nomotor') {
+      // No motor zone - disable motor when entering
+      if (g.dir.boat && g.dir.boat.ancestor && g.dir.boat.ancestor.type === '#Motor') {
+        g.dir.mulleTalk.say('#NoMotor', 4, g.dir.boat, '#Q')
+      }
+    } else if (custom === 'bridge') {
+      // Bridge - can pass under if mast is low enough
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const bridgeFrames = frameList.normal || frameList.Normal || []
+        if (bridgeFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], bridgeFrames[0])
+        }
+      }
+    } else if (custom === 'riverenter') {
+      // River entrance - mark on map
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const riverFrames = frameList.normal || frameList.Normal || []
+        if (riverFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], riverFrames[0])
+        }
+      }
+    } else if (custom === 'randomanim') {
+      // Random animation - cycle through frames
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const animFrames = frameList.normal || frameList.Normal || []
+        if (animFrames.length > 0) {
+          this._animCounter = (this._animCounter || 0) + 1
+          if (this._animCounter >= animFrames.length) this._animCounter = 0
+          this.dir.state.setMemberByName(this.sprites[1], animFrames[this._animCounter])
+        }
+      }
+    } else if (custom === 'racing') {
+      // Racing - start a race
+      if (this.sounds.length) g.dir.sounds.play(this.sounds[0], '#EFFECT')
+      // Could start a race minigame here
+    } else if (custom === 'mullecomment') {
+      // Mulle comment - play random comment
+      if (this.sounds.length) g.dir.sounds.play(this.sounds[0], '#EFFECT')
+    } else if (custom === 'picture') {
+      // Picture frame - display picture
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const pictureFrames = frameList.normal || frameList.Normal || []
+        if (pictureFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], pictureFrames[0])
+        }
+      }
+    } else if (custom === 'reef') {
+      // Reef - hazard warning
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const reefFrames = frameList.normal || frameList.Normal || []
+        if (reefFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], reefFrames[0])
+        }
+      }
+    } else if (custom === 'maelstrom') {
+      // Maelstrom - whirlpool effect
+      if (this.sounds.length) g.dir.sounds.play(this.sounds[0], '#EFFECT')
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const maelstromFrames = frameList.normal || frameList.Normal || []
+        if (maelstromFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], maelstromFrames[0])
+        }
+      }
+    } else if (custom === 'stream') {
+      // Stream - water current
+      if (this.sprites && this.sprites[1]) {
+        const frameList = this.data.FrameList || {}
+        const streamFrames = frameList.normal || frameList.Normal || []
+        if (streamFrames.length > 0) {
+          this.dir.state.setMemberByName(this.sprites[1], streamFrames[0])
+        }
+      }
+    } else if (custom === 'racing') {
+      // Racing - handled above
     }
   }
 

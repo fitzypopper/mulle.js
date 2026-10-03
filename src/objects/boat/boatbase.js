@@ -189,6 +189,100 @@ export class MeterScript {
   kill () {
     return 0
   }
+kill () {
+    return 0
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * ObjectCompassScript
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Drives the on-screen compass for a map object with CustomObject = 'Compass'.
+ * The compass sprite points to the object location.
+ */
+export class ObjectCompassScript {
+  constructor (sp, objectLoc) {
+    this.SP = sp
+    this.objectLoc = objectLoc
+    this.visible = 0
+    this.direction = 0
+  }
+
+  init () {
+    // Set initial member (compass base)
+    g.dir.setMemberByName(this.SP, 'CompassBottom')
+    this.visible = 1
+  }
+
+  loop (boatLoc) {
+    if (!this.visible) return
+
+    // Calculate direction from boat to compass object
+    const diff = pointSub(this.objectLoc, boatLoc)
+    const angle = Math.atan2(diff.x, diff.y) * 180 / Math.PI
+    this.direction = correctDirection(Math.round(angle / 22.5) + 1)
+
+    // Update compass sprite (needle sprite)
+    const needleSP = this.SP + 1 // Needle is SP+1
+    const needleFrame = 484 + (this.direction - 1) * 2 // Needle frames
+    g.dir.setMember(needleSP, '05.DXR', needleFrame)
+    g.dir.setSpriteLoc(needleSP, point(
+      g.dir.spriteList['#Stroot'] - 10, // Approximate position
+      366 // Stroot Y position
+    ))
+  }
+
+  show (yesNo) {
+    this.visible = yesNo ? 1 : 0
+  }
+
+  kill () {
+    this.visible = 0
+    return 0
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * MedalScript
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Handles medal display in the HUD.
+ */
+export class MedalScript {
+  constructor (sp, medalId) {
+    this.SP = sp
+    this.medalId = medalId
+    this.visible = 0
+    this.frameCounter = 0
+  }
+
+  init () {
+    this.visible = 1
+    this.showMedal()
+  }
+
+  showMedal () {
+    const member = g.dir.findMember('05.DXR', 'medal' + this.medalId)
+    if (member) {
+      g.dir.setMemberByName(this.SP, member)
+    }
+  }
+
+  loop () {
+    // Could animate medal sparkle here
+  }
+
+  show (yesNo) {
+    this.visible = yesNo ? 1 : 0
+  }
+
+  kill () {
+    this.visible = 0
+    return 0
+  }
 }
 
 /* -------------------------------------------------------------------------
@@ -840,6 +934,9 @@ export class BoatBase {
     this.ancestor = new DummyBoatAncestor()
     this.fuelMeter = new MeterScript(g.dir.spriteList['#fuel'], 1, '01a001v0', 13, '05.DXR', 132)
 
+    this.compassScript = null
+    this.medalScript = null
+
     this.possibleTypes = []
     this.SelectorMaster = null
     this.displayObject = null
@@ -863,6 +960,20 @@ export class BoatBase {
     // Sort possible types in UI order: #Sail, #Motor, #Oar (left to right)
     const typeOrder = ['#Sail', '#Motor', '#Oar']
     this.possibleTypes.sort((a, b) => typeOrder.indexOf(a) - typeOrder.indexOf(b))
+
+    // Initialize compass script if boat has compass
+    if (this.quickProps.compass) {
+      const compassSP = g.dir.spriteList['#Stroot'] + 2 // Compass needle sprite
+      this.compassScript = new ObjectCompassScript(compassSP, point(0, 0))
+      this.compassScript.init()
+    }
+
+    // Initialize medal display
+    if (this.medals && this.medals.length > 0) {
+      const medalSP = g.dir.spriteList['#medal']
+      this.medalScript = new MedalScript(medalSP, this.medals[0])
+      this.medalScript.init()
+    }
 
     this.SelectorMaster = new SelectorMaster(this.possibleTypes)
     this.displayObject = new DisplayBoat(this)
@@ -889,6 +1000,8 @@ export class BoatBase {
     this.speedMeter.kill()
     this.hungerMeter.kill()
     this.fuelMeter.kill()
+    if (this.compassScript) this.compassScript.kill()
+    if (this.medalScript) this.medalScript.kill()
     if (this.displayObject) this.displayObject.kill()
     if (this.SelectorMaster) this.SelectorMaster.kill()
     this.depthChecker.kill()

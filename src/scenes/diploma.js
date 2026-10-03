@@ -1,145 +1,119 @@
+/**
+ * Diploma scene - shows the player's achievements and medals.
+ * @module scenes/diploma
+ */
+'use strict'
+
 import MulleState from './base'
-import DirectorHelper from '../objects/DirectorHelper'
-import MulleBuildCar from '../objects/buildcar'
+import MulleSprite from '../objects/sprite'
+import { g, point } from '../objects/boat/lingo'
 
 class DiplomaState extends MulleState {
-  init(previous) {
-    this.previousState = previous
-  }
-
   preload () {
-    this.DirResource = '08.DXR'
     super.preload()
+
     this.game.load.pack('diploma', 'assets/diploma.json', null, this)
-    this.load.json('strings', 'assets/diploma-strings.json')
+    this.game.load.pack('sailing', 'assets/sailing.json', null, this)
+    this.game.load.pack('cutscenes', 'assets/cutscenes.json', null, this)
+    this.game.load.pack('shared', 'assets/shared.json', null, this)
   }
 
   create () {
-    console.log('Previous state', this.previousState)
-    this.scroll_level = 0
-    this.whiteLayer = this.add.group()
-    this.background_layer = this.game.add.group()
-    this.ui_layer = this.game.add.group()
-    this.scroll_layer = this.game.add.group()
+    super.create()
 
-    this.header = DirectorHelper.sprite(this.game, 14,2, this.DirResource, 71, false, false)
+    this.game.mulle.addAudio('shared')
 
-    this.scroll_layer.add(this.header)
+    this.game.mulle.worldState = this
 
-    this.rightMenuRectangle = new Phaser.Rectangle(0, -9, 587, 503)
+    // Background
+    this.background = new MulleSprite(this.game, 320, 240)
+    this.background.setDirectorMember('08.DXR', 31)
+    this.game.add.existing(this.background)
 
-    this.wood = DirectorHelper.sprite(this.game, 614, 240, this.DirResource, 15)
-    this.ui_layer.add(this.wood)
+    // Diploma paper
+    this.diploma = new MulleSprite(this.game, 320, 240)
+    this.diploma.setDirectorMember('08.DXR', 71)
+    this.game.add.existing(this.diploma)
 
-    this.upButton = DirectorHelper.button(this.game, 612, 20, this.scrollUp, this, this.DirResource, 17, 17, true)
-    this.ui_layer.add(this.upButton)
-
-    this.downButton = DirectorHelper.button(this.game, 612, 186, this.scrollDown, this, this.DirResource, 18, 18, true)
-    this.ui_layer.add(this.downButton)
-
-    this.printButton = DirectorHelper.button(this.game, 612, 378, () => {console.log('print')}, this, this.DirResource, 67,67, true)
-    this.ui_layer.addChild(this.printButton)
-
-    this.closeButton = DirectorHelper.button(this.game, 611, 441, this.close, this, this.DirResource, 68, 68, true)
-    this.ui_layer.add(this.closeButton)
-
-    const graphics = this.add.graphics(0, 0, this.whiteLayer);
-    graphics.beginFill(0xFFFFFF)
-    graphics.drawRect(572, 0, 13, 479)
-
-    graphics.drawRect(52, 100, 518, 368) //ToBeCaptured
-
-    graphics.drawRect(0, 0, 587, 503)
-
-    const strings = this.game.cache.getJSON('strings')
-
-    this.userName = new Phaser.Text(this.game, 0, 0, this.game.mulle.user.UserId, {
-      font: '36pt Arial',
-      boundsAlignH: 'center',
-      boundsAlignV: 'center'
+    // Player name
+    const user = this.game.mulle.user
+    this.nameText = this.game.add.text(320, 180, user.UserId || 'Player', {
+      font: '24px Arial',
+      fill: '#000000',
+      align: 'center'
     })
-    this.userName.setTextBounds(150, this.header.height + this.header.y - 6, 303, 43)
-    this.scroll_layer.add(this.userName)
+    this.nameText.anchor.set(0.5)
 
-    this.forCarText = new Phaser.Text(this.game,  0, 0, strings[this.DirResource][69], {
-      font: '24pt Arial',
-      boundsAlignH: 'center',
-      boundsAlignV: 'center'
-    })
-    this.forCarText.setTextBounds(150, this.header.height + this.header.y + 36, 303, 29)
-    this.scroll_layer.addChild(this.forCarText)
-
-    this.carName = new Phaser.Text(this.game, 0, 0, this.game.mulle.user.Car.Name, {
-      font: '36pt Arial',
-      boundsAlignH: 'center',
-      boundsAlignV: 'center'
-    })
-    this.carName.setTextBounds(150, this.header.height + this.header.y + 56, 303, 44)
-    this.scroll_layer.add(this.carName)
-
-    this.carImageRectangle = new Phaser.Rectangle(52,this.header.height + this.header.y + 100, 518, 368)
-    this.carImage = new MulleBuildCar(this.game, this.carImageRectangle.centerX, this.carImageRectangle.centerY, null, true)
-    this.scroll_layer.add(this.carImage)
-
-    this.medals = this.game.add.group(this.scroll_layer)
-
-    let count = 1
-    let medal_x = 32
-
-    for (const medal of this.game.mulle.user.Car.Medals) {
-      const { key, frame } = this.game.mulle.getDirectorImage(this.DirResource, 20 + medal)
-      const medalSprite = new Phaser.Sprite(this.game, medal_x, 623, key, frame.name)
-      this.medals.add(medalSprite)
-      medalSprite.width = 60
-      medalSprite.height = 60
-      medal_x = medalSprite.right + 40
-
-      const medalName = new Phaser.Text(this.game, 0, 0, strings[this.DirResource][80 + medal], {
-        font: '11pt Times New Roman',
-        boundsAlignH: 'center',
-        boundsAlignV: 'center',
-        wordWrap: true,
-        wordWrapWidth: medalSprite.width
+    // Medals earned
+    const medals = user.Car && user.Car.Medals ? user.Car.Medals : []
+    let y = 240
+    medals.forEach((medalId, i) => {
+      const medalName = this.getMedalName(medalId)
+      const text = this.game.add.text(320, y + i * 30, medalName, {
+        font: '18px Arial',
+        fill: '#8B4513',
+        align: 'center'
       })
-      console.log(medalSprite)
-      medalName.setTextBounds(medalSprite.x, medalSprite.bottom + 10, medalSprite.width, 40)
-      this.medals.add(medalName)
+      text.anchor.set(0.5)
+    })
 
-      count++
-    }
+    // Stats
+    const stats = [
+      'Distance sailed: ' + Math.round((user.Car?.totalDistance || 0) / 100) + ' km',
+      'Missions completed: ' + (user.CompletedMissions?.length || 0),
+      'Money earned: ' + (user.Money || 0) + ' kr'
+    ]
 
-    const frame = this.add.graphics(0, 0, this.scroll_layer);
-    frame.beginFill(0x000000)
-    const border = frame.drawRect(12, 2, 2, 777) //Left border
-    frame.drawRect(572, 2, 2, 777) // Right border
+    stats.forEach((stat, i) => {
+      const text = this.game.add.text(320, 350 + i * 25, stat, {
+        font: '16px Arial',
+        fill: '#333333',
+        align: 'center'
+      })
+      text.anchor.set(0.5)
+    })
 
-    // Line is 39 pixels from top of image, subtract to make bottom of side borders match bottom border
-    //Texture 08b004v0
-    this.bottom = DirectorHelper.sprite(this.game, 14, border.bottom - 39, this.DirResource, 70, false, false)
-    this.scroll_layer.add(this.bottom)
+    // Continue button
+    this.continueRect = this.game.add.graphics(0, 0)
+    this.continueRect.beginFill(0x0066CC)
+    this.continueRect.drawRect(270, 430, 100, 40)
+    this.continueRect.endFill()
+    this.continueRect.inputEnabled = true
+    this.continueRect.events.onInputUp.add(() => {
+      this.game.state.start('yard')
+    }, this)
+
+    const continueText = this.game.add.text(320, 450, 'CONTINUE', {
+      font: '18px Arial',
+      fill: '#FFFFFF',
+      align: 'center'
+    })
+    continueText.anchor.set(0.5)
+
+    this.game.mulle.cursor.reset()
   }
 
-
-  scrollUp() {
-    if(this.scroll_level > 0) {
-      this.scroll_layer.forEach((child) => {
-        child.y = child.y + 200
-      })
-      this.scroll_level--
+  getMedalName (medalId) {
+    const names = {
+      1: 'Navigator Medal',
+      2: 'Racing Medal',
+      3: 'Explorer Medal',
+      4: 'Rescue Medal',
+      5: 'Fishing Medal',
+      6: 'Trading Medal',
+      7: 'Speed Medal',
+      8: 'Endurance Medal',
+      9: 'Master Sailor Medal'
     }
+    return names[medalId] || 'Medal ' + medalId
   }
 
-  scrollDown() {
-    if(this.scroll_level < 2) {
-      this.scroll_layer.forEach((child) => {
-        child.y = child.y - 200
-      })
-      this.scroll_level++
-    }
-  }
-
-  close () {
-    this.game.state.start(this.previousState)
+  shutdown () {
+    if (this.background) this.background.destroy()
+    if (this.diploma) this.diploma.destroy()
+    if (this.nameText) this.nameText.destroy()
+    if (this.continueRect) this.continueRect.destroy()
+    if (this.continueText) this.continueText.destroy()
   }
 }
 

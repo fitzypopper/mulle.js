@@ -616,8 +616,19 @@ export class WeatherRenderer {
     const weather = g.globals.weather
     const tmpWeather = weather.getComingWeather()
 
-    if (argHide === '#hide') g.dir.hideSprite(g.dir.spriteList['#Water'])
-    else g.dir.setMemberByName(g.dir.spriteList['#Water'], 'Weather1')
+    if (argHide === '#hide') {
+      g.dir.hideSprite(g.dir.spriteList['#Water'])
+      g.dir.hideSprite(g.dir.spriteList['#Fog'])
+    } else {
+      g.dir.setMemberByName(g.dir.spriteList['#Water'], 'Weather1')
+      // Show fog for weather types 2-4 (fog, storms)
+      const weatherType = listValue(tmpWeather, '#type')
+      if (weatherType >= 2) {
+        g.dir.setMemberByName(g.dir.spriteList['#Fog'], 'FogPic')
+      } else {
+        g.dir.hideSprite(g.dir.spriteList['#Fog'])
+      }
+    }
 
     let speedFactor = argWindSpeedFactor
     if (speedFactor === undefined || speedFactor === null || speedFactor === '') {
