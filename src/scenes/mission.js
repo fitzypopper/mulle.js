@@ -18,7 +18,15 @@ export default class MissionState extends MulleState {
     super.preload()
 
     // The mission ID is passed via g.game.mulle.activeMission
-    const missionId = this.game.mulle.activeMission
+    let missionId = this.game.mulle.activeMission
+    if (!missionId) {
+      // Direct URL navigation: extract from state name
+      const stateName = this.game.state.current
+      if (stateName && stateName.startsWith('mission')) {
+        missionId = stateName.replace('mission', '')
+        this.game.mulle.activeMission = missionId
+      }
+    }
     if (!missionId) {
       console.error('[mission] No active mission ID')
       return
@@ -27,8 +35,17 @@ export default class MissionState extends MulleState {
     this.missionId = missionId
     this.missionMovie = String(missionId) + '.DXR'
 
-    // Load the mission pack
-    this.game.load.pack('mission', 'assets/' + this.missionMovie.toLowerCase() + '.json', null, this)
+    // Map mission ID to pack name (from PACKS dictionary in gen_assets_bat.py)
+    const packNameMap = {
+      '70': 'm70', '71': 'm71', '76': 'm76', '77': 'm77',
+      '78': 'm78', '79': 'm79', '80': 'm80', '81': 'm81',
+      '83': 'm83', '84': 'm84', '85': 'm85', '86': 'm86',
+      '87': 'm87', '88': 'm88'
+    }
+    const packName = packNameMap[this.missionId] || 'm' + this.missionId
+
+    // Load the mission pack (pack key must match the key in the JSON)
+    this.game.load.pack(packName, 'assets/' + packName + '.json', null, this)
 
     // Also load sailing pack for common assets (boat, water, etc.)
     this.game.load.pack('sailing', 'assets/sailing.json', null, this)

@@ -5,6 +5,7 @@
 'use strict'
 
 import MulleSprite from '../objects/sprite'
+import MulleSave from '../struct/savedata'
 
 /**
  * MulleState, extension of phaser state
@@ -57,7 +58,19 @@ class MulleState extends Phaser.State {
     }
 
     if (!this.game.mulle.user) {
-      this.game.mulle.user = this.game.mulle.UsersDB[ Object.keys(this.game.mulle.UsersDB)[0] ]
+      const userKeys = Object.keys(this.game.mulle.UsersDB)
+      if (userKeys.length > 0) {
+        this.game.mulle.user = this.game.mulle.UsersDB[userKeys[0]]
+      } else {
+        // Create a default user for first-time play
+        this.game.mulle.user = new MulleSave(this.game, {
+          UserId: 'Player',
+          Car: { Parts: [] },
+          Medals: [],
+          Inventory: { DrivenTimes: { Motor: 0, Sail: 0, Oar: 0 } }
+        })
+        this.game.mulle.UsersDB['Player'] = this.game.mulle.user
+      }
 
       // if( process.env.NODE_ENV !== "production" ){
 

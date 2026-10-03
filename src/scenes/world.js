@@ -727,6 +727,7 @@ class Dir {
     this.boatPack = this.chooseBoatPack()
 
     this.changeMap(this.mapCoordinate, '#Absolute')
+
     this.Mode = '#Driving'
 
     g.globals.loopMaster.addObject(this)
@@ -991,6 +992,13 @@ class Dir {
     this.nextDir = String(argToDir)
     if (this.ambience) this.ambience.activate(0)
     this.activateinterface(0)
+
+    // Set active mission for mission scene transition
+    const scenes = this.game.mulle.scenes
+    const targetScene = scenes[String(argToDir)] || scenes[parseInt(argToDir, 10)]
+    if (targetScene && targetScene.startsWith('mission')) {
+      this.game.mulle.activeMission = argToDir
+    }
 
     if (this.nextDir === '04' || this.nextDir === '03') {
       setDrivingInfo(user, 0)
@@ -1354,6 +1362,12 @@ class WorldState extends MulleState {
     this.game.mulle.gDir = dir
     dir.init()
 
+    this._firstUpdate = true
+
+    // Force correct start map (workaround for mapCoordinate initialization bug)
+    dir.mapCoordinate = dir.world.getStartInfo().map
+    dir.world.currentMap = { x: dir.mapCoordinate.x, y: dir.mapCoordinate.y }
+
     this.setupInput()
     this.setupHelpButton()
     this.game.mulle.cursor.reset()
@@ -1551,6 +1565,18 @@ class WorldState extends MulleState {
 
   update () {
     if (!this.dir) return
+
+    // Force correct start map on first update (workaround for mapCoordinate drift)
+    if (this._firstUpdate) {
+      this._firstUpdate = false
+      const startMap = this.dir.world.getStartInfo().map
+      if (this.dir.mapCoordinate.x !== startMap.x || this.dir.mapCoordinate.y !== startMap.y) {
+        console.warn('[world] Correcting mapCoordinate from', this.dir.mapCoordinate, 'to', startMap)
+        this.dir.mapCoordinate = startMap
+        this.dir.world.currentMap = { x: startMap.x, y: startMap.y }
+      }
+    }
+
     this.updateRects()
     g.globals.loopMaster.loop()
     this.dir.tick()
