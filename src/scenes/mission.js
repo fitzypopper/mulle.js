@@ -12,6 +12,7 @@
 
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
+import { point, random, correctDirection, asList, setInInventory, lookUpInventory } from '../objects/boat/lingo'
 
 export default class MissionState extends MulleState {
   preload () {
@@ -194,20 +195,338 @@ export default class MissionState extends MulleState {
 }
 
 /* -------------------------------------------------------------------------
- * Helpers (duplicated from world.js for independence)
+ * Specific Mission Implementations
  * ---------------------------------------------------------------------- */
 
-function asList (v) {
-  if (v === undefined || v === null || v === 0 || v === '') return []
-  if (Array.isArray(v)) return v.filter((x) => x !== null && x !== undefined)
-  if (typeof v === 'object') return Object.keys(v).length ? [v] : []
-  return [v]
+/**
+ * Base class for specific mission minigames
+ */
+class BaseMission extends MissionState {
+  constructor () {
+    super()
+  }
+
+  createMissionScreen () {
+    const g = this.game
+    super.createMissionScreen()
+
+    // Add mission-specific UI
+    if (this.missionBriefing) {
+      const briefing = g.add.text(320, 280, this.missionBriefing, {
+        font: '14px Arial',
+        fill: '#cccccc',
+        align: 'center',
+        wordWrap: true,
+        wordWrapWidth: 500
+      })
+      briefing.anchor.set(0.5)
+    }
+  }
+
+  completeMission () {
+    this.awardMissionRewards()
+    this.game.mulle.activeMission = null
+    this.game.state.start('world')
+  }
 }
 
-function setInInventory (user, key, value) {
-  if (!user.Inventory) user.Inventory = {}
-  user.Inventory[key] = value
+/**
+ * Mission 70 - Erson / Diver
+ * Underwater diving minigame
+ */
+class Mission70 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '70'
+    this.missionMovie = '70.DXR'
+    this.missionBriefing = 'Help Erson dive underwater and collect treasures!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m70', 'assets/m70.json', null, this)
+  }
+
+  createMissionScreen () {
+    super.createMissionScreen()
+    const g = this.game
+    // Add diver sprite, oxygen meter, collectibles
+    const diver = new MulleSprite(this.game, 320, 240)
+    diver.setDirectorMember('70.DXR', '70a001v0')
+    this.game.add.existing(diver)
+  }
+
+  update () {
+    // Diver movement, oxygen depletion, collectible collection
+  }
 }
+
+/**
+ * Mission 71 - Erson / Rope
+ * Rope swinging minigame
+ */
+class Mission71 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '71'
+    this.missionMovie = '71.DXR'
+    this.missionBriefing = 'Swing with Erson across the gaps!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m71', 'assets/m71.json', null, this)
+  }
+}
+
+/**
+ * Mission 76 - Judge / Boat Show
+ * Boat show judging minigame
+ */
+class Mission76 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '76'
+    this.missionMovie = '76.DXR'
+    this.missionBriefing = 'Judge the boat show entries!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m76', 'assets/m76.json', null, this)
+  }
+}
+
+/**
+ * Mission 77 - Birgit / Dogs
+ * Dog herding minigame
+ */
+class Mission77 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '77'
+    this.missionMovie = '77.DXR'
+    this.missionBriefing = 'Help Birgit herd the dogs!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m77', 'assets/m77.json', null, this)
+  }
+}
+
+/**
+ * Mission 78 - Preacher
+ * Sermon/dialogue minigame
+ */
+class Mission78 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '78'
+    this.missionMovie = '78.DXR'
+    this.missionBriefing = 'Listen to the preacher\'s sermon.'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m78', 'assets/m78.json', null, this)
+  }
+}
+
+/**
+ * Mission 79 - Head/Body Animation
+ * Character animation minigame
+ */
+class Mission79 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '79'
+    this.missionMovie = '79.DXR'
+    this.missionBriefing = 'Watch the head/body animation show!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m79', 'assets/m79.json', null, this)
+  }
+}
+
+/**
+ * Mission 80 - Sam
+ * Dialogue/interaction minigame
+ */
+class Mission80 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '80'
+    this.missionMovie = '80.DXR'
+    this.missionBriefing = 'Talk with Sam!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m80', 'assets/m80.json', null, this)
+  }
+}
+
+/**
+ * Mission 81 - Sur
+ * Surfing/water minigame
+ */
+class Mission81 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '81'
+    this.missionMovie = '81.DXR'
+    this.missionBriefing = 'Surf the waves with Sur!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m81', 'assets/m81.json', null, this)
+  }
+}
+
+/**
+ * Mission 83 - Mia
+ * Dialogue/interaction minigame
+ */
+class Mission83 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '83'
+    this.missionMovie = '83.DXR'
+    this.missionBriefing = 'Chat with Mia!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m83', 'assets/m83.json', null, this)
+  }
+}
+
+/**
+ * Mission 84 - Viola
+ * Dialogue/interaction minigame
+ */
+class Mission84 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '84'
+    this.missionMovie = '84.DXR'
+    this.missionBriefing = 'Talk with Viola!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m84', 'assets/m84.json', null, this)
+  }
+}
+
+/**
+ * Mission 85 - Water/Sinking
+ * Sinking boat survival minigame
+ */
+class Mission85 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '85'
+    this.missionMovie = '85.DXR'
+    this.missionBriefing = 'Survive the sinking boat!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m85', 'assets/m85.json', null, this)
+  }
+}
+
+/**
+ * Mission 86 - Sven / Bat
+ * Bat cave navigation minigame
+ */
+class Mission86 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '86'
+    this.missionMovie = '86.DXR'
+    this.missionBriefing = 'Navigate the bat cave with Sven!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m86', 'assets/m86.json', null, this)
+  }
+}
+
+/**
+ * Mission 87 - Dive / Factory
+ * Factory diving minigame
+ */
+class Mission87 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '87'
+    this.missionMovie = '87.DXR'
+    this.missionBriefing = 'Dive into the factory!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m87', 'assets/m87.json', null, this)
+  }
+}
+
+/**
+ * Mission 88 - Water / Tree
+ * Tree/water puzzle minigame
+ */
+class Mission88 extends BaseMission {
+  constructor () {
+    super()
+    this.missionId = '88'
+    this.missionMovie = '88.DXR'
+    this.missionBriefing = 'Solve the tree/water puzzle!'
+  }
+
+  preload () {
+    super.preload()
+    this.game.load.pack('m88', 'assets/m88.json', null, this)
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * Mission Factory
+ * ---------------------------------------------------------------------- */
+
+const MissionClasses = {
+  '70': Mission70,
+  '71': Mission71,
+  '76': Mission76,
+  '77': Mission77,
+  '78': Mission78,
+  '79': Mission79,
+  '80': Mission80,
+  '81': Mission81,
+  '83': Mission83,
+  '84': Mission84,
+  '85': Mission85,
+  '86': Mission86,
+  '87': Mission87,
+  '88': Mission88
+}
+
+function createMission (missionId) {
+  const MissionClass = MissionClasses[missionId]
+  if (MissionClass) {
+    return new MissionClass()
+  }
+  return new BaseMission()
+}
+
+/* -------------------------------------------------------------------------
+ * Helpers (duplicated from world.js for independence)
+ * ---------------------------------------------------------------------- */
 
 function buildFrameIndex (game) {
   const keys = game.cache.getKeys(Phaser.Cache.IMAGE)
