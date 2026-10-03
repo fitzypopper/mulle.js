@@ -170,7 +170,8 @@ function buildFrameIndex (game) {
   if (FRAME_INDEX) return FRAME_INDEX
 
   const byMovie = {}
-  const byName = {}
+  const byName = {}      // keyed by member name (dirName)
+  const byFrameName = {} // keyed by atlas frame name (fr.name)
 
   const keys = game.cache.getKeys(Phaser.Cache.IMAGE)
 
@@ -190,19 +191,31 @@ function buildFrameIndex (game) {
       }
 
       if (fr.dirName) {
+        const regpoint = fr.regpoint || null
+
         if (!byName[fr.dirName]) byName[fr.dirName] = []
         byName[fr.dirName].push({
           movie: fr.dirFile,
           frame: [key, fr.name],
           width: fr.width,
           height: fr.height,
-          regpoint: fr.regpoint || null
+          regpoint: regpoint
+        })
+
+        // Also index by frame name for direct lookups
+        if (!byFrameName[fr.name]) byFrameName[fr.name] = []
+        byFrameName[fr.name].push({
+          movie: fr.dirFile,
+          frame: [key, fr.name],
+          width: fr.width,
+          height: fr.height,
+          regpoint: regpoint
         })
       }
     }
   }
 
-  FRAME_INDEX = { byMovie, byName }
+  FRAME_INDEX = { byMovie, byName, byFrameName }
   return FRAME_INDEX
 }
 
@@ -211,8 +224,15 @@ function invalidateFrameIndex () {
 }
 
 function frameRect (idx, movie, name, loc) {
-  const list = idx.byName[name]
+  // name can be a member name (dirName) or an atlas frame name
+  // Try byFrameName first (for frame name lookups from getMemberRect)
+  let list = idx.byFrameName[name]
+  if (!list || !list.length) {
+    // Fall back to byName (for member name lookups)
+    list = idx.byName[name]
+  }
   if (!list || !list.length) return null
+
   let hit = null
   for (const e of list) {
     if (e.movie === movie) {

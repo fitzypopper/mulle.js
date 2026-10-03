@@ -337,7 +337,11 @@ export class TypeSelectButton {
     if (!this.active) return
     if (what === '#click') {
       const tmp = g.dir.boat.changeType(this.type)
-      if (typeof tmp === 'string' && tmp.charAt(0) === '#') {
+      // changeType returns the new type (e.g. '#Sail') on success,
+      // or an error sound string (e.g. '#NoFuel') on failure.
+      // Success means the returned value is a known drive type.
+      const possible = g.dir.boat.possibleTypes || ['#Motor', '#Sail', '#Oar']
+      if (typeof tmp === 'string' && possible.includes(tmp)) {
         this.reportObject.clickedOne(this)
       } else if (typeof tmp === 'string') {
         g.dir.mulleTalk.say(tmp, 4)
@@ -850,6 +854,10 @@ export class BoatBase {
       this.quickProps = refreshBoatProperties(g.game)
       this.possibleTypes = findPossiblePowers(this.quickProps)
     }
+
+    // Sort possible types in UI order: #Sail, #Motor, #Oar (left to right)
+    const typeOrder = ['#Sail', '#Motor', '#Oar']
+    this.possibleTypes.sort((a, b) => typeOrder.indexOf(a) - typeOrder.indexOf(b))
 
     this.SelectorMaster = new SelectorMaster(this.possibleTypes)
     this.displayObject = new DisplayBoat(this)
