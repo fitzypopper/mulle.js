@@ -1,5 +1,6 @@
 node_modules/
-dist/
+# dist/ is committed so GitHub Pages can deploy it without a CI asset build
+# (see .github/workflows/deploy.yml)
 # docs/  <- removed: project docs are tracked
 cst_out_new/
 /build_data

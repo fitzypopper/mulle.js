@@ -1,0 +1,1 @@
+{"m83": [{"type": "atlasJSONHash", "key": "m83-sprites-0", "textureURL": "assets/m83-sprites-0.png", "atlasURL": "assets/m83-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "m83-audio", "urls": "assets/m83-audio.ogg", "jsonURL": "assets/m83-audio.json", "jsonData": null}]}

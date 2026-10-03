@@ -1,0 +1,1 @@
+{"resources": ["assets/lbwebinf-audio.ogg"], "spritemap": {"13": {"start": 0.0, "end": 0.041, "loop": false, "data": {"dirName": "Click2", "dirFile": "LBWEBINF.DXR", "dirNum": 13}}, "14": {"start": 1.041, "end": 1.061, "loop": false, "data": {"dirName": "Click1", "dirFile": "LBWEBINF.DXR", "dirNum": 14}}}}

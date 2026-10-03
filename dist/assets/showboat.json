@@ -1,0 +1,1 @@
+{"showboat": [{"type": "atlasJSONHash", "key": "showboat-sprites-0", "textureURL": "assets/showboat-sprites-0.png", "atlasURL": "assets/showboat-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "showboat-audio", "urls": "assets/showboat-audio.ogg", "jsonURL": "assets/showboat-audio.json", "jsonData": null}]}

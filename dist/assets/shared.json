@@ -1,0 +1,1 @@
+{"shared": [{"type": "atlasJSONHash", "key": "shared-sprites-0", "textureURL": "assets/shared-sprites-0.png", "atlasURL": "assets/shared-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "shared-audio", "urls": "assets/shared-audio.ogg", "jsonURL": "assets/shared-audio.json", "jsonData": null}]}

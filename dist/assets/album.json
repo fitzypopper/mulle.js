@@ -1,0 +1,1 @@
+{"album": [{"type": "atlasJSONHash", "key": "album-sprites-0", "textureURL": "assets/album-sprites-0.png", "atlasURL": "assets/album-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "album-audio", "urls": "assets/album-audio.ogg", "jsonURL": "assets/album-audio.json", "jsonData": null}]}

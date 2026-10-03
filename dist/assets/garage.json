@@ -1,0 +1,1 @@
+{"garage": [{"type": "atlasJSONHash", "key": "garage-sprites-0", "textureURL": "assets/garage-sprites-0.png", "atlasURL": "assets/garage-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "garage-audio", "urls": "assets/garage-audio.ogg", "jsonURL": "assets/garage-audio.json", "jsonData": null}]}

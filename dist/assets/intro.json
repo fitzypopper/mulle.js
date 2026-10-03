@@ -1,0 +1,1 @@
+{"intro": [{"type": "atlasJSONHash", "key": "intro-sprites-0", "textureURL": "assets/intro-sprites-0.png", "atlasURL": "assets/intro-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "intro-audio", "urls": "assets/intro-audio.ogg", "jsonURL": "assets/intro-audio.json", "jsonData": null}]}

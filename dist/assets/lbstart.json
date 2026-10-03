@@ -1,0 +1,1 @@
+{"lbstart": [{"type": "atlasJSONHash", "key": "lbstart-sprites-0", "textureURL": "assets/lbstart-sprites-0.png", "atlasURL": "assets/lbstart-sprites-0.json", "atlasData": null}, {"type": "audiosprite", "key": "lbstart-audio", "urls": "assets/lbstart-audio.ogg", "jsonURL": "assets/lbstart-audio.json", "jsonData": null}]}
