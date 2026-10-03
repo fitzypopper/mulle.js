@@ -113,6 +113,7 @@ class MulleGame extends Phaser.Game {
 
       66: 'plugin',
 
+      // Mission movies (05.DXR DirResources) - boat game only
       70: 'mission70',
       71: 'mission71',
       76: 'mission76',
@@ -128,14 +129,7 @@ class MulleGame extends Phaser.Game {
       87: 'mission87',
       88: 'mission88',
 
-      82: 'mudcar',
-      83: 'treecar',
-      84: 'roadthing',
-      85: 'roaddog',
-
-      86: 'solhem',
-      87: 'saftfabrik',
-      88: 'sturestortand',
+      // Non-conflicting car game scenes (character dialogue, etc.)
       89: 'viola',
       90: 'dorisdigital',
       91: 'luddelabb',
@@ -177,16 +171,9 @@ class MulleGame extends Phaser.Game {
       mission87: MissionState,
       mission88: MissionState,
 
-      mudcar: MudCarState, // 82
-      //treecar: TreeCarState, // 83
-      roadthing: RoadThingState, // 84
-      roaddog: RoadDogState, // 85
-      solhem: SolhemState, // 86
-      saftfabrik: SaftfabrikState, // 87
-      sturestortand: StureStortandState, // 88
+      viola: ViolaState, // 89
       dorisdigital: DorisDigitalState, // 90
       figgeferrum: FiggeFerrumState, // 92
-      viola: ViolaState, // 89
 
       carshow: CarShowState // 94
 
