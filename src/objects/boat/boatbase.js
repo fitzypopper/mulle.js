@@ -533,7 +533,10 @@ export class OarBoatAncestor {
     this.sndId = 0
   }
 
-  init () {}
+  init () {
+    this.Steering = 0
+    this.internalDirection = this.child.direction * this.child.decimalPrec
+  }
 
   kill () {
     g.dir.sounds.stop(this.sndId)
@@ -690,6 +693,8 @@ export class SailBoatAncestor {
   }
 
   init () {
+    this.Steering = 0
+    this.internalDirection = this.child.direction * this.child.decimalPrec
     this.SailSize = this.child.quickProps.sailsize || 0
   }
 

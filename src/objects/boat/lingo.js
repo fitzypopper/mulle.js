@@ -35,7 +35,7 @@ export function integer (v) {
  * @return {number}      1..16
  */
 export function correctDirection (dir) {
-  const d = dir % 16
+  const d = Math.round(dir) % 16
   if (d <= 0) return d + 16
   return d
 }

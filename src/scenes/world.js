@@ -1579,7 +1579,11 @@ class WorldState extends MulleState {
 
     this.updateRects()
     g.globals.loopMaster.loop()
-    this.dir.tick()
+    if (this.dir.Mode === '#Leave') {
+      this.dir.tick()
+    } else {
+      this.dir.loop()
+    }
   }
 
   shutdown () {
