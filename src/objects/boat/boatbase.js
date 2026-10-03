@@ -497,7 +497,7 @@ export class MotorBoatAncestor {
       }
     }
 
-    child.calcSpeedNDir(this.motorSpeed, 10 * this.Steering)
+    child.calcSpeedNDir(this.motorSpeed, this.Steering)
     return 0
   }
 
@@ -595,7 +595,7 @@ export class OarBoatAncestor {
       this.soundCount = 3 - this.soundCount
     }
 
-    child.calcSpeedNDir(tmpForce * 13, 5 * this.Steering)
+    child.calcSpeedNDir(tmpForce * 13, this.Steering)
     return 0
   }
 
@@ -721,7 +721,7 @@ export class SailBoatAncestor {
       tmpForce = (tmpForce > 0) * (tmpForce + 10) / 2
     }
 
-    child.calcSpeedNDir(tmpForce * 14, this.Steering * 10)
+    child.calcSpeedNDir(tmpForce * 14, this.Steering)
 
     this.Sail.calcDirection(child.direction)
 
@@ -1197,7 +1197,7 @@ export class BoatBase {
     this.speed += change
 
     if (argSteering) {
-      const tmpSteer = argSteering * (props.manoeuverability || 0) / 10
+      const tmpSteer = argSteering * (props.manoeuverability || 0) / 40
       this.internalDirection += tmpSteer
       this.direction = correctDirection(this.internalDirection / this.decimalPrec)
     }
