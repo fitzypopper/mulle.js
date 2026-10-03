@@ -8,6 +8,8 @@ class YardState extends MulleState {
   }
 
   create () {
+    super.create()
+    
     this.game.mulle.addAudio('yard')
 
     // Background: 04.DXR has multiple backgrounds (member 1 = 04b001v0, member 9 = 04b009v0, member 21 = 04b010v0)
@@ -109,6 +111,9 @@ class YardState extends MulleState {
     }
 
     // First-time dialog handling
+    if (this.game.mulle.user.firstTimeQuay === undefined) {
+      this.game.mulle.user.firstTimeQuay = true
+    }
     this.firstTime = !this.game.mulle.user.firstTimeQuay
     this.loopCounter = this.game.rnd.integerInRange(120, 360)
 
