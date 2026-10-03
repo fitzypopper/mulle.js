@@ -625,8 +625,11 @@ export class WeatherRenderer {
       const weatherType = listValue(tmpWeather, '#type')
       if (weatherType >= 2) {
         g.dir.setMemberByName(g.dir.spriteList['#Fog'], 'FogPic')
+        // Initialize fog particles for weather types 2-4
+        this.initFogParticles(weatherType)
       } else {
         g.dir.hideSprite(g.dir.spriteList['#Fog'])
+        this.clearFogParticles()
       }
     }
 
@@ -658,6 +661,85 @@ export class WeatherRenderer {
     const tmpDir = listValue(tmpWeather, '#direction')
     this.waves.setDirection(tmpDir, tmpSpeed)
     this.wind.Change(tmpSpeed, tmpDir)
+  }
+
+  /**
+   * Initialize fog particle system for weather types 2-4 (fog, storms)
+   * @param {number} weatherType - Weather type (2=fog, 3=storm, 4=heavy storm)
+   */
+  initFogParticles (weatherType) {
+    if (this.fogParticles && this.fogParticles.length > 0) return
+    
+    this.fogParticles = []
+    this.fogParticleCount = weatherType === 2 ? 30 : (weatherType === 3 ? 50 : 70)
+    this.fogType = weatherType
+    this.fogTimer = 0
+    
+    // Create fog particles
+    for (let i = 0; i < this.fogParticleCount; i++) {
+      this.fogParticles.push({
+        x: random(640),
+        y: random(480),
+        speedX: (random(200) - 100) / 100, // -1 to 1
+        speedY: (random(100) - 50) / 100,  // -0.5 to 0.5
+        alpha: random(100) / 255 * 0.5,    // 0-0.5 alpha
+        size: 10 + random(30),             // 10-40px
+        driftDirection: random(16)         // Wind direction influence
+      })
+    }
+    
+    // Start fog animation loop
+    if (!this.fogAnimationId) {
+      this.fogAnimationId = setInterval(() => this.updateFogParticles(), 50)
+    }
+  }
+
+  /**
+   * Update fog particle positions
+   */
+  updateFogParticles () {
+    if (!this.fogParticles || this.fogParticles.length === 0) return
+    
+    const wind = g.globals.weather
+    const windDir = wind.getWindDirection()
+    const windSpeed = wind.getWindspeed()
+    
+    for (const particle of this.fogParticles) {
+      // Apply wind influence
+      const windAngle = (windDir - 1) * 22.5 * Math.PI / 180
+      const windForce = (wind.getWindspeed() || 0) * 0.5
+      
+      particle.x += particle.speedX + Math.cos(windAngle) * windForce
+      particle.y += particle.speedY + Math.sin(windAngle) * windForce
+      
+      // Wrap around screen
+      if (particle.x < -50) particle.x = 690
+      else if (particle.x > 690) particle.x = -50
+      if (particle.y < -50) particle.y = 530
+      else if (particle.y > 530) particle.y = -50
+      
+      // Pulsate alpha for organic feel
+      particle.alpha = 0.2 + Math.sin(Date.now() * 0.003 + particle.size) * 0.3
+    }
+  }
+
+  /**
+   * Clear fog particles
+   */
+  clearFogParticles () {
+    if (this.fogAnimationId) {
+      clearInterval(this.fogAnimationId)
+      this.fogAnimationId = null
+    }
+    this.fogParticles = []
+    this.fogType = 0
+  }
+
+  kill () {
+    this.wind.kill()
+    this.waves.kill()
+    this.clearFogParticles()
+    return 0
   }
 }
 

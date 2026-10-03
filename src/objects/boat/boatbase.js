@@ -200,7 +200,7 @@ kill () {
 
 /**
  * Drives the on-screen compass for a map object with CustomObject = 'Compass'.
- * The compass sprite points to the object location.
+ * The compass sprite points to the object location with smooth needle rotation.
  */
 export class ObjectCompassScript {
   constructor (sp, objectLoc) {
@@ -208,6 +208,8 @@ export class ObjectCompassScript {
     this.objectLoc = objectLoc
     this.visible = 0
     this.direction = 0
+    this.targetDirection = 0
+    this.rotationSpeed = 0.15 // Smooth rotation interpolation factor
   }
 
   init () {
@@ -220,9 +222,17 @@ export class ObjectCompassScript {
     if (!this.visible) return
 
     // Calculate direction from boat to compass object
-    const diff = pointSub(this.objectLoc, boatLoc)
-    const angle = Math.atan2(diff.x, diff.y) * 180 / Math.PI
-    this.direction = correctDirection(Math.round(angle / 22.5) + 1)
+    const diffVec = pointSub(this.objectLoc, boatLoc)
+    const angle = Math.atan2(diffVec.x, diffVec.y) * 180 / Math.PI
+    this.targetDirection = correctDirection(Math.round(angle / 22.5) + 1)
+
+    // Smooth rotation interpolation
+    let dirDiff = this.targetDirection - this.direction
+    if (dirDiff > 8) dirDiff -= 16
+    else if (dirDiff < -8) dirDiff += 16
+    
+    this.direction += dirDiff * this.rotationSpeed
+    this.direction = correctDirection(Math.round(this.direction))
 
     // Update compass sprite (needle sprite)
     const needleSP = this.SP + 1 // Needle is SP+1
@@ -249,7 +259,7 @@ export class ObjectCompassScript {
  * ---------------------------------------------------------------------- */
 
 /**
- * Handles medal display in the HUD.
+ * Handles medal display in the HUD with sparkle animation.
  */
 export class MedalScript {
   constructor (sp, medalId) {
@@ -257,6 +267,9 @@ export class MedalScript {
     this.medalId = medalId
     this.visible = 0
     this.frameCounter = 0
+    this.sparklePhase = 0
+    this.sparkleTimer = 0
+    this.sparkleInterval = 60 // Frames between sparkles
   }
 
   init () {
@@ -272,7 +285,30 @@ export class MedalScript {
   }
 
   loop () {
-    // Could animate medal sparkle here
+    if (!this.visible) return
+
+    // Sparkle animation
+    this.sparkleTimer++
+    if (this.sparkleTimer >= this.sparkleInterval) {
+      this.sparkleTimer = 0
+      this.sparklePhase = (this.sparklePhase + 1) % 4
+      
+      // Toggle between medal frame and sparkle frame
+      const baseMember = g.dir.findMember('05.DXR', 'medal' + this.medalId)
+      if (this.sparklePhase === 0) {
+        // Show sparkle variant (assuming medal + _sparkle = sparkle variant)
+        const sparkleMember = g.dir.findMember('05.DXR', 'medal' + this.medalId + '_sparkle')
+        if (sparkleMember) {
+          g.dir.setMemberByName(this.SP, sparkleMember)
+        } else {
+          g.dir.setMemberByName(this.SP, this.medalId)
+        }
+      } else {
+        g.dir.setMemberByName(this.SP, 'medal' + this.medalId)
+      }
+    }
+    
+    this.frameCounter++
   }
 
   show (yesNo) {
