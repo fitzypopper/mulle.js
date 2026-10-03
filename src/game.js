@@ -19,6 +19,7 @@ import AlbumState from 'scenes/album'
 import DiplomaState from 'scenes/diploma'
 
 import WorldState from 'scenes/world'
+import MissionState from 'scenes/mission'
 
 import FiggeFerrumState from 'scenes/figgeferrum'
 import RoadDogState from 'scenes/roaddog'
@@ -112,6 +113,21 @@ class MulleGame extends Phaser.Game {
 
       66: 'plugin',
 
+      70: 'mission70',
+      71: 'mission71',
+      76: 'mission76',
+      77: 'mission77',
+      78: 'mission78',
+      79: 'mission79',
+      80: 'mission80',
+      81: 'mission81',
+      83: 'mission83',
+      84: 'mission84',
+      85: 'mission85',
+      86: 'mission86',
+      87: 'mission87',
+      88: 'mission88',
+
       82: 'mudcar',
       83: 'treecar',
       84: 'roadthing',
@@ -145,6 +161,21 @@ class MulleGame extends Phaser.Game {
       diploma: DiplomaState, // 08
 
       //plugin: PluginState, // 66
+
+      mission70: MissionState,
+      mission71: MissionState,
+      mission76: MissionState,
+      mission77: MissionState,
+      mission78: MissionState,
+      mission79: MissionState,
+      mission80: MissionState,
+      mission81: MissionState,
+      mission83: MissionState,
+      mission84: MissionState,
+      mission85: MissionState,
+      mission86: MissionState,
+      mission87: MissionState,
+      mission88: MissionState,
 
       mudcar: MudCarState, // 82
       //treecar: TreeCarState, // 83
