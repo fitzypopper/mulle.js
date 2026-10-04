@@ -41,3 +41,26 @@ npm run build
 npm start
 ```
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
+## GitHub Pages
+
+The built site in `dist/` is committed to the repository so GitHub Pages can
+serve it without running the Python asset build in CI. That build needs
+`shockwaveparser` (not on PyPI) and the extracted game data, neither of which
+is available on GitHub.
+
+`.github/workflows/deploy.yml` uploads `dist/` as-is on every push to `boat`.
+
+**After changing anything in `src/`, rebuild and commit `dist/` or the live
+site will not update:**
+
+```
+npm run build-prod
+git add dist/
+git commit -m "Update dist"
+git push origin boat
+```
+
+Pages must be enabled once in the repository settings
+(**Settings → Pages → Source: GitHub Actions**). The default `GITHUB_TOKEN`
+cannot enable it for you.
