@@ -59,7 +59,7 @@ class StureStortandState extends MulleState {
       sture.talk('88d005v0', () => {
         // men så bra, den kommer nog väl till pass
         mulle.talk('88d006v0', () => {
-          game.time.events.add(Phaser.Timer.SECOND * 1, () => {
+          this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
             this.game.state.start('world')
           })
         })
@@ -82,14 +82,14 @@ class StureStortandState extends MulleState {
         if (!hasTank) {
           // tja, jag kan ju försöka hjälpa till
           mulle.talk('88d003v0', () => {
-            game.time.events.add(Phaser.Timer.SECOND * 1, () => {
+            this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
               this.game.state.start('world')
             })
           })
         } else {
           // jajamänsan, såklart
           mulle.talk('88d004v0', () => {
-            game.time.events.add(Phaser.Timer.SECOND * 1, () => {
+            this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
               this.game.state.start('world')
             })
           })

@@ -31,7 +31,7 @@ class DirectorHelper {
    * @param {string|int} castNumber Cast number
    * @returns {Phaser.Frame}
    */
-  static getSpriteSheetImage(spriteSheetKey, castNumber) {
+  static getSpriteSheetImage(spriteSheetKey, castNumber, game) {
     const spriteSheet = game.cache.getImage(spriteSheetKey, true)
     for (const frame of spriteSheet.frameData.getFrames()) {
       if (frame.dirNum === castNumber) {
@@ -55,7 +55,7 @@ class DirectorHelper {
     var keys = this.game.cache.getKeys(Phaser.Cache.IMAGE)
 
     for (const k in keys) {
-      var spriteSheet = game.cache.getImage(keys[k], true)
+      var spriteSheet = this.game.cache.getImage(keys[k], true)
       var frames = spriteSheet.frameData.getFrames()
 
       for (const f in frames) {
@@ -84,7 +84,7 @@ class DirectorHelper {
     var keys = this.game.cache.getKeys(Phaser.Cache.IMAGE)
 
     for (var k in keys) {
-      var img = game.cache.getImage(keys[k], true)
+      var img = this.game.cache.getImage(keys[k], true)
 
       var frames = img.frameData.getFrames()
 

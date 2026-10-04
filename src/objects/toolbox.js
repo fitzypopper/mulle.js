@@ -28,7 +28,7 @@ class MulleToolbox extends MulleSprite {
     this.events.onInputOver.add(() => {
       // console.log('hover');
 
-      game.add.tween(this).to({
+      this.game.add.tween(this).to({
         x: this.startX - 40,
         y: this.position.y
         // direction: msg.d,
@@ -40,7 +40,7 @@ class MulleToolbox extends MulleSprite {
     this.events.onInputOut.add(() => {
       // console.log('hover');
 
-      game.add.tween(this).to({
+      this.game.add.tween(this).to({
         x: this.startX,
         y: this.position.y
         // direction: msg.d,

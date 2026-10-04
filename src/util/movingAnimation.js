@@ -120,7 +120,7 @@ class movingAnimation {
   setNextFrame () {
     this.setFrame(this.currentFrame + 1)
     if (this.currentFrame + 1 < this.frameCount) {
-      game.time.events.add(this.delay, this.setNextFrame, this)
+      this.game.time.events.add(this.delay, this.setNextFrame, this)
     } else {
       if (this.destroy)
         this.sprite.destroy()

@@ -20,7 +20,7 @@ class MulleState extends Phaser.State {
       this.cutscene.setDirectorMember('00.CXT', this.game.mulle.activeCutscene)
       this.game.add.existing(this.cutscene)
 
-      this.progress = game.add.graphics(0, 0)
+      this.progress = this.game.add.graphics(0, 0)
     }
   }
 

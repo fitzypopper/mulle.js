@@ -64,7 +64,7 @@ class SaftfabrikState extends MulleState {
             garson.talk('87d005v0', () => {
               // uppfattat
               mulle.talk('87d006v0', () => {
-                game.time.events.add(Phaser.Timer.SECOND * 1, () => {
+                this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
                   this.game.state.start('world')
                 })
               })
@@ -76,7 +76,7 @@ class SaftfabrikState extends MulleState {
       } else {
         // nja
         mulle.talk('87d003v0', () => {
-          game.time.events.add(Phaser.Timer.SECOND * 1, () => {
+          this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
             this.game.state.start('world')
           })
         })
