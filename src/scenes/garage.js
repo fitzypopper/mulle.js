@@ -10,6 +10,7 @@ class GarageState extends MulleState {
   }
 
   create () {
+    super.create()
     this.game.mulle.addAudio('garage')
 
     // Background: 03.DXR member 1 = 03b001v1 (640x480)

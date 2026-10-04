@@ -8,6 +8,7 @@ class JunkState extends MulleState {
   }
 
   create () {
+    super.create()
     this.game.mulle.addAudio('junk')
 
     // Background: 02.DXR member 1 = 02b001v1 (640x480)
