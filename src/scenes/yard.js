@@ -27,9 +27,12 @@ class YardState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Mulle at quay (member 66) - simplified as sprite for now
-    this.mulle = new MulleSprite(this.game, 320, 320)
-    this.mulle.setDirectorMember('04.DXR', 66)
+    // Mulle. spriteList maps #Mulle -> channel 66, loc (557,327) per the score.
+    // His idle frame is 00a001v0 (76x198, regpoint 9,80) - the score records
+    // sprite 66 as exactly 76x198, and the Lingo sets it via
+    // `setAnimFirstFrame "00a001v0"` -> bounds (548,247)-(624,445).
+    this.mulle = new MulleSprite(this.game, 557, 327)
+    this.mulle.loadDirectorTexture('00a001v0')
     this.game.add.existing(this.mulle)
 
     // Navigation hotspots from decompiled Lingo:
@@ -39,8 +42,8 @@ class YardState extends MulleState {
     // 4. Pole (rect 477, 331, 509, 379) -> World (with animation)
     // 5. PhotoBook (rect 554, 115, 592, 157) -> album/photo
     // 6. Camera (rect 550, 184, 587, 230) -> camera
-    // 7. Radio (rect 554, 115, 592, 157 area) -> radio dialog
-    // 8. Windmeter (rect 554, 115 area) -> wind report
+    // 7. Windmeter (rect 479, 18, 536, 70) -> wind report (mouseObject 204)
+    //    Note: the original has no Radio hotspot - the radio sprite is its own button.
 
     this.hotspots = [
       // Shipyard/Garage entrance (left edge)
@@ -55,8 +58,6 @@ class YardState extends MulleState {
       { rect: [554, 115, 592, 157], target: 'album', label: 'PhotoBook', cursor: 'point' },
       // Camera
       { rect: [550, 184, 587, 230], target: 'camera', label: 'Camera', cursor: 'point' },
-      // Radio
-      { rect: [554, 115, 592, 157], target: 'radio', label: 'Radio', cursor: 'point' },
     ]
 
     this.hotspotGfx = []
@@ -72,18 +73,23 @@ class YardState extends MulleState {
       this.hotspotGfx.push(gfx)
     })
 
-    // Windmeter (member 9 = windmeterAnimChart)
-    this.windmeter = new MulleSprite(this.game, 100, 100)
-    this.windmeter.setDirectorMember('04.DXR', 9)
+    // Windmeter. Lingo `spriteList` maps #Windmeter -> sprite *channel* 9, whose
+    // loc is (320,240). The vane itself is member 11 (04a005v0, 55x50,
+    // regpoint -160,221), so it lands at bounds (480,19,535,69) - a 1px match for
+    // the original hotspot rect(479,18,536,70).
+    // `setWindMeter` drives frames 11..16 via #Speed1..#Speed6.
+    this.windmeter = new MulleSprite(this.game, 320, 240)
+    this.windmeter.setDirectorMember('04.DXR', 11)
     this.windmeter.inputEnabled = true
     this.windmeter.events.onInputUp.add(() => this.showWindReport(), this)
     this.windmeter.events.onInputOver.add(() => this.game.canvas.style.cursor = 'pointer', this)
     this.windmeter.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
     this.game.add.existing(this.windmeter)
 
-    // Radio (member 8)
-    this.radio = new MulleSprite(this.game, 570, 130)
-    this.radio.setDirectorMember('04.DXR', 8)
+    // Radio. Channel 8 at loc(320,240) with member 33 (04a006v0, 34x68,
+    // regpoint -188,88) -> bounds (508,152,542,220): mounted on the shed wall.
+    this.radio = new MulleSprite(this.game, 320, 240)
+    this.radio.setDirectorMember('04.DXR', 33)
     this.radio.inputEnabled = true
     this.radio.events.onInputUp.add(() => this.playRadio(), this)
     this.radio.events.onInputOver.add(() => this.game.canvas.style.cursor = 'pointer', this)
@@ -96,19 +102,15 @@ class YardState extends MulleState {
     this.buffa.setDirectorMember('04.DXR', 42)
     this.game.add.existing(this.buffa)
 
-    // Figge (member 3 = Figge)
-    this.figge = new MulleSprite(this.game, 500, 150)
-    this.figge.setDirectorMember('04.DXR', 3)
-    this.game.add.existing(this.figge)
+    // Figge: sprite channel 3 is empty in the original score - he only appears
+    // when checkFigge() fires the rare #doFigge event. Rendering a member here
+    // previously drew member 3 (04b003v0, a 546x89 water strip) over the scene.
 
-    // Sky/weather gradient
-    const sky = this.game.add.graphics(0, 0)
-    const skyGradient = sky.generateTexture ? sky : null
-    if (sky) {
-      sky.beginFill(0x87ceeb)
-      sky.drawRect(0, 0, 640, 200)
-      sky.endFill()
-    }
+    // Sky: Lingo `setSky` writes member "00b0" & (10+weatherType) & "v0" onto
+    // channel 1 (#Sky) at loc(320,240). Channel 1 sits *behind* everything and the
+    // yard backdrop 04b001v0 is opaque on every row, so the weather sky is fully
+    // occluded here. The old flat 0x87ceeb rectangle was a stub that was painted
+    // *last*, covering the top 200px of the backdrop and everything under it.
 
     // First-time dialog handling
     if (this.game.mulle.user.firstTimeQuay === undefined) {
@@ -211,7 +213,6 @@ class YardState extends MulleState {
     if (this.windmeter) { this.windmeter.destroy(); this.windmeter = null }
     if (this.radio) { this.radio.destroy(); this.radio = null }
     if (this.buffa) { this.buffa.destroy(); this.buffa = null }
-    if (this.figge) { this.figge.destroy(); this.figge = null }
     if (this.mulle) { this.mulle.destroy(); this.mulle = null }
     this.game.sound.stopAll()
   }
