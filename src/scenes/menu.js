@@ -1,24 +1,22 @@
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
-import MulleActor from '../objects/actor'
-import DirectorHelper from '../objects/DirectorHelper'
 
 class MenuState extends MulleState {
   preload () {
     this.game.load.pack('menu', 'assets/menu.json', null, this)
+    this.game.load.pack('sailing', 'assets/sailing.json', null, this)
+    this.game.load.pack('characters', 'assets/characters.json', null, this)
   }
 
   create () {
     this.game.mulle.addAudio('menu')
 
-    // Background: 11.DXR member 86 = 11b001v1 (640x480)
+    // Background: use sailing backdrop (05.DXR member 81 = 30n001v0 640x480)
     const background = new MulleSprite(this.game, 320, 240)
-    background.setDirectorMember('11.DXR', 86)
+    background.setDirectorMember('05.DXR', 81)
     this.game.add.existing(background)
 
-    // Border frame: 11.DXR score ch83-86 use castId 3 (member 4 = 10a001v0, 42x19)
-    // Stretched to 640x4 (top/bottom) and 4x472 (left/right) at center (320,240)
-    // We'll draw this as graphics since it's just colored lines
+    // Border frame
     const border = this.game.add.graphics(0, 0)
     border.lineStyle(4, 0x888888, 1)
     border.moveTo(0, 0)
@@ -27,14 +25,14 @@ class MenuState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Mulle body: members 125-132 (87a001v2, 02-08) 180x346
-    this.mulleBody = new MulleActor(this.game, 320, 320, 'mulleBody')
-    this.mulleBody.animations.play('still')
+    // Skip MulleActor (needs 11.DXR frames 125-143 which are missing from build)
+    // Use a simple sprite instead
+    this.mulleBody = new MulleSprite(this.game, 320, 320)
+    this.mulleBody.setDirectorMember('00.CXT', 125)  // 76x198 standing frame
     this.game.add.existing(this.mulleBody)
 
-    // Mulle head: members 133-143 (87a001v0, 10-19) ~118x128
-    this.mulleHead = new MulleActor(this.game, 320, 180, 'mulleHead')
-    this.mulleHead.animations.play('idle')
+    this.mulleHead = new MulleSprite(this.game, 320, 180)
+    this.mulleHead.setDirectorMember('00.CXT', 126)  // alternate frame
     this.game.add.existing(this.mulleHead)
 
     // Name input field (HTML overlay) - positioned like car game
