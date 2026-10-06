@@ -177,6 +177,12 @@ class MudCarState extends MulleState {
   exit() {
     this.game.state.start('world')
   }
+
+  shutdown () {
+    if (this.background_layer) { this.background_layer.destroy(true); this.background_layer = null }
+    if (this.car_layer) { this.car_layer.destroy(true); this.car_layer = null }
+    super.shutdown()
+  }
 }
 
 export default MudCarState

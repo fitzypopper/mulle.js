@@ -288,6 +288,9 @@ class AlbumState extends MulleState {
   }
 
   shutdown (game) {
+    if (this.background_layer) { this.background_layer.destroy(true); this.background_layer = null }
+    if (this.album_ui) { this.album_ui.destroy(true); this.album_ui = null }
+    if (this.medals) { this.medals.destroy(true); this.medals = null }
     this.cutscene = 83
     this.carName.remove()
     super.shutdown(game)
