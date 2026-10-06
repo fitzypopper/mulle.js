@@ -75,7 +75,7 @@ class GarageState extends MulleState {
     this.loopCounter = this.game.rnd.integerInRange(120, 360)
     this.firstTime = !this.game.mulle.user.firstTimeYard
 
-    this.game.time.events.loop(Phaser.Timer.SECOND / 15, this.updateLoop, this)
+    this.updateLoopTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 15, this.updateLoop, this)
   }
 
   checkGifts () {
@@ -169,6 +169,10 @@ class GarageState extends MulleState {
   }
 
   shutdown () {
+    if (this.updateLoopTimer) {
+      this.game.time.events.remove(this.updateLoopTimer)
+      this.updateLoopTimer = null
+    }
     this.hotspotGfx.forEach(g => g.destroy())
     this.hotspotGfx = []
     if (this.giftGfx) { this.giftGfx.destroy(); this.giftGfx = null }

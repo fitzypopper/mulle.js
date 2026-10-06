@@ -141,7 +141,7 @@ class YardState extends MulleState {
     this.game.mulle.playAudio('04d001v0')
 
     // Loop timer for random chatter
-    this.game.time.events.loop(Phaser.Timer.SECOND / 15, this.updateLoop, this)
+    this.updateLoopTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 15, this.updateLoop, this)
   }
 
   navigate (hs) {
@@ -206,6 +206,10 @@ class YardState extends MulleState {
   }
 
   shutdown () {
+    if (this.updateLoopTimer) {
+      this.game.time.events.remove(this.updateLoopTimer)
+      this.updateLoopTimer = null
+    }
     if (this.hotspotGfx) {
       this.hotspotGfx.forEach(g => g.destroy())
       this.hotspotGfx = []
