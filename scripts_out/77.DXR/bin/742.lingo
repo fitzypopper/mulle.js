@@ -1,0 +1,6 @@
+on exitFrame 
+    global gDir
+            
+    primaTrip(gDir)    
+end exitFrame
+

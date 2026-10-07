@@ -1,0 +1,207 @@
+on beginSprite me
+        
+    set_property("Mode", Wait);                
+    set_property("leftBorder", (250 + 200));                
+    set_property("rightBorder", (300 + 200));            
+    set_property("SP", the me.spriteNum );                
+    sendSprite(the SP, setAnimNormal)                    
+    sendSprite(the currentSpriteNum, setAnimChart, "Buffa")        
+    set_property("BuffaFreezed", 0);    
+end beginSprite
+
+on exitFrame me
+            
+    if (not the BuffaFreezed) then                
+        ERROR: I don't know to implement the copy command! :(                        
+        if (the Mode = Wait) then                                                                        
+            if (random(100) = 1) then                                                                
+                randomMove(me, 4)
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(
+    end if
+    
+end exitFrame
+
+on randomMove me, maxRnd
+
+    repeat while TRUE
+                
+        if not 1 then exit repeat                
+        put 0 into tempMode                                
+        ERROR: I don't know to implement the copy command! :(                        
+        if (random(maxRnd) = 1) then                                    
+            ERROR: Missing subcommand! (0x06) :(                                    
+            if (13 < the rightBorder) then                                
+                put WalkRightStart into tempMode
+                the SP
+            end if
+            
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = 2) then                                                
+                ERROR: Missing subcommand! (0x06) :(                                                
+                if (13 > the leftBorder) then                                        
+                    put WalkLeftStart into tempMode                                                                                                                                                                                                        
+                    sendSprite(the SP, setAnimLoc, point(-330, 0), 1)
+                    the SP
+                end if
+                
+
+            else
+                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK = 3) then                                        
+                    put Talk into tempMode                    
+
+                else
+                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = 4) then                                                
+                        put GetDown into tempMode
+                    end if
+                end if
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(                                
+        if symbolp(tempMode) then                        
+            set_property("Mode", tempMode);            
+
+            exit repeat
+        end if
+    end if
+    
+
+end repeat
+end repeat
+
+sendSprite(the SP, setAnimAction, the Mode)
+end randomMove
+
+on mouseUp me
+            
+    if (not the BuffaFreezed) then                                
+        if (the Mode = Wait) then                                                
+            randomMove(me, 3)            
+
+        else
+                                                
+            if (the Mode = Sleep) then                                
+                set_property("Mode", GetUp);                                                                                
+                sendSprite(the SP, setAnimAction, the Mode)
+            end if
+        end if
+    end if
+    
+end mouseUp
+
+on Stopped me
+        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the Mode = WalkRightStart) then                
+        put WalkRight into tempMode        
+
+    else
+        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (ERROR_EMPTY_STACK = WalkRight) then                                                                        
+            if (random(2) > 1) then                                
+                put WalkRightStop into tempMode                
+
+            else
+                                                
+                ERROR: Missing subcommand! (0x06) :(                                                
+                if (13 < the rightBorder) then                                                                                                                                                                                    
+                    sendSprite(the SP, setAnimLoc, point(80, 0), 1)                                        
+                    put WalkRight into tempMode                    
+                    the SP
+
+                else
+                                        
+                    put WalkRightStop into tempMode
+                end if
+            end if
+            
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = WalkRightStop) then                                                                                                                                                
+                sendSprite(the SP, setAnimLoc, point(200, 0), 1)                                
+                put Wait into tempMode                
+
+            else
+                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK = WalkLeftStart) then                                        
+                    put WalkLeft into tempMode                    
+
+                else
+                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = WalkLeft) then                                                                                                                                                
+                        if (random(2) > 1) then                                                        
+                            put WalkLeftStop into tempMode                            
+
+                        else
+                                                                                    
+                            ERROR: Missing subcommand! (0x06) :(                                                                                    
+                            if (13 > the leftBorder) then                                                                                                                                                                                                                                                                                                                                
+                                sendSprite(the SP, setAnimLoc, point(-80, 0), 1)                                                                
+                                put WalkLeft into tempMode                                
+                                the SP
+
+                            else
+                                                                
+                                put WalkLeftStop into tempMode
+                            end if
+                        end if
+                        
+
+                    else
+                        
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (ERROR_EMPTY_STACK = WalkLeftStop) then                                                        
+                            put Wait into tempMode                                                                                                                                                                                                                                                            
+                            sendSprite(the SP, setAnimLoc, point(140, 0), 1)                            
+
+                        else
+                            
+                            ERROR: I don't know to implement the copy command! :(                                                                                    
+                            if (ERROR_EMPTY_STACK = GetDown) then                                                                
+                                put Sleep into tempMode                                
+
+                            else
+                                
+                                ERROR: I don't know to implement the copy command! :(                                                                                                
+                                if (ERROR_EMPTY_STACK = Sleep) then                                                                                                                                                                                                                        
+                                    if (random(30) = 1) then                                                                                
+                                        put GetUp into tempMode                                        
+
+                                    else
+                                                                                
+                                        put Sleep into tempMode
+                                    end if
+                                    
+
+                                else
+                                                                        
+                                    put Wait into tempMode
+                                end if
+                            end if
+                        end if
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(        
+    set_property("Mode", tempMode);                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end Stopped
+

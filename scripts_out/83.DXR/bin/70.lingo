@@ -1,0 +1,5 @@
+on exitFrame 
+            
+    go("infiniteJustDoIt2")    
+end exitFrame
+

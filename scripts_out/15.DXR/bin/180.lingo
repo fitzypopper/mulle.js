@@ -1,0 +1,8 @@
+on mouseUp 
+    global gSound
+            
+    stopAllEffects(gSound)                    
+    play(gSound, "15e002v0", OPEFFECT)            
+    go("MainMenu")    
+end mouseUp
+

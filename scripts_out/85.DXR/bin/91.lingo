@@ -1,0 +1,5 @@
+on CuePassed theChannel, theNumber, theName
+                        
+    go((the frame + 1))    
+end CuePassed
+

@@ -1,0 +1,111 @@
+on keyDown 
+    global gDir
+    global gDir
+    global gDir
+    global gDir
+    global gDir
+    global gDir
+    global gDir
+    global gDir
+                
+    if objectp(gDir) then                
+        systemKeys()                        
+        if the gDir.gotKeyPoll  then            
+
+            exit
+
+        end if
+                        
+        put the key into tmpKey                        
+        put keyCode into tmpCode                                
+        if (tmpCode = 123) then                                                            
+            key(gDir, left, NA)            
+
+        else
+                                                
+            if (tmpCode = 124) then                                                                                
+                key(gDir, right, NA)                
+
+            else
+                                                                
+                if (tmpKey = "-") then                                                                                                    
+                    key(gDir, 2, 1)                    
+
+                else
+                                                                                
+                    if (tmpKey = ".") then                                                                                                                                                
+                        key(gDir, 2, -1)                        
+
+                    else
+                                                                                                
+                        if (tmpKey = "<") then                                                                                                                                            
+                            key(gDir, 1, 1)                            
+
+                        else
+                                                                                                                
+                            if (tmpKey = "z") then                                                                                                                                                                                                
+                                key(gDir, 1, -1)                                
+
+                            else
+                                                                                                                                
+                                if (tmpKey = "f") then
+                                end if
+                            end if
+                        end if
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+end keyDown
+
+on keyUp 
+    global gDir
+    global gDir
+                
+    if objectp(gDir) then                                        
+        key(gDir, 0, Release)
+    end if
+    
+end keyUp
+
+on KeyPoll 
+            
+    put bgAllKeys() into tmp        
+    put 0 into tmpLeftRight        
+    put 0 into tmpUpDown                                        
+    if (getPos(tmp, 37) or getPos(tmp, 123)) then                
+        put left into tmpLeftRight        
+
+    else
+                                                                                
+        if (getPos(tmp, 39) or getPos(tmp, 124)) then                        
+            put right into tmpLeftRight
+        end if
+    end if
+                                        
+    if (getPos(tmp, 38) or getPos(tmp, 126)) then                
+        put up into tmpUpDown        
+
+    else
+                                                                                
+        if (getPos(tmp, 40) or getPos(tmp, 125)) then                        
+            put down into tmpUpDown
+        end if
+    end if
+                        
+    key(gDir, tmpLeftRight, tmpUpDown)    
+end KeyPoll
+
+on mouseDown 
+    global gDir
+    global gDir
+                
+    if objectp(gDir) then                                        
+        mouse(gDir, 0, down)                
+        pass()
+    end if
+    
+end mouseDown
+

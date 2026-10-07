@@ -1,0 +1,14 @@
+on mouseUp 
+        
+    put the movieName into myname                
+    if (myname contains ".exe") then                        
+        open("LBmenu.exe")                
+        halt()        
+
+    else
+                                
+        go(1, "LBprofil")
+    end if
+    
+end mouseUp
+

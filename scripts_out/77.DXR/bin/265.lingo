@@ -1,0 +1,14 @@
+on beginSprite me
+    global gDir
+                    
+    if (the gDir.deliverMap  = 1) then                        
+        put 0 into gDir.deliverMap                         
+        go("deliverMapRing")        
+
+    else
+                                                
+        go((the frame + 1))
+    end if
+    
+end beginSprite
+

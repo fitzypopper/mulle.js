@@ -1,0 +1,73 @@
+on new me
+                            
+    set_property("spriteList", transpose(<BoatStart, 6, Sky, 1));                                
+    set_property("canList", <"81b005v1", "81b005v2", "81b005v3", "81b005v4", "81b005v5");                                
+    put <10, 15, 25, 35, 40 into weightList                
+    put random(5) into tmpRnd                    
+    set_property("rottenFishWeight", getAt(weightList, tmpRnd));                            
+    ERROR: Missing subcommand! (0x06) :(            
+    return(me)    
+    37
+    getAt(the canList, tmpRnd)
+    73
+end new
+
+on init me
+    global gMulleGlobals
+                
+    ERROR: Missing subcommand! (0x04) :(                
+    setSky(the gMulleGlobals.weather )                        
+    drawBoat(point(200, 165))            
+    cursor(200)    
+    1
+    55
+    1
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 81 into objId
+    end if
+                    
+    updateProperties(the the gMulleGlobals.user .boat )                        
+    put getCurrentLoadCapacity(the the gMulleGlobals.user .boat ) into tmpCapacity                
+    put random(2) into tmpSuffix            
+    put the rottenFishWeight            
+    put tmpCapacity                        
+    if isInInventory(the gMulleGlobals.user , RottenFish) then                
+        set_property("myMarker", "notDelivered");        
+
+    else
+                                
+        if (tmpCapacity >= the rottenFishWeight) then                                                
+            set_property("myMarker", ("JustDoIt" & tmpSuffix));                                                
+            if (the rottenFishWeight >= 35) then                                                                                                
+                addMedal(the the gMulleGlobals.user .boat , 3)                                                                                                
+                set_property("myMarker", (("JustDoIt" & "medal") & tmpSuffix));
+            end if
+                                                            
+            addCompletedMission(the gMulleGlobals.user , 9)                                                                                    
+            setInInventory(the gMulleGlobals.user , RottenFish, transpose(<))            
+
+        else
+                                                
+            set_property("myMarker", ("cantDoIt" & tmpSuffix));
+        end if
+    end if
+            
+    put the myMarker            
+    go(the myMarker)    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

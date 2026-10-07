@@ -1,0 +1,11 @@
+on enterFrame 
+    global gMulleGlobals
+                
+    loop(the gMulleGlobals.loopMaster )    
+end enterFrame
+
+on exitFrame 
+                
+    go(the frame)    
+end exitFrame
+

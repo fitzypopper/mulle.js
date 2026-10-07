@@ -1,0 +1,132 @@
+on new me
+            
+    cursor(200)                                                                    
+    set_property("spriteList", transpose(<EnterField, 14, ScrollMain, 22, MulleBody, 5, MulleHead, 6, Buffa, 8, Loading, 114, Cover, 113));        
+    set_property("OKToEnd", 0);            
+    return(me)    
+end new
+
+on init me
+            
+    put 0 into the UNKNOWN_PROPERTY_39    
+end init
+
+on startMovie me
+    global gMulleGlobals
+            
+    put "10" into gMulleGlobals.WhereFrom                 
+    sendSprite(115, C_Standard)            
+    go(next)                                            
+    sendSprite(getProp(the spriteList, ScrollMain), setText, getUsers(the gMulleGlobals.users ))                                    
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    member("Dummy")
+    getProp(the spriteList, Cover)
+end startMovie
+
+on makeOKToEnd me
+        
+    set_property("OKToEnd", 1);    
+end makeOKToEnd
+
+on tryToLeave me
+                    
+    put the member("EnterField").text  into tempStr
+    repeat while TRUE
+                
+        if 1 then                                                                                                                                                            
+            if (char 1 of tempStr = " ") then                                                                                                                                                                
+                delete char 1 of tempStr                
+
+            else
+                
+
+            else
+                
+
+                repeat while TRUE
+                                        
+                    if 1 then                                                                        
+                        ERROR: Missing subcommand! (0x00) :(                                                                        
+                        if (12 = " ") then                                                                                                                                                                                                                                                                                        
+                            delete char 35536 of tempStr                            
+                            tempStr
+
+                        else
+                            
+
+                        else
+                            
+
+                            repeat while TRUE
+                                                                
+                                if not 1 then exit repeat                                                                                                                                                                
+                                put offset(return, tempStr) into tempOff                                                                
+                                if tempOff then                                                                                                                                                                                                                                                                                                                                                                        
+                                    delete char tempOff of tempStr                                    
+
+                                else
+                                    
+
+                                    exit repeat
+                                end if
+                            end if
+                            
+
+                        end repeat
+                    end repeat
+                                                                                
+                    if length(tempStr) then                                                                                                                                                                                                
+                        sendSprite(getProp(the spriteList, ScrollMain), AddLine, tempStr)
+                    end if
+                    
+end tryToLeave
+
+on resultsFromScroller me, type, theStr
+    global gMulleGlobals
+                
+    if (type = ChoseLine) then                                
+        put "Login:", theStr                                                                
+        if (login(the gMulleGlobals.users , theStr) = Ok) then                                    
+            save(gMulleGlobals)                                    
+            go("IntroStart")                        
+            set_property("OKToEnd", 1);            
+
+        else
+                                    
+            alert "Problem finding member. Try again."
+        end if
+        
+
+    else
+                                
+        if (type = NewLine) then                                                
+            put "Entered a new name:", theStr                                                                                                
+            if (login(the gMulleGlobals.users , theStr) = Ok) then                                                
+                save(gMulleGlobals)                                                
+                go("IntroStart")                                
+                set_property("OKToEnd", 1);                
+
+            else
+                                                                                                                                
+                sendSprite(getProp(the spriteList, ScrollMain), deleteLine, theStr)                                                
+                alert "Problem creating member. Try again."
+            end if
+            
+
+        else
+                                                
+            if (type = DeletedLine) then                                                                
+                put "Deleted a name:", theStr                                                                                
+                deleteUser(the gMulleGlobals.users , theStr)
+            end if
+        end if
+    end if
+    
+end resultsFromScroller
+
+on kill me
+            
+    return(0)    
+end kill
+

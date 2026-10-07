@@ -1,0 +1,72 @@
+on exitFrame 
+                                    
+    ERROR: Missing subcommand! (0x06) :(    
+    33
+    point(the mouseH, the mouseV)
+    the currentSpriteNum
+end exitFrame
+
+on C_Standard me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_Standard"
+    the currentSpriteNum
+end C_Standard
+
+on c_grab me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_Grab"
+    the currentSpriteNum
+end c_grab
+
+on c_Left me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_Left"
+    the currentSpriteNum
+end c_Left
+
+on c_MoveLeft me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_MoveLeft"
+    the currentSpriteNum
+end c_MoveLeft
+
+on c_click me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_Click"
+    the currentSpriteNum
+end c_click
+
+on c_MoveIn me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_MoveIn"
+    the currentSpriteNum
+end c_MoveIn
+
+on C_Right me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_Right"
+    the currentSpriteNum
+end C_Right
+
+on c_MoveRight me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "C_MoveRight"
+    the currentSpriteNum
+end c_MoveRight
+

@@ -1,0 +1,22 @@
+on beginSprite me
+                                                                            
+    set_property("SPlist", <"n02", "n03", "n04", "n05", "n06", "n17", "n16", "n07", "n08", "n09", "n10", "n11", "n12", "n13", "n14", "n15");                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "n01"
+    11
+end beginSprite
+
+on CuePassed whichChannel, cuePointNumber, cuePointName
+                            
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    getAt(the SPlist, cuePointName)
+    11
+end CuePassed
+
+on exitFrame 
+                
+    go(the frame)    
+end exitFrame
+

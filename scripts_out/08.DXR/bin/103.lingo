@@ -1,0 +1,7 @@
+on exitFrame me
+    global gDir
+            
+    put the frameLabel into gDir.returnTo             
+    go(1)    
+end exitFrame
+

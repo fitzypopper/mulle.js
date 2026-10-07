@@ -1,0 +1,10 @@
+on beginSprite me
+    global gDir
+                        
+    put getProp(the gDir.spriteList , MulleHead) into headSP    
+end beginSprite
+
+on Stopped me
+    
+end Stopped
+

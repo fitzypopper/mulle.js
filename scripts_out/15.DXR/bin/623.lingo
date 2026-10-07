@@ -1,0 +1,58 @@
+on new me
+    global gMulleGlobals
+                                    
+    set_property("spriteList", transpose(<CurrentHull, 7, CurrentRudder, 8, rollOver, 10));                        
+    set_property("FirstTime", getaProp(the gMulleGlobals.firstTimeList , BluePrint));                    
+    if (not voidp(the FirstTime)) then                
+        if the FirstTime then                                                                        
+            setaProp(the gMulleGlobals.firstTimeList , BluePrint, 0)
+        end if
+        
+
+    else
+                
+        set_property("FirstTime", 0);
+    end if
+            
+    safePreload("15e001v0")            
+    safePreload("15e002v0")            
+    safePreload("15e004v0")            
+    safePreload("15e005v0")            
+    safePreload("00e110v0")            
+    return(me)    
+end new
+
+on init me
+                
+    stopAll(gSound)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+                    
+    put getCurrentHullType(the gMulleGlobals.boatViewHandler ) into tmpHull                
+    if (tmpHull <> NoType) then                        
+        if the gMulleGlobals.gotNewHull  then                                    
+            put 0 into gMulleGlobals.gotNewHull             
+
+        else
+                                                            
+            go(string(tmpHull))
+        end if
+        
+
+    else
+                        
+        put the gMulleGlobals.user  into tmpUser                                                                                                                                
+        if (isInInventory(tmpUser, Blueprint1) and (not (isInInventory(tmpUser, Blueprint2) or isInInventory(tmpUser, BluePrint3)))) then                                    
+            go("Small")
+        end if
+    end if
+    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

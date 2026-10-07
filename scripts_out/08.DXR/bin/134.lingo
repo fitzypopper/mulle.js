@@ -1,0 +1,24 @@
+on beginSprite me
+                
+    if (the direction = up) then                        
+        set_property("direction", -1);        
+
+    else
+                
+        set_property("direction", 1);
+    end if
+    
+end beginSprite
+
+on mouseUp me
+    global gDir
+                                    
+    sendSprite(getProp(the gDir.spriteList , Scroller), scroll, the direction)    
+end mouseUp
+
+on getPropertyDescriptionList me
+                                                                    
+    put transpose(<direction, transpose(<comment, "Direction: ", format, symbol, range, <up, down, default, up)) into p            
+    return(p)    
+end getPropertyDescriptionList
+

@@ -1,0 +1,86 @@
+on mouseUp me
+    global gSound
+                    
+    play(gSound, "SndMouseClick", EFFECT)            
+    print(me)    
+end mouseUp
+
+on print me
+    global gDir
+    global gMulleGlobals
+                        
+    register(xtra("PrintOMatic"), "PMAT156-189-17671")                        
+    put new(xtra("PrintOMatic")) into doc                    
+    if (not objectp(doc)) then                
+        unloadMember()                                                
+        put new(xtra("PrintOMatic")) into doc                                        
+        if (not objectp(doc)) then                                                            
+            alert "Unable to contact printer", the freeBlock            
+
+            exit
+
+        end if
+    end if
+                                
+    sendSprite(getProp(the gDir.spriteList , Scroller), ScrollToMid)        
+    updateStage()                                    
+    setMargins(doc, rect(20, 20, 20, 20))            
+    newPage(doc)                
+    put getPageWidth(doc) into w                
+    put getPageHeight(doc) into h        
+    put 272 into carTop        
+    put 50 into carLeft        
+    put 490 into carWidth        
+    put 530 into carHeight                                                                        
+    ERROR: Missing subcommand! (0x06) :(        
+    drawStagePicture(rect(carLeft, carTop, (carLeft + carWidth), (carTop + carHeight)), getProp(the gDir.spriteList , ToBeCaptured), 34)                            
+    append(doc, member("Title"), 0)        
+    put 160 into tempTop        
+    put 130 into tempLeft                
+    put (tempTop + 40) into tempTop                                        
+    put getAt(charPosToLoc(member("08t007v0"), 1), 1) into tempOffset                                                                
+    newFrame(doc, rect((tempLeft + tempOffset), tempTop, (tempLeft + 400), (tempTop + 50)), 0)                            
+    append(doc, member("08t007v0"), 0)                
+    put (tempTop + 20) into tempTop                                        
+    put getAt(charPosToLoc(member("SavedCarName"), 1), 1) into tempOffset                                                                
+    newFrame(doc, rect((tempLeft + tempOffset), tempTop, (tempLeft + 400), (tempTop + 50)), 0)                            
+    append(doc, member("SavedCarName"), 0)        
+    put 55 into signHeight        
+    put 0 into left                
+    put (w - 1) into right        
+    put 25 into tempCorrect                                
+    put (((h - signHeight) + 40) - tempCorrect) into bottom                                                                        
+    newFrame(doc, rect(195, ((h - signHeight) - tempCorrect), (w - 100), (h - tempCorrect)), 0)                            
+    append(doc, member("08b005v0"), 0)                                            
+    drawLine(doc, point(left, 0), point(left, bottom))                                            
+    drawLine(doc, point(right, 0), point(right, bottom))                                                    
+    drawLine(doc, point(left, bottom), point((left + 185), bottom))                                                    
+    drawLine(doc, point((left + 365), bottom), point(right, bottom))        
+    put 80 into medalSpace        
+    put 50 into medalLeft        
+    put 620 into medalTop                                    
+    put <"00n001v0", "00n003v0", "00n005v0", "00n006v0", "00n008v0", "00n007v0" into tempList                                    
+    put <"08t001v0", "08t002v0", "08t003v0", "08t004v0", "08t005v0", "08t006v0" into tempText        
+    put 1 into N
+    doc
+    repeat while TRUE
+                                
+        if not (N <= 6) then exit repeat                                                        
+        if getMedal(the the gMulleGlobals.user .boat , N) then                                                                                                                                                                                                                                                                                                                        
+            newFrame(doc, rect((medalLeft + (medalSpace * (N - 1))), medalTop, ((medalLeft + (medalSpace * (N - 1))) + medalSpace), (medalTop + 80)), 0)                                                                                                            
+            append(doc, member(getAt(tempList, N)))                                                                                                                                                                                                                                                                                                                                                                                                                        
+            newFrame(doc, rect(((medalLeft + (medalSpace * (N - 1))) - 10), (medalTop + 60), (((medalLeft + (medalSpace * (N - 1))) + medalSpace) - 10), ((medalTop + 80) + 60)), 0)                                                                                                            
+            append(doc, member(getAt(tempText, N)))
+        end if
+                                
+        put (1 + N) into N        
+
+    end repeat
+                
+    cursor(-1)            
+    cursor(200)            
+    print(doc)        
+    put 0 into doc            
+    cursor(200)    
+end print
+

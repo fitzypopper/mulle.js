@@ -1,0 +1,79 @@
+on beginSprite me
+        
+    set_property("ScrollBHType", EnterField);                
+    ERROR: Missing subcommand! (0x06) :(    
+    set_property("myMember", 35);                                
+    set_property("maxWidth", getAt(the member(the myMember).rect , 3));                    
+    put " " into member(the myMember).text     
+    the me.spriteNum 
+end beginSprite
+
+on init me, theMasterSP
+        
+    set_property("masterSP", theMasterSP);    
+end init
+
+on keyDown me
+    global gJustPressedKey
+    global gMsgFromSP
+                    
+    if (the key = return) then                                                        
+        put cleanString(the member(the myMember).text ) into tempStr                                        
+        put offset(return, tempStr) into tempPos                
+        if tempPos then                                                                                                                        
+            delete char tempPos of tempStr
+        end if
+                                                
+        sendSprite(the masterSP, scroll, Match, tempStr)                                        
+        sendSprite(the masterSP, AddLine, tempStr)        
+
+    else
+                
+        put 1 into gJustPressedKey                        
+        put the me.spriteNum  into gMsgFromSP                
+        pass()
+    end if
+    
+end keyDown
+
+on GotIt me
+        
+    systemKeys()                            
+    put length(the member(the myMember).text ) into tempLength                                        
+    put getAt(charPosToLoc(member(the myMember), tempLength), 1) into tempWidth                        
+    if (tempWidth > (the maxWidth - 20)) then                                                                                        
+        delete UNKNOWN of tempLength                                
+        put (tempLength - 1) into tempLength
+        tempLength
+        repeat while TRUE
+                        
+            if not 1 then exit repeat                                                                                    
+            if (the member(the myMember).lineCount  > 1) then                                                                                                                                                                                
+                delete UNKNOWN of tempLength                                                                
+                put (tempLength - 1) into tempLength                
+                tempLength
+
+            else
+                
+
+                exit repeat
+            end if
+        end if
+        
+
+    end repeat
+end repeat
+
+put cleanString(the member(the myMember).text ) into tempStr
+if length(tempStr) then                        
+    sendSprite(the masterSP, scroll, Match, tempStr)
+end if
+
+end GotIt
+
+on getBehaviorDescription me
+                                                                                                                                                
+    put ((((((((((((((((("If you want the scrollfield to adjust to" & return) & "written text, you must add this in a global script (copy it):") & return) & return) & "on idle") & return) & "  global gJustPressedKey, gMsgFromSP") & return) & "  if (gJustPressedKey) then") & return) & "    sendSprite (gMsgFromSP, #GotIt)") & return) & "    set gJustPressedKey = FALSE") & return) & "  end if") & return) & "end") into str            
+    return(str)    
+end getBehaviorDescription
+

@@ -1,0 +1,113 @@
+on tryToUseDSound 
+    global gUseDirectSound
+    global gSystem
+    global gMulleGlobals
+    global gSound
+                
+    if voidp(gUseDirectSound) then                
+        put 1 into gUseDirectSound                                                
+        put new(xtra("FileIO")) into tmpFile                                
+        if objectp(gSystem) then                                                                                                
+            put ((the gSystem.projectPath  & the gSystem.projectName ) & ".ini") into tmpFileName            
+
+        else
+                                                
+            put (the moviePath & "Mullebat.ini") into tmpFileName
+        end if
+                                        
+        openFile(tmpFile, tmpFileName, 1)                                                
+        if (status(tmpFile) = 0) then                                                
+            put readFile(tmpFile) into tmpStr                                    
+            closeFile(tmpFile)                                                            
+            put offset("DirectSound:", tmpStr) into tmpOff                        
+            if tmpOff then                                                                                                                                                                                                                
+                put the number of lines of char 1 to tmpOff of tmpStr into tmpLineNr                                                                                                                                                                                
+                put line tmpLineNr of tmpStr into tmpLine                                                                                
+                if offset("0", tmpLine) then                                        
+                    put 0 into gUseDirectSound                                        
+                    put 0 into tmpFile                    
+
+                    exit
+
+                end if
+            end if
+            
+
+        else
+                                                
+            createFile(tmpFile, tmpFileName)                                                            
+            openFile(tmpFile, tmpFileName, 2)                                                                        
+            if (status(tmpFile) = 0) then                                                                
+                writeString(tmpFile, "DirectSound: 1")                                                
+                closeFile(tmpFile)
+            end if
+        end if
+                
+        put 0 into tmpFile        
+
+    else
+                                
+        if (gUseDirectSound = 0) then            
+
+            exit
+
+        end if
+    end if
+            
+    put the gMulleGlobals.availableXtras  into tmpXtras                                        
+    if ((the gSound.Mode  = normal) and (the machineType = 256)) then                                        
+        put offset("DirectSound", tmpXtras) into tmpOff                
+        if tmpOff then                                                                                                                                                            
+            put the number of lines of char 1 to tmpOff of tmpXtras into tmpLineNr                                                                                                                                    
+            put line tmpLineNr of tmpXtras into tmpLine                                    
+            stopAll(gSound)                                                
+            put kill(gSound) into gSound                                                            
+            if offset("OK", tmpLine) then                                                                                                                
+                put new(script("DSound"), Ok) into gSound                
+
+            else
+                                                                                                
+                put new(script("DSound")) into gSound
+            end if
+                                                            
+            if (not objectp(gSound)) then                                                
+                alert "DirectSound installed!?"                                                                                                
+                put new(script("Sound")) into gSound                                                                                                                                                                
+                delete line tmpLineNr of tmpXtras                
+
+            else
+                                                                                                                                                                                                                
+                48
+                0
+                tmpLineNr
+                0
+                0
+                0
+                0
+                0
+                0
+                ("DirectSound" & " OK")
+
+                unknown_op2(0x5a, 0x15);
+            end if
+                                    
+            put tmpXtras into gMulleGlobals.availableXtras 
+        end if
+    end if
+    
+end tryToUseDSound
+
+on useNormalSound 
+    global gSound
+                    
+    if (the gSound.Mode  = xtra) then                                
+        put kill(gSound) into gSound                                                
+        put new(script("Sound")) into gSound        
+
+    else
+                        
+        stopAll(gSound)
+    end if
+    
+end useNormalSound
+

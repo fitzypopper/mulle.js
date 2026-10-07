@@ -1,0 +1,16 @@
+on mouseUp 
+    global gSystem
+                
+    if objectp(gSystem) then                                        
+        put getaProp(gSystem, CDpath) into tmpCDPath                                
+        if stringp(tmpCDPath) then                                                                        
+            go(1, (tmpCDPath & "LBProfil"))            
+
+            exit
+
+        end if
+    end if
+                
+    go(1, "LBProfil")    
+end mouseUp
+

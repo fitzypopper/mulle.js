@@ -1,0 +1,94 @@
+on new me
+                            
+    set_property("spriteList", transpose(<BoatStart, 10, Sky, 1));            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                
+    setSky(the gMulleGlobals.weather )                        
+    drawBoat(point(315, 165))            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 18 into objId
+    end if
+        
+    if objId then                                                
+        put new(script("Object")) into tempObj                                
+        fromList(tempObj, objId)                                                                
+        put getAt(getSetWhenDone(tempObj, missions), 1) into MissionId                                                                
+        put getAt(getCheckFor(tempObj, Inventory), 1) into tmpStuffNeeded                
+        put 0 into tempObj
+    end if
+                    
+    set_property("givePart", getRandomPart(the gMulleGlobals.externalParts ));            
+    put the givePart        
+    set_property("myDummyPart", 72);                
+    put random(2) into tmpSuffix                        
+    if isMissionGiven(the gMulleGlobals.user , 1) then                                                
+        if isInInventory(the gMulleGlobals.user , tmpStuffNeeded) then                                                
+            set_property("myMarker", ("JustdoIt" & tmpSuffix));                                                            
+            deleteFromInventory(the gMulleGlobals.user , tmpStuffNeeded)                                                            
+            addCompletedMission(the gMulleGlobals.user , 1)                                                                                                            
+            if (getCompletedMissionInfo(the gMulleGlobals.user , 1, count) <= 5) then                                                                                                                                                
+                if (getCompletedMissionInfo(the gMulleGlobals.user , 1, count) = 2) then                                        
+                    set_property("givePart", 19);
+                end if
+                                                                
+                if (the givePart = NoPart) then                                                                                                                                                                                    
+                    setInInventory(the gMulleGlobals.user , Belly, transpose(<nr, 1000))                                                                                
+                    set_property("myMarker", ("JustdoItSnack" & tmpSuffix));                    
+
+                else
+                                                                                                    
+                    addNewPart(the gMulleGlobals.user , the givePart)                                                                                
+                    set_property("myMarker", ("JustdoIt" & tmpSuffix));
+                end if
+                
+
+            else
+                                                                                                                                                
+                setInInventory(the gMulleGlobals.user , Belly, transpose(<nr, 1000))                                                                
+                set_property("myMarker", ("JustdoItSnack" & tmpSuffix));
+            end if
+            
+
+        else
+                                                
+            set_property("myMarker", ("cantDoIt" & tmpSuffix));
+        end if
+        
+
+    else
+                
+        set_property("myMarker", "NoMission");
+    end if
+                                
+    if (isMissionCompleted(the gMulleGlobals.user , 20) = 0) then                                        
+        addCompletedMission(the gMulleGlobals.user , 20)                                                                
+        if (isMissionGiven(the gMulleGlobals.user , 1) = 0) then                                                            
+            addGivenMission(the gMulleGlobals.user , 1)
+        end if
+                
+        set_property("myMarker", "cantDoit2");
+    end if
+            
+    go(the myMarker)    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

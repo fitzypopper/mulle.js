@@ -1,0 +1,15 @@
+on new me
+            
+    set_property("httpWeb1", <);                        
+    do(the member("stringTable3").text )        
+    set_property("dialogWebInfo", 0);            
+    return(me)    
+end new
+
+on delete me
+            
+    set_property("httpWeb1", <);        
+    set_property("httpWeb1", 0);            
+    return(0)    
+end delete
+

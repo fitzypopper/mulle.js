@@ -1,0 +1,15 @@
+on logTest argPercent
+                
+    if (argPercent = 0) then                        
+        put -10000 into tmp        
+
+    else
+                
+        put argPercent into tmp                                                
+        put (1 / (tmp / 100.0)) into tmp                                                                                        
+        put (((-100 * log(tmp)) * 10) / 0.6931) into tmp
+    end if
+                                                            
+    put tmp, integer((1 - (power(1.1, (100 - argPercent)) / 1.3780000000000001)))    
+end logTest
+

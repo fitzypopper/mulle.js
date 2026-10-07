@@ -1,0 +1,59 @@
+on new me
+                            
+    set_property("spriteList", transpose(<BoatStart, 6, Sky, 1));            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                
+    ERROR: Missing subcommand! (0x04) :(                
+    setSky(the gMulleGlobals.weather )                        
+    drawBoat(point(320, 155))            
+    cursor(200)    
+    1
+    90
+    1
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 0 into objId
+    end if
+        
+    if objId then                                                
+        put new(script("Object")) into tempObj                                
+        fromList(tempObj, objId)                                                                
+        put getAt(getCheckFor(tempObj, Inventory), 1) into tmpStuffNeeded                
+        put 0 into tempObj
+    end if
+                        
+    if isInInventory(the gMulleGlobals.user , tmpStuffNeeded) then                                        
+        addCompletedMission(the gMulleGlobals.user , 17)                                        
+        deleteFromInventory(the gMulleGlobals.user , tmpStuffNeeded)                
+        set_property("myMarker", "JustdoIt");                                        
+        put getDrivingInfo(the gMulleGlobals.user ) into tmp                                        
+        setaProp(tmp, fuel, Full)                                        
+        setDrivingInfo(the gMulleGlobals.user , tmp)                                                                        
+        setInInventory(the gMulleGlobals.user , Belly, transpose(<nr, 1000))        
+
+    else
+                
+        set_property("myMarker", "cantdoIT");
+    end if
+            
+    go(the myMarker)    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

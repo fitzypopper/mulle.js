@@ -1,0 +1,95 @@
+on new me
+                            
+    set_property("spriteList", transpose(<BoatStart, 6, Sky, 1));        
+    set_property("myDummyPart", 68);            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                
+    setSky(the gMulleGlobals.weather )                    
+    updateProperties(the the gMulleGlobals.user .boat )                                            
+    drawBoat(point(310, 150), void(), void(), 0)            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 23 into objId
+    end if
+        
+    if objId then                                                
+        put new(script("Object")) into tempObj                                
+        fromList(tempObj, objId)                                                                
+        put getAt(getSetWhenDone(tempObj, missions), 1) into MissionId                                        
+        put getSetWhenDone(tempObj, parts) into tmpGiveParts                                        
+        put getBoat(the gMulleGlobals.user ) into tmpBoat                                                                
+        if (isMissionCompleted(the gMulleGlobals.user , 25) = 1) then                                                                        
+            if isMissionGiven(the gMulleGlobals.user , 13) then                                                                                
+                if getProperty(tmpBoat, Bench) then                                                                                                                        
+                    if isMissionCompleted(the gMulleGlobals.user , 13) then                                                                                                                        
+                        addCompletedMission(the gMulleGlobals.user , 13)                                                
+                        set_property("myMarker", "infiniteJustDoit");                                                                                                                        
+                        set_property("givePart", getRandomPart(the gMulleGlobals.externalParts ));                                                                                                                        
+                        addNewPart(the gMulleGlobals.user , the givePart)                        
+
+                    else
+                                                
+                        set_property("myMarker", "JustdoIt");                                                                                                                        
+                        addCompletedMission(the gMulleGlobals.user , 13)                                                                                                                        
+                        set_property("givePart", getAt(tmpGiveParts, 2));                                                                                                                        
+                        addNewPart(the gMulleGlobals.user , the givePart)
+                    end if
+                    
+
+                else
+                                        
+                    set_property("myMarker", "cantdoIT");
+                end if
+                
+
+            else
+                                
+                set_property("myMarker", "Done");
+            end if
+        end if
+                                                                
+        if (isMissionCompleted(the gMulleGlobals.user , 25) = 0) then                                                            
+            addCompletedMission(the gMulleGlobals.user , 25)                        
+            set_property("myMarker", "nomission");
+        end if
+                                
+        if (the myMarker = "nomission") then                                                            
+            set_property("givePart", getAt(tmpGiveParts, 1));                                    
+            put the givePart                                                            
+            addGivenMission(the gMulleGlobals.user , 13)                                                            
+            addNewPart(the gMulleGlobals.user , the givePart)                                                            
+            if getProperty(tmpBoat, Bench) then                                
+                set_property("myMarker", "justDoITluck");                                                                                
+                addCompletedMission(the gMulleGlobals.user , 13)
+            end if
+                                    
+            go("start")            
+
+        else
+                                    
+            go(the myMarker)
+        end if
+    end if
+            
+    put the myMarker    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

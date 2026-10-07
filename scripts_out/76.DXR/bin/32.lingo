@@ -1,0 +1,65 @@
+on new me
+                                            
+    set_property("spriteList", transpose(<BoatStart, 5, HullBackOffset, 39, HullFrontOffset, 50, Sky, 1));            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+    global gSound
+                
+    setSky(the gMulleGlobals.weather )                
+    ERROR: Missing subcommand! (0x04) :(                    
+    play(gSound, "76e002v1", EFFECT)                        
+    drawBoat(point(360, 155))            
+    cursor(200)    
+    1
+    150
+    1
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 0 into objId
+    end if
+                    
+    updateProperties(the the gMulleGlobals.user .boat )                    
+    put getBoat(the gMulleGlobals.user ) into tmpBoat                    
+    put getProperty(tmpBoat, FunnyFactor) into tmpFun            
+    put tmpFun                
+    if (tmpFun > 4) then                
+        set_property("myMarker", "two");                                
+        if (tmpFun > 10) then                        
+            set_property("myMarker", "three");                                                
+            if (tmpFun > 20) then                                
+                set_property("myMarker", "four");                                                                
+                if (tmpFun > 25) then                                        
+                    set_property("myMarker", "five");                                                                                                                        
+                    addMedal(the the gMulleGlobals.user .boat , 4)
+                end if
+            end if
+        end if
+        
+
+    else
+                
+        set_property("myMarker", "one");
+    end if
+                    
+    addCompletedMission(the gMulleGlobals.user , 6)            
+    put the myMarker            
+    go("Start")    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

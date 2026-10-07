@@ -1,0 +1,5 @@
+on exitFrame 
+            
+    go("story3")    
+end exitFrame
+

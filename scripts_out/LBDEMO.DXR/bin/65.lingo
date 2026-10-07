@@ -1,0 +1,5 @@
+on mouseUp 
+            
+    go("lesa&skriva")    
+end mouseUp
+

@@ -1,0 +1,6 @@
+on exitFrame 
+    global gDir
+                
+    go(the gDir.myMarker )    
+end exitFrame
+

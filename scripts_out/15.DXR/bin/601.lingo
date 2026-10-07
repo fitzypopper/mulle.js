@@ -1,0 +1,30 @@
+on beginSprite me
+    global gMulleGlobals
+    global gSound
+    global gDir
+                    
+    put getCurrentHullType(the gMulleGlobals.boatViewHandler ) into tmpType                    
+    put getBoat(the gMulleGlobals.user ) into tmpBoat                
+    put getParts(tmpBoat) into tmpParts                    
+    put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmpHull                    
+    put getCurrentRudder(the gMulleGlobals.boatViewHandler ) into tmpRudder                                                                                                                                                    
+    if ((((tmpType <> NoType) and (tmpType <> the pageType)) and (the pageType <> NoType)) and (not (((count(tmpParts) = 1) and (tmpHull <> NoHull)) or (((count(tmpParts) = 2) and (tmpHull <> NoHull)) and (tmpRudder <> NoRudder))))) then                        
+        stopAllEffects(gSound)                                                
+        set_property("soundID", play(gSound, "15d028v0", EFFECT));        
+
+    else
+                        
+        if the gDir.FirstTime  then                                    
+            stopAllEffects(gSound)                                                                        
+            set_property("soundID", play(gSound, the pageSound, EFFECT));
+        end if
+    end if
+    
+end beginSprite
+
+on getPropertyDescriptionList me
+                                                                                                                
+    put transpose(<pageType, transpose(<comment, "Hulltype:", format, symbol, range, <NoType, Small, Medium, large, default, NoType), pageSound, transpose(<comment, "IntroSound:", format, string, default, "15d000v0")) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

@@ -1,0 +1,47 @@
+on enterFrame 
+                
+    if rollOver(2) then                        
+        go("p01")        
+
+    else
+                                
+        if rollOver(3) then                                    
+            go("p02")            
+
+        else
+                                                
+            if rollOver(4) then                                                
+                go("p03")                
+
+            else
+                                                                
+                if rollOver(5) then                                                            
+                    go("p04")                    
+
+                else
+                                                                                
+                    if rollOver(6) then                                                                        
+                        go("p05")                        
+
+                    else
+                                                                                                
+                        if rollOver(7) then                                                                                    
+                            go("quit")                            
+
+                        else
+                                                                                    
+                            go("start")
+                        end if
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+end enterFrame
+
+on exitFrame 
+                
+    go(the frame)    
+end exitFrame
+

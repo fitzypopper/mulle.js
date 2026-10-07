@@ -1,0 +1,171 @@
+on beginSprite me
+        
+    set_property("active", 1);        
+    set_property("dragCheck", 0);    
+end beginSprite
+
+on activate me, theState
+        
+    set_property("active", theState);    
+end activate
+
+on activateClick me, theState
+        
+    set_property("active", theState);    
+end activateClick
+
+on mouseEnter me
+    global gDir
+                                                
+    put char 1 to 2 of the movie into movieNr                                
+    if ((movieNr = "02") or (movieNr = "03")) then                                                                        
+        set_property("dragCheck", the sprite(getaProp(the gDir.spriteList , drag)).dragging );        
+
+    else
+                
+        set_property("dragCheck", 0);
+    end if
+        
+    if the active then                                
+        if (not the mouseDown) then                        
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (the whichCustomCursor = left) then                                                                
+                sendSprite(115, c_Left)                
+
+            else
+                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK = right) then                                                                                
+                    sendSprite(115, C_Right)                    
+
+                else
+                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = click) then                                                                                                
+                        sendSprite(115, c_click)                        
+
+                    else
+                        
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (ERROR_EMPTY_STACK = Grab) then                                                                                                                
+                            sendSprite(115, c_grab)                            
+
+                        else
+                            
+                            ERROR: I don't know to implement the copy command! :(                                                                                    
+                            if (ERROR_EMPTY_STACK = Back) then                                                                                                                                
+                                sendSprite(115, C_Back)                                
+
+                            else
+                                
+                                ERROR: I don't know to implement the copy command! :(                                                                                                
+                                if (ERROR_EMPTY_STACK = Standard) then                                                                                                                                                
+                                    sendSprite(115, C_Standard)
+                                end if
+                            end if
+                        end if
+                    end if
+                end if
+            end if
+            
+            ERROR: I don't know to implement the discard command! :(            
+
+        else
+                        
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (the whichCustomCursor = left) then                                
+                if the dragCheck then                                                                                
+                    sendSprite(115, c_MoveLeft)                    
+
+                else
+                                                                                
+                    sendSprite(115, c_Left)
+                end if
+                
+
+            else
+                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK = right) then                                        
+                    if the dragCheck then                                                                                                
+                        sendSprite(115, c_MoveRight)                        
+
+                    else
+                                                                                                
+                        sendSprite(115, C_Right)
+                    end if
+                    
+
+                else
+                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = click) then                                                
+                        if the dragCheck then                                                                                                                
+                            sendSprite(115, c_MoveIn)                            
+
+                        else
+                                                                                                                
+                            sendSprite(115, c_click)
+                        end if
+                        
+
+                    else
+                        
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (ERROR_EMPTY_STACK = Grab) then                                                                                                                
+                            sendSprite(115, c_grab)                            
+
+                        else
+                            
+                            ERROR: I don't know to implement the copy command! :(                                                                                    
+                            if (ERROR_EMPTY_STACK = Back) then                                                                                                                                
+                                sendSprite(115, C_Back)                                
+
+                            else
+                                
+                                ERROR: I don't know to implement the copy command! :(                                                                                                
+                                if (ERROR_EMPTY_STACK = Standard) then                                                                                                                                                
+                                    sendSprite(115, C_Standard)
+                                end if
+                            end if
+                        end if
+                    end if
+                end if
+            end if
+            
+            ERROR: I don't know to implement the discard command! :(
+        end if
+    end if
+    
+end mouseEnter
+
+on mouseLeave me
+    global gDir
+            
+    if the mouseDown then                                                                                                
+        put char 1 to 2 of the movie into movieNr                                                                                                
+        if (((movieNr = "02") or (movieNr = "03")) or (movieNr = "04")) then                                                                                                            
+            set_property("dragCheck", the sprite(getaProp(the gDir.spriteList , drag)).dragging );                        
+            if the dragCheck then                                                                
+                sendSprite(115, c_grab)                
+
+            else
+                                                                
+                sendSprite(115, C_Standard)
+            end if
+        end if
+        
+
+    else
+                                
+        sendSprite(115, C_Standard)
+    end if
+    
+end mouseLeave
+
+on getPropertyDescriptionList 
+                                                                                    
+    put transpose(<whichCustomCursor, transpose(<comment, "Command:", format, symbol, range, <left, right, Grab, click, Back, Standard, default, Standard)) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

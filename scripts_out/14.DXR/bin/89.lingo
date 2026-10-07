@@ -1,0 +1,234 @@
+on beginSprite me
+            
+    set_property("SP", the me.spriteNum );                
+    set_property("childSprites", <1);    
+end beginSprite
+
+on init me, theMasterSP
+        
+    set_property("masterSP", theMasterSP);    
+end init
+
+on SetChildren me, theList
+                
+    set_property("childSprites", duplicate(theList));                        
+    ERROR: Missing subcommand! (0x06) :(    
+    put 34 into tempRect                                            
+    put <getAt(tempRect, 2), getAt(tempRect, 4) into limits                    
+    set_property("topLimit", getAt(tempRect, 2));                                        
+    set_property("mySpace", (getAt(tempRect, 4) - getAt(tempRect, 2)));                
+    ERROR: Missing subcommand! (0x06) :(                                
+    ERROR: Missing subcommand! (0x06) :(                        
+    set_property("regPointPercent", (the SP / getAt(the 37.rect , 4)));    
+    (the SP * getAt(the 37.regPoint , 2))
+    100
+    getAt(the childSprites, 1)
+end SetChildren
+
+on mouseDown me
+        
+    set_property("mouseOnMe", 1);                
+    if (the ScrollBHType = ScrollerMid) then                                        
+        ERROR: Missing subcommand! (0x06) :(                
+        set_property("grabbedOffset", (the SP - 14));        
+        the mouseV
+
+    else
+                                
+        if (the ScrollBHType = ScrollerBehind) then                                    
+            put the mouseV into tempMouse                        
+            put 0 into tempScroll                                                
+            if (tempMouse < the myTop) then                                                
+                put -1 into tempScroll                
+
+            else
+                                                                                                
+                if (tempMouse > (the myTop + the myHeight)) then                                        
+                    put 1 into tempScroll
+                end if
+            end if
+                                                                        
+            sendSprite(the masterSP, scroll, Page, tempScroll)            
+
+        else
+                                                                                                
+            if ((the ScrollBHType = ArrowUp) or (the ScrollBHType = ArrowDown)) then                                
+                set_property("waitFrames", 0);                                                
+                exitFrame(me)                                
+                set_property("waitFrames", 3);
+            end if
+        end if
+    end if
+    
+end mouseDown
+
+on mouseUp me
+        
+    set_property("mouseOnMe", 0);    
+end mouseUp
+
+on mouseUpOutSide me
+        
+    set_property("mouseOnMe", 0);    
+end mouseUpOutSide
+
+on setScrollInfo me, thePercentDown, thePercentFilled
+                
+    if (the ScrollBHType = ScrollerMid) then                
+        if the midStretch then                                                
+            if integerp(thePercentFilled) then                                                                                                
+                set_property("myHeight", ((the mySpace * thePercentFilled) / 100));                                                                
+                if (the myHeight < 20) then                                        
+                    set_property("myHeight", 20);
+                end if
+                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                
+                ERROR: Missing subcommand! (0x06) :(                
+                put 34 into tempRect                                                                                                
+                set_property("regTopOffset", ((the myHeight * the regPointPercent) / 100));
+                the SP
+                8
+                the myHeight
+                the SP
+            end if
+                                                                                                
+            put ((thePercentDown * (the mySpace - the myHeight)) / 100) into tempDown                                                
+            set_property("myTop", (the topLimit + tempDown));                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                    
+            setScrollEnds(me)            
+            14
+            (the myTop + the regTopOffset)
+            the SP
+
+        else
+                                                                        
+            put ((thePercentDown * the mySpace) / 100) into tempDown                                                
+            set_property("myTop", (the topLimit + tempDown));                                                
+            ERROR: Missing subcommand! (0x06) :(
+            14
+            the myTop
+            the SP
+        end if
+        
+
+    else
+                                
+        if (the ScrollBHType = ScrollerBehind) then                        
+            set_property("myTop", thePercentDown);                        
+            set_property("myHeight", thePercentFilled);
+        end if
+    end if
+    
+end setScrollInfo
+
+on setScrollEnds me
+                            
+    if (getAt(the childSprites, 2) > 0) then                                                        
+        ERROR: Missing subcommand! (0x06) :(                                                                        
+        ERROR: Missing subcommand! (0x06) :(
+        14
+        (the myTop + the myHeight)
+        getAt(the childSprites, 3)
+        14
+        the myTop
+        getAt(the childSprites, 2)
+    end if
+                                    
+    sendSprite(getAt(the childSprites, 1), setScrollInfo, the myTop, the myHeight)    
+end setScrollEnds
+
+on exitFrame me
+                
+    if (the ScrollBHType = ScrollerMid) then                
+        if the mouseOnMe then                        
+            if the midStretch then                                                                                
+                put (the mouseV - the grabbedOffset) into goFor                                                                                                
+                if (goFor < (the regTopOffset + the topLimit)) then                                                                                
+                    put (the regTopOffset + the topLimit) into tempLocV                    
+
+                else
+                                                                                                                                                                                                        
+                    if (goFor > (((the regTopOffset + the topLimit) + the mySpace) - the myHeight)) then                                                                                                                                                                                                
+                        put (((the regTopOffset + the topLimit) + the mySpace) - the myHeight) into tempLocV                        
+
+                    else
+                                                
+                        put goFor into tempLocV
+                    end if
+                end if
+                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                
+                set_property("myTop", (tempLocV - the regTopOffset));                                                                
+                put (the mySpace - the myHeight) into tempMaxDown                                                                
+                if (tempMaxDown = 0) then                                        
+                    put 1 into tempMaxDown
+                    14
+                    tempLocV
+                    the SP
+                end if
+                                                                                                                                                                                                
+                sendSprite(the masterSP, scroll, percent, ((100 * (the myTop - the topLimit)) / tempMaxDown))                                                
+                setScrollEnds(me)                
+
+            else
+                                                                                
+                put (the mouseV - the grabbedOffset) into goFor                                                                
+                if (goFor < the topLimit) then                                        
+                    put the topLimit into tempLocV                    
+
+                else
+                                                                                                                        
+                    if (goFor > (the topLimit + the mySpace)) then                                                                                                
+                        put (the topLimit + the mySpace) into tempLocV                        
+
+                    else
+                                                
+                        put goFor into tempLocV
+                    end if
+                end if
+                                                                
+                ERROR: Missing subcommand! (0x06) :(                                
+                set_property("myTop", tempLocV);                                
+                put the mySpace into tempMaxDown                                                                
+                if (tempMaxDown = 0) then                                        
+                    put 1 into tempMaxDown
+                    14
+                    tempLocV
+                    the SP
+                end if
+                                                                                                                                                                                                
+                sendSprite(the masterSP, scroll, percent, ((100 * (the myTop - the topLimit)) / tempMaxDown))                                                
+                setScrollEnds(me)
+            end if
+        end if
+        
+
+    else
+                                                                
+        if ((the ScrollBHType = ArrowUp) or (the ScrollBHType = ArrowDown)) then                        
+            if the mouseOnMe then                                
+                if the waitFrames then                                                                                
+                    set_property("waitFrames", (the waitFrames - 1));                    
+
+                else
+                                                                                
+                    if (the ScrollBHType = ArrowUp) then                                                                                                                                                                        
+                        sendSprite(the masterSP, scroll, Relative, -1)                        
+
+                    else
+                                                                                                                                                
+                        sendSprite(the masterSP, scroll, Relative, 1)
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+end exitFrame
+
+on getPropertyDescriptionList me
+                                                                                                                        
+    put transpose(<ScrollBHType, transpose(<comment, "This sprite is:", format, symbol, range, <ArrowUp, ArrowDown, ScrollerUp, ScrollerMid, ScrollerDown, ScrollerBehind, default, ArrowUp), midStretch, transpose(<comment, "Stretch scrollbar:", format, boolean, default, 1)) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

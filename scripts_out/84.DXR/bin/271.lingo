@@ -1,0 +1,19 @@
+on exitFrame me
+    global gMulleGlobals
+                    
+    put getBoat(the gMulleGlobals.user ) into tmpBoat                    
+    if getProperty(tmpBoat, Watertank) then                                        
+        addCompletedMission(the gMulleGlobals.user , 11)                
+        put "JustDoItTank" into myMarker                        
+        go("justdoItTank")                        
+        put "here we go"                
+        updateStage()        
+
+    else
+                                                
+        go((the frame + 1))
+    end if
+                
+    go(the frame)    
+end exitFrame
+

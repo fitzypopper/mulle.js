@@ -1,0 +1,6 @@
+on exitFrame 
+    global gAlreadyDone
+        
+    put 1 into gAlreadyDone    
+end exitFrame
+

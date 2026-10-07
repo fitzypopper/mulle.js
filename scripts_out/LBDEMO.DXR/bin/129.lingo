@@ -1,0 +1,6 @@
+on startMovie 
+    global gDir
+                        
+    put new(script("GDir")) into gDir    
+end startMovie
+

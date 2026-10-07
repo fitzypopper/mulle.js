@@ -1,0 +1,488 @@
+on beginSprite me
+            
+    set_property("SP", the me.spriteNum );                                                                                    
+    set_property("spriteList", transpose(<ArrowUp, the arrowUpSP, ArrowDown, the arrowDownSP, ScrollerBehind, the scrollerBehindSP, ScrollerUp, the scrollerUpSP, ScrollerMid, the scrollerMidSP, ScrollerDown, the scrollerDownSP, EnterField, the enterFieldSP, trash, the trashSP, Dragger, the draggerSP));        
+    if not the RelativeSP then exit repeat        
+    put 1 into N
+    repeat while TRUE
+                                                
+        if not (N <= count(the spriteList)) then exit repeat                                                        
+        if (getAt(the spriteList, N) <> 0) then                                                                                                                        
+            setAt(the spriteList, N, (the SP + getAt(the spriteList, N)))
+        end if
+                                
+        put (1 + N) into N        
+
+    end repeat
+end repeat
+
+set_property("draggerSP", getProp(the spriteList, Dragger));
+set_property("trashSP", getProp(the spriteList, trash));
+ERROR: Missing subcommand! (0x06) :(
+set_property("myMember", the 37.name );
+if the AutoFind then            
+    autoFindSprites(me)
+    the me.spriteNum 
+end if
+
+ERROR: I don't know to implement the copy command! :(
+1
+count(the spriteList)
+repeat while TRUE
+    
+    ERROR: I don't know to implement the copy command! :(    
+    ERROR: I don't know to implement the copy command! :(        
+    if not (ERROR_EMPTY_STACK <= ERROR_EMPTY_STACK) then exit repeat    
+    ERROR: I don't know to implement the copy command! :(    
+    ERROR: I don't know to implement the copy command! :(            
+    put getAt(ERROR_EMPTY_STACK, ERROR_EMPTY_STACK) into tempSp                
+    if (tempSp <> 0) then                                        
+        sendSprite(tempSp, init, the SP)
+    end if
+            
+    (ERROR_EMPTY_STACK + 1)
+
+end repeat
+
+ERROR: I don't know to implement the discard command! :(
+put 0 into member(the myMember).scrollTop 
+set_property("lineNr", 1);
+set_property("nrOfLines", the number of lines of the member(the myMember).text );
+ERROR: Missing subcommand! (0x06) :(
+ERROR: Missing subcommand! (0x09) :(
+set_property("visibleLines", (0 / 5));
+put getProp(the spriteList, ScrollerMid) into tempScroll
+if (tempScroll <> 0) then                                                                        
+    sendSprite(tempScroll, SetChildren, <getProp(the spriteList, ScrollerBehind), getProp(the spriteList, ScrollerUp), getProp(the spriteList, ScrollerDown))
+    the myMember
+    8
+    the SP
+end if
+
+end beginSprite
+
+on endSprite me
+                    
+    put " " into member(the myMember).text     
+end endSprite
+
+on setText me, theText
+                
+    if listp(theText) then                                
+        set_property("textList", duplicate(theText));                        
+        sort(the textList)        
+
+        exit repeat
+    end if
+end if
+
+set_property("textList", <);
+sort(the textList)
+put 1 into N
+repeat while TRUE
+                
+    if not (N <= the nrOfLines) then exit repeat                                                    
+    add(the textList, line N of theText)                
+    put (1 + N) into N    
+
+end repeat
+end repeat
+
+put empty into theText
+ERROR: I don't know to implement the copy command! :(
+1
+count(the textList)
+repeat while TRUE
+    
+    ERROR: I don't know to implement the copy command! :(    
+    ERROR: I don't know to implement the copy command! :(        
+    if not (ERROR_EMPTY_STACK <= ERROR_EMPTY_STACK) then exit repeat    
+    ERROR: I don't know to implement the copy command! :(    
+    ERROR: I don't know to implement the copy command! :(            
+    put getAt(ERROR_EMPTY_STACK, ERROR_EMPTY_STACK) into aLine                        
+    put ((theText & aLine) & return) into theText            
+    (ERROR_EMPTY_STACK + 1)
+
+end repeat
+
+ERROR: I don't know to implement the discard command! :(
+delete char length(theText) of aLine
+put theText into member(the myMember).text 
+set_property("nrOfLines", count(the textList));
+put 0 into member(the myMember).scrollTop 
+scrollByLine(member(the myMember), (the lineNr - 1))
+put getProp(the spriteList, ScrollerMid) into tempScroll
+if (tempScroll <> 0) then        
+    put the nrOfLines into tempNrOf                
+    if (tempNrOf = 0) then                
+        put 1 into tempNrOf
+    end if
+                        
+    put ((100 * the visibleLines) / tempNrOf) into percentVisible                
+    if (percentVisible > 100) then                
+        put 100 into percentVisible
+    end if
+                
+    put (the nrOfLines - the visibleLines) into tempNrOf                
+    if (tempNrOf = 0) then                
+        put 1 into tempNrOf
+    end if
+                                
+    put ((100 * (the lineNr - 1)) / tempNrOf) into percentDown                        
+    sendSprite(tempScroll, setScrollInfo, percentDown, percentVisible)
+end if
+
+end setText
+
+on autoFindSprites me
+                    
+    put <ArrowUp, ArrowDown into tempNecessary        
+    put 1 into N
+    repeat while TRUE
+                                
+        if not (N <= 120) then exit repeat                        
+        ERROR: Missing subcommand! (0x06) :(                        
+        if (35 > 0) then                                    
+            ERROR: Missing subcommand! (0x06) :(            
+            put 38 into tempObjects                        
+            ERROR: I don't know to implement the copy command! :(                                    
+            1
+            count(tempObjects)
+            N
+            N
+            repeat while TRUE
+                
+                ERROR: I don't know to implement the copy command! :(                
+                ERROR: I don't know to implement the copy command! :(                                
+                if not (ERROR_EMPTY_STACK <= ERROR_EMPTY_STACK) then exit repeat                
+                ERROR: I don't know to implement the copy command! :(                
+                ERROR: I don't know to implement the copy command! :(                                                
+                put getAt(ERROR_EMPTY_STACK, ERROR_EMPTY_STACK) into bh                                                                                
+                put getaProp(bh, ScrollBHType) into tempType                                                                
+                if symbolp(tempType) then                                                                                
+                    deleteOne(tempNecessary, tempType)                                                                                                    
+                    setProp(the spriteList, tempType, N)
+                end if
+                                                
+                (ERROR_EMPTY_STACK + 1)
+
+            end repeat
+            
+            ERROR: I don't know to implement the discard command! :(
+        end if
+                                
+        put (1 + N) into N        
+
+    end repeat
+                
+    if count(tempNecessary) then                                                        
+        alert ("These scroller sprites were not found:" & string(tempNecessary))
+    end if
+    
+end autoFindSprites
+
+on scroll me, theMode, how
+                
+    if (theMode = Relative) then                                                                                                                                
+        if (((the lineNr + how) > 0) and ((the lineNr + how) <= ((the nrOfLines - the visibleLines) + 1))) then                                                
+            set_property("lineNr", (the lineNr + how));                                                                        
+            scrollByLine(member(the myMember), how)                                                
+            put (the nrOfLines - the visibleLines) into tempNrOf                                                
+            if (tempNrOf = 0) then                                
+                put 1 into tempNrOf
+            end if
+                                                                                                
+            put ((100 * (the lineNr - 1)) / tempNrOf) into tempPercent                                                                                                
+            sendSprite(getProp(the spriteList, ScrollerMid), setScrollInfo, tempPercent)
+        end if
+        
+
+    else
+                                
+        if (theMode = Absolute) then                                                
+            if (how < 1) then                                
+                put 1 into how
+            end if
+                                                
+            put (how - the lineNr) into diff                        
+            set_property("lineNr", how);                                                                        
+            scrollByLine(member(the myMember), diff)            
+
+        else
+                                                
+            if (theMode = percent) then                                                                                                                                                                                                
+                put (1 + integer(((how * (the nrOfLines - the visibleLines)) / 100.0))) into how                                                                                
+                put correctLine(me, how) into how                                                                
+                put (how - the lineNr) into diff                                
+                set_property("lineNr", how);                                                                                                
+                scrollByLine(member(the myMember), diff)                
+
+            else
+                                                                
+                if (theMode = Page) then                                                                                                                        
+                    put (the lineNr + (how * the visibleLines)) into how                                                                                                    
+                    put correctLine(me, how) into how                                                                                
+                    put (how - the lineNr) into diff                                        
+                    set_property("lineNr", how);                                                                                
+                    put (the nrOfLines - the visibleLines) into tempNrOf                                                                                
+                    if (tempNrOf = 0) then                                                
+                        put 1 into tempNrOf
+                    end if
+                                                                                                                                                                
+                    put ((100 * (the lineNr - 1)) / tempNrOf) into tempPercent                                                                                                                                                                
+                    sendSprite(getProp(the spriteList, ScrollerMid), setScrollInfo, tempPercent)                                                                                                                        
+                    scrollByLine(member(the myMember), diff)                    
+
+                else
+                                                                                
+                    if (theMode = Match) then                                                                                                
+                        add(the textList, how)                                                                                                                        
+                        put getPos(the textList, how) into how                                                                                                
+                        deleteAt(the textList, how)                                                                                                
+                        put (how - 1) into how                                                                                                                        
+                        put correctLine(me, how) into how                                                                                                
+                        put (how - the lineNr) into diff                                                
+                        set_property("lineNr", how);                                                                                                
+                        put (the nrOfLines - the visibleLines) into tempNrOf                                                                                                
+                        if (tempNrOf = 0) then                                                        
+                            put 1 into tempNrOf
+                        end if
+                                                                                                                                                                                                
+                        put ((100 * (the lineNr - 1)) / tempNrOf) into tempPercent                                                                                                                                                                                                
+                        sendSprite(getProp(the spriteList, ScrollerMid), setScrollInfo, tempPercent)                                                                                                                                                
+                        scrollByLine(member(the myMember), diff)
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+end scroll
+
+on deleteLine me, theLine
+    global gDir
+                
+    if stringp(theLine) then                                                                
+        put offset(theLine, the member(the myMember).text ) into tempOff                
+        if tempOff then                                                                                                                                                                                                
+            put the number of lines of char 1 to tempOff of the member(the myMember).text  into theLine            
+
+        else
+            
+
+            exit
+
+        end if
+    end if
+                                
+    if ((theLine > 0) and (theLine <= the nrOfLines)) then                                
+        set_property("nrOfLines", (the nrOfLines - 1));                                
+        if (theLine <= the lineNr) then                                                
+            set_property("lineNr", (the lineNr - 1));            
+
+        else
+                                                                                                
+            if (the lineNr = ((the nrOfLines - the visibleLines) + 1)) then                                                                
+                set_property("lineNr", (the lineNr - 1));
+            end if
+        end if
+                                        
+        set_property("lineNr", correctLine(me, the lineNr));                
+        put empty into tempStr                                        
+        put getAt(the textList, theLine) into tempStr                                
+        deleteAt(the textList, theLine)                                
+        setText(me, the textList)                                        
+        resultsFromScroller(gDir, DeletedLine, tempStr)
+    end if
+    
+end deleteLine
+
+on AddLine me, theLine
+    global gDir
+                                        
+    put offset((theLine & return), the member(the myMember).text ) into tempOff                                
+    if ((tempOff = 0) and count(the textList)) then                                                                        
+        put (theLine = getAt(the textList, count(the textList))) into tempOff
+    end if
+                
+    if (tempOff = 0) then                                
+        if (the nrOfLines = 6) then                                                                                                
+            sendSprite(getProp(the gDir.spriteList , MulleHead), fullAlert)            
+
+            exit
+
+        end if
+                                
+        add(the textList, theLine)                                        
+        set_property("lineNr", getPos(the textList, theLine));                                        
+        set_property("lineNr", correctLine(me, the lineNr));                                
+        setText(me, the textList)                                        
+        resultsFromScroller(gDir, NewLine, theLine)        
+
+    else
+                                        
+        resultsFromScroller(gDir, ChoseLine, theLine)
+    end if
+    
+end AddLine
+
+on correctLine me, theLine
+                
+    if (theLine <= 1) then                
+        put 1 into theLine        
+
+    else
+                                                                
+        if (theLine > ((the nrOfLines - the visibleLines) + 1)) then                                                                        
+            put ((the nrOfLines - the visibleLines) + 1) into theLine
+        end if
+    end if
+                
+    if (the nrOfLines < the visibleLines) then                
+        put 1 into theLine
+    end if
+            
+    return(theLine)    
+end correctLine
+
+on mouseDown me
+                
+    if (the nrOfLines = 0) then        
+
+        exit
+
+    end if
+                        
+    ERROR: Missing subcommand! (0x06) :(                    
+    ERROR: Missing subcommand! (0x09) :(            
+    put (the myMember + (0 / 5)) into tempLine                
+    if (tempLine < 1) then                
+        put 1 into tempLine        
+        (the SP - 23)
+        the mouseV
+        1
+
+    else
+                                
+        if (tempLine > the nrOfLines) then                        
+            put the nrOfLines into tempLine
+        end if
+    end if
+                
+    sendSprite(115, c_click)        
+    set_property("downOnLine", tempLine);        
+    set_property("waitFrames", 3);        
+    if the draggerSP then                        
+        ERROR: Missing subcommand! (0x06) :(                                                        
+        put getAt(the textList, tempLine) into member(35).text                         
+        ERROR: Missing subcommand! (0x06) :(                                                                                                                
+        set_property("dragOffset", point((-getAt(the member(35).rect , 3) / 2), -25));                                
+        sendSprite(the trashSP, startDrag)
+        the draggerSP
+        the draggerSP
+    end if
+    
+end mouseDown
+
+on mouseUp me
+    global gDir
+                
+    if (the nrOfLines = 0) then        
+
+        exit
+
+    end if
+                
+    sendSprite(the trashSP, endDrag)                        
+    ERROR: Missing subcommand! (0x06) :(                    
+    ERROR: Missing subcommand! (0x09) :(            
+    put (the myMember + (0 / 5)) into tempLine                
+    if (tempLine < 1) then                
+        put 1 into tempLine        
+        (the SP - 23)
+        the mouseV
+        1
+
+    else
+                                
+        if (tempLine > the nrOfLines) then                        
+            put the nrOfLines into tempLine
+        end if
+    end if
+                
+    sendSprite(115, C_Standard)            
+    if the doubleClick then                                
+        if (tempLine = the downOnLine) then                                                                                                
+            resultsFromScroller(gDir, ChoseLine, getAt(the textList, tempLine))
+        end if
+        
+
+    else
+                                
+        if (tempLine = the downOnLine) then                                                            
+            if getProp(the spriteList, EnterField) then                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                                
+                put getAt(the textList, tempLine) into member(35).text 
+                getProp(the spriteList, EnterField)
+            end if
+        end if
+    end if
+        
+    if the draggerSP then                                        
+        ERROR: Missing subcommand! (0x06) :(
+        13
+        -4711
+        the draggerSP
+    end if
+        
+    set_property("downOnLine", 0);    
+end mouseUp
+
+on mouseUpOutSide me
+        
+    if the draggerSP then                
+        if the downOnLine then                                                                                                            
+            sendSprite(the trashSP, scrollThrowHere, the SP, getAt(the textList, the downOnLine))                                                            
+            ERROR: Missing subcommand! (0x06) :(                                                
+            sendSprite(115, C_Standard)
+            13
+            -4711
+            the draggerSP
+        end if
+    end if
+        
+    set_property("downOnLine", 0);    
+end mouseUpOutSide
+
+on exitFrame me
+        
+    if the draggerSP then                
+        if the downOnLine then                        
+            if the waitFrames then                                                                
+                set_property("waitFrames", (the waitFrames - 1));                
+
+            else
+                                                                                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                
+                sendSprite(115, c_grab)
+                33
+                (point(the mouseH, the mouseV) + the dragOffset)
+                the draggerSP
+            end if
+        end if
+    end if
+    
+end exitFrame
+
+on getPropertyDescriptionList me
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    put transpose(<AutoFind, transpose(<comment, "Autofind necessary sprites: (might be slow)", format, boolean, default, 0), RelativeSP, transpose(<comment, "Sprite channels are offsets:", format, boolean, default, 1), enterFieldSP, transpose(<comment, "Use these channels (0 = unused):          Enter in field:", format, integer, default, -8), trashSP, transpose(<comment, "Trash:", format, integer, default, -7), scrollerBehindSP, transpose(<comment, "Behind scrollbar:", format, integer, default, -6), scrollerMidSP, transpose(<comment, "Scrollbar stretch:", format, integer, default, -5), scrollerUpSP, transpose(<comment, "Scrollbar top:", format, integer, default, -4), scrollerDownSP, transpose(<comment, "Scrollbar bottom:", format, integer, default, -3), arrowUpSP, transpose(<comment, "Arrow up:", format, integer, default, -2), arrowDownSP, transpose(<comment, "Arrow down:", format, integer, default, -1), draggerSP, transpose(<comment, "Drag text:", format, integer, default, 1)) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+
+on getBehaviorDescription me
+                                                                                                                                                        
+    put (((((((((((((((((("This BH is to be assigned to the scrolling field." & return) & "The arrows and scrollbars must be in lower (than this ch) numbered channels") & return) & "while drag text must be in a higher numbered channel.") & return) & return) & "Results from clicking, entering new lines will be reported") & return) & "to a global handler:") & return) & "on resultsFromScroller resultType, aString") & return) & return) & "resultType = #ChoseLine (aString = chosen string)") & return) & "resultType = #NewLine (aString = new string)") & return) & "resultType = #DeletedLine (aString = deleted string)") into str            
+    return(str)    
+end getBehaviorDescription
+

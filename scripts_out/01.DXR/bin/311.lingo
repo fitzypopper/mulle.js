@@ -1,0 +1,254 @@
+on new me
+    global gMulleGlobals
+                                                            
+    set_property("spriteList", transpose(<Sky, 1, BoatStart, 10, Mulle, 70, Buffa, 71, dialog, 90, DialogOverlay, 91));            
+    set_property("mouseObjectList", <);                        
+    set_property("drawOffset", getDrawOffset(the gMulleGlobals.boatViewHandler , ShipYard));                    
+    if isItTheVeryFirstTime(the gMulleGlobals.user ) then                                
+        set_property("firstDialogList", <"01d009v0");        
+
+    else
+                        
+        set_property("firstDialogList", <);
+    end if
+                        
+    set_property("secondDialogList", <"01d001v0", "01d003v0", "01d002v0");                                            
+    set_property("genDialogList", <"01d004v0", "01d005v0", "01d006v0", "00d001v0", "00d002v0", "00d003v0", "00d004v0", "00d005v0");                
+    set_property("loopCounter", random(360));                        
+    set_property("FirstTime", getaProp(the gMulleGlobals.firstTimeList , ShipYard));                    
+    if (not voidp(the FirstTime)) then                
+        if the FirstTime then                        
+            set_property("loopCounter", 12);                                                                        
+            setaProp(the gMulleGlobals.firstTimeList , ShipYard, 0)            
+
+        else
+                                                                        
+            set_property("secondTime", getaProp(the gMulleGlobals.firstTimeList , SecondShipYard));                                                            
+            if (not voidp(the secondTime)) then                                                                                                                                                
+                if (the secondTime and (getCurrentHull(the gMulleGlobals.boatViewHandler ) <> NoHull)) then                                        
+                    set_property("loopCounter", 120);                                                                                                                        
+                    setaProp(the gMulleGlobals.firstTimeList , SecondShipYard, 0)                    
+
+                else
+                                        
+                    set_property("secondTime", 0);
+                end if
+                
+
+            else
+                                
+                set_property("secondTime", 0);
+            end if
+        end if
+        
+
+    else
+                
+        set_property("FirstTime", 0);
+    end if
+        
+    set_property("OKToTalk", 1);        
+    set_property("dialogClosed", 1);            
+    safePreload("01e001v0")            
+    safePreload("01e002v0")            
+    safePreload("01e003v0")            
+    safePreload("01e005v0")            
+    safePreload("01e006v0")            
+    safePreload("01e007v0")            
+    safePreload("01e008v0")            
+    safePreload("01e009v0")            
+    safePreload("01e010v0")            
+    safePreload("00e110v0")            
+    return(me)    
+end new
+
+on init me
+    global gCursor
+    global gMulleGlobals
+    global gSound
+            
+    init(gCursor)                                                                                                                                                                                                                                                    
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(35, 248, 545, 355), rect(36, 249, 100, 299), rect(78, 279, 312, 316), rect(313, 307, 538, 349), 200, transpose(<cursor, transpose(<rollOver, GoRight), enter, transpose(<sound, "01e005v0", Pic, "01b006v0"), Leave, transpose(<Pic, "Dummy"), SP, 4, dragToWhere, Quay, report, 1)))                                                                                                                                                                                
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(93, 336, 180, 374), 201, transpose(<click, transpose(<frame, "Blueprint"), cursor, transpose(<rollOver, Clickable), enter, transpose(<sound, "01e003v0", Pic, "01b003v0"), Leave, transpose(<Pic, "Dummy"), SP, 5)))                                                                                                                                                                                    
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(10, 141, 71, 229), 202, transpose(<cursor, transpose(<rollOver, Clickable), enter, transpose(<sound, "01e002v0", Pic, "01b005v0"), Leave, transpose(<sound, "01e007v0", Pic, "Dummy"), SP, 6, dragToWhere, Metal, report, 1)))                                                                                                                                                                                    
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(74, 152, 156, 220), 203, transpose(<cursor, transpose(<rollOver, Clickable), enter, transpose(<sound, "01e001v0", Pic, "01b004v0"), Leave, transpose(<sound, "01e006v0", Pic, "Dummy"), SP, 7, dragToWhere, Wood, report, 1)))                
+    setSky(the gMulleGlobals.weather )                    
+    if (the machineType <> 256) then                                        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (getType(the gMulleGlobals.weather ) = 1) then                                                
+            ERROR: Missing subcommand! (0x04) :(                                                            
+            play(gSound, "00e108v0", BG)            
+            1
+            200
+            1
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = 2) then                                                                
+                ERROR: Missing subcommand! (0x04) :(                                                                                
+                play(gSound, "00e109v0", BG)                
+                1
+                200
+                1
+
+            else
+                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK = 3) then                                                                                
+                    ERROR: Missing subcommand! (0x04) :(                                                                                                    
+                    play(gSound, "00e104v0", BG)                    
+                    1
+                    150
+                    1
+
+                else
+                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = 4) then                                                                                                
+                        ERROR: Missing subcommand! (0x04) :(                                                                                                                        
+                        play(gSound, "00e107v0", BG)
+                        1
+                        150
+                        1
+                    end if
+                end if
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(
+    end if
+                        
+    updateProperties(getBoat(the gMulleGlobals.user ))                                
+    drawBoat(the drawOffset, void(), void(), 0)                    
+    addObject(the gMulleGlobals.loopMaster , me)    
+end init
+
+on startMovie me
+    
+end startMovie
+
+on kill me
+    global gMulleGlobals
+        
+    ERROR: I don't know to implement the copy command! :(            
+    1
+    count(the mouseObjectList)
+    repeat while TRUE
+        
+        ERROR: I don't know to implement the copy command! :(        
+        ERROR: I don't know to implement the copy command! :(                
+        if not (ERROR_EMPTY_STACK <= ERROR_EMPTY_STACK) then exit repeat        
+        ERROR: I don't know to implement the copy command! :(        
+        ERROR: I don't know to implement the copy command! :(                        
+        put getAt(ERROR_EMPTY_STACK, ERROR_EMPTY_STACK) into tmpObj                        
+        kill(tmpObj)                        
+        (ERROR_EMPTY_STACK + 1)
+
+    end repeat
+    
+    ERROR: I don't know to implement the discard command! :(        
+    set_property("mouseObjectList", 0);                    
+    deleteObject(the gMulleGlobals.loopMaster , me)                
+    ERROR: Missing subcommand! (0x04) :(            
+    put "01" into gMulleGlobals.WhereFrom             
+    return(0)    
+    1
+    255
+    1
+end kill
+
+on mouse me, argObj, argWhat
+    global gMulleGlobals
+    global gSound
+        
+    ERROR: I don't know to implement the copy command! :(            
+    if (argWhat = click) then                                                                
+        if (not (getCurrentHull(the gMulleGlobals.boatViewHandler ) = NoHull)) then                                                            
+            if (the argObj.dragToWhere  = Wood) then                                                                
+                setWoodHull(the gMulleGlobals.boatViewHandler )                                                                                                                                
+                drawBoat(the drawOffset, void(), void(), 0)
+            end if
+                                                            
+            if (the argObj.dragToWhere  = Metal) then                                                                
+                setMetalHull(the gMulleGlobals.boatViewHandler )                                                                                                                                
+                drawBoat(the drawOffset, void(), void(), 0)
+            end if
+                                                            
+            if (the argObj.dragToWhere  = Quay) then                                                
+                stopAll(gSound)                                                
+                go("Quay")
+            end if
+            
+
+        else
+                                                            
+            if (the argObj.dragToWhere  = Quay) then                                                                                                                                                
+                sendSprite(getaProp(the spriteList, Mulle), makeMulleTalk, PrioTalk, "01d007v0")
+            end if
+        end if
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(    
+end mouse
+
+on makeMulleTalk me, argSnd
+                                    
+    sendSprite(getaProp(the spriteList, Mulle), makeMulleTalk, PrioTalk, argSnd)    
+end makeMulleTalk
+
+on loop me
+    global gMulleGlobals
+                
+    if (the OKToTalk and the dialogClosed) then                                
+        if (the loopCounter > 0) then                                                
+            set_property("loopCounter", (the loopCounter - 1));
+        end if
+                
+        if the FirstTime then                                                
+            if (the loopCounter = 0) then                                                                                                
+                if (count(the firstDialogList) > 0) then                                                                                                                                                                                                                                                
+                    sendSprite(getaProp(the spriteList, Mulle), makeMulleTalk, InfoTalk, getAt(the firstDialogList, 1))                                                                                
+                    deleteAt(the firstDialogList, 1)                                                                                                                        
+                    set_property("loopCounter", (120 + random(120)));                    
+
+                else
+                                        
+                    set_property("FirstTime", 0);
+                end if
+            end if
+            
+
+        else
+                        
+            if the secondTime then                                                                
+                if (the loopCounter = 0) then                                                                                                                        
+                    if (count(the secondDialogList) > 0) then                                                                                                                                                                                                                                                                                                
+                        sendSprite(getaProp(the spriteList, Mulle), makeMulleTalk, InfoTalk, getAt(the secondDialogList, 1))                                                                                                
+                        deleteAt(the secondDialogList, 1)                                                                                                                                                
+                        set_property("loopCounter", (120 + random(120)));                        
+
+                    else
+                                                
+                        set_property("secondTime", 0);
+                    end if
+                end if
+                
+
+            else
+                                                                
+                if (the loopCounter = 0) then                                                                                                    
+                    put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmpCurrentHull                                                                                                                        
+                    put random(count(the genDialogList)) into tmpSnd                                                                                                                                                                
+                    if ((tmpSnd > 1) or (tmpCurrentHull <> NoHull)) then                                                                                                                        
+                        put getAt(the genDialogList, tmpSnd) into tmpRandomSound                                                                                                                                                                                                                        
+                        sendSprite(getaProp(the spriteList, Mulle), makeMulleTalk, NormalTalk, tmpRandomSound)                                                                                                                                                
+                        set_property("loopCounter", (360 + random(720)));
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+end loop
+

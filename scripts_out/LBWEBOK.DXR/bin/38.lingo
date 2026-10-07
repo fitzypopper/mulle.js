@@ -1,0 +1,5 @@
+on stopMovie 
+                        
+    tell the stage to closeDialogWebConfirm 0    
+end stopMovie
+

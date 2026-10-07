@@ -1,0 +1,240 @@
+on new me
+    global gMulleGlobals
+        
+    set_property("OKToTalk", 1);        
+    set_property("dialogClosed", 1);            
+    set_property("mouseObjectList", <);                                                            
+    set_property("spriteList", transpose(<Sky, 1, ShelfNr, 3, JunkStart, 6, DragPart, 90, dialog, 95, DialogOverlay, 96));                    
+    set_property("firstDialogList", <"02d002v0", "02d003v0");                                    
+    set_property("genDialogList", <"02d004v0", "00d001v0", "00d002v0", "00d003v0", "00d004v0", "00d005v0");                        
+    set_property("loopCounter", (120 + random(360)));                        
+    set_property("FirstTime", getaProp(the gMulleGlobals.firstTimeList , Shelf));                    
+    if (not voidp(the FirstTime)) then                
+        if the FirstTime then                        
+            set_property("loopCounter", 12);                                                                        
+            setaProp(the gMulleGlobals.firstTimeList , Shelf, 0)
+        end if
+        
+
+    else
+                
+        set_property("FirstTime", 0);
+    end if
+            
+    safePreload("02e003v0")            
+    safePreload("00e110v0")            
+    return(me)    
+end new
+
+on init me
+    global gCursor
+    global gMulleGlobals
+            
+    init(gCursor)            
+    put the gMulleGlobals.enterShelf  into tmpShelf                                                            
+    set_property("currentShelf", value(char 6 of string(tmpShelf)));        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the currentShelf = 1) then                                                                        
+        ERROR: Missing subcommand! (0x06) :(        
+        37
+        member("02b002v0")
+        getaProp(the spriteList, ShelfNr)
+
+    else
+        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (ERROR_EMPTY_STACK = 2) then                                                                                                            
+            ERROR: Missing subcommand! (0x06) :(            
+            37
+            member("02b003v0")
+            getaProp(the spriteList, ShelfNr)
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = 3) then                                                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                
+                37
+                member("02b004v0")
+                getaProp(the spriteList, ShelfNr)
+
+            else
+                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK = 4) then                                                                                                                                                                                    
+                    ERROR: Missing subcommand! (0x06) :(                    
+                    37
+                    member("02b005v0")
+                    getaProp(the spriteList, ShelfNr)
+
+                else
+                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = 5) then                                                                                                                                                                                                                        
+                        ERROR: Missing subcommand! (0x06) :(                        
+                        37
+                        member("02b006v0")
+                        getaProp(the spriteList, ShelfNr)
+
+                    else
+                        
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (ERROR_EMPTY_STACK = 6) then                                                                                                                                                                                                                                                            
+                            ERROR: Missing subcommand! (0x06) :(
+                            37
+                            member("02b007v0")
+                            getaProp(the spriteList, ShelfNr)
+                        end if
+                    end if
+                end if
+            end if
+        end if
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(                                        
+    ERROR: Missing subcommand! (0x06) :(                                                                                                    
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(111, 24, 137, 94), 303, transpose(<cursor, transpose(<rollOver, Standard))))        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the currentShelf <> 1) then        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (33 <> 2) then            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (point(320, 240) <> 3) then                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (getaProp(the spriteList, ShelfNr) <> 4) then                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = 5) then
+                    end if
+                end if
+            end if
+        end if
+                                                                                                                                                                                                                                                                                
+        add(the mouseObjectList, new(script("mouseObject"), me, <rect(111, 24, 137, 50), 305, transpose(<cursor, transpose(<rollOver, Clickable), click, transpose(<sound, "02e003v0"), dragToWhere, UpShelf, report, 1)))
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the currentShelf <> 2) then        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (ERROR_EMPTY_STACK <> 3) then            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK <> 4) then                
+                ERROR: I don't know to implement the copy command! :(                                                
+                if (ERROR_EMPTY_STACK <> 5) then                    
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (ERROR_EMPTY_STACK = 6) then
+                    end if
+                end if
+            end if
+        end if
+                                                                                                                                                                                                                                                                                
+        add(the mouseObjectList, new(script("mouseObject"), me, <rect(111, 67, 137, 94), 304, transpose(<cursor, transpose(<rollOver, Clickable), click, transpose(<sound, "02e003v0"), dragToWhere, DownShelf, report, 1)))
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(                                                                                                                                        
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(48, 0, 137, 287), 301, transpose(<click, transpose(<frame, "Quay"), cursor, transpose(<rollOver, GoForward, DragRollover, DropForward), dragToWhere, Quay)))                                                                                                                                        
+    add(the mouseObjectList, new(script("mouseObject"), me, <rect(0, 313, 137, 480), 302, transpose(<click, transpose(<frame, "Yard"), cursor, transpose(<rollOver, GoLeft, DragRollover, DropLeft), dragToWhere, Yard)))                
+    setSky(the gMulleGlobals.weather )                            
+    set_property("junkHandler", new(script("JunkHandler"), tmpShelf));            
+    drawParts(the junkHandler)                    
+    addObject(the gMulleGlobals.loopMaster , me)    
+end init
+
+on startMovie me
+    
+end startMovie
+
+on kill me
+    global gMulleGlobals
+                
+    set_property("junkHandler", kill(the junkHandler));        
+    ERROR: I don't know to implement the copy command! :(            
+    1
+    count(the mouseObjectList)
+    repeat while TRUE
+        
+        ERROR: I don't know to implement the copy command! :(        
+        ERROR: I don't know to implement the copy command! :(                
+        if not (ERROR_EMPTY_STACK <= ERROR_EMPTY_STACK) then exit repeat        
+        ERROR: I don't know to implement the copy command! :(        
+        ERROR: I don't know to implement the copy command! :(                        
+        put getAt(ERROR_EMPTY_STACK, ERROR_EMPTY_STACK) into tmpObj                        
+        kill(tmpObj)                        
+        (ERROR_EMPTY_STACK + 1)
+
+    end repeat
+    
+    ERROR: I don't know to implement the discard command! :(        
+    set_property("mouseObjectList", 0);                    
+    deleteObject(the gMulleGlobals.loopMaster , me)                
+    ERROR: Missing subcommand! (0x04) :(            
+    put "02" into gMulleGlobals.WhereFrom             
+    return(0)    
+    1
+    255
+    1
+end kill
+
+on makeMulleTalk me, argSnd
+    global gSound
+            
+    stopAllEffects(gSound)                    
+    play(gSound, argSnd, EFFECT)    
+end makeMulleTalk
+
+on mouse me, argObj, argWhat
+    global gMulleGlobals
+                
+    if (argWhat = click) then                        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (the argObj.dragToWhere  = DownShelf) then                                                                                                            
+            put symbol(("Shelf" & (the currentShelf - 1))) into gMulleGlobals.enterShelf                                     
+            go("NewShelf")            
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = UpShelf) then                                                                                                                                                
+                put symbol(("Shelf" & (the currentShelf + 1))) into gMulleGlobals.enterShelf                                                 
+                go("NewShelf")
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(
+    end if
+    
+end mouse
+
+on loop me
+                
+    if (the OKToTalk and the dialogClosed) then                                
+        if (the loopCounter > 0) then                                                
+            set_property("loopCounter", (the loopCounter - 1));
+        end if
+                
+        if the FirstTime then                                                
+            if (the loopCounter = 0) then                                                                                                
+                if (count(the firstDialogList) > 0) then                                                                                                                                            
+                    makeMulleTalk(me, getAt(the firstDialogList, 1))                                                                                
+                    deleteAt(the firstDialogList, 1)                                                                                                                        
+                    set_property("loopCounter", (120 + random(120)));                    
+
+                else
+                                        
+                    set_property("FirstTime", 0);
+                end if
+            end if
+            
+
+        else
+                                                
+            if (the loopCounter = 0) then                                                                                                                                                
+                put getAt(the genDialogList, random(count(the genDialogList))) into tmpRandomSound                                                                
+                makeMulleTalk(me, tmpRandomSound)                                                                                                
+                set_property("loopCounter", (360 + random(720)));
+            end if
+        end if
+    end if
+    
+end loop
+

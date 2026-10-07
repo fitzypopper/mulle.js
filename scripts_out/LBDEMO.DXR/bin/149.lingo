@@ -1,0 +1,34 @@
+on openWEB weblink
+    global gSystem
+                                    
+    if ((the platform contains "Macintosh") and (the gSystem.WEBbrowser  = "Unknown")) then                                        
+        put getaProp(weblink, Web) into url                                
+        put url into field "clipBoard"                                        
+        copyToClipBoard(member("clipBoard"))                        
+        gotoNetPage(url)        
+
+        exit
+
+    end if
+                    
+    if (the gSystem.WEBbrowser  = "Unknown") then                
+        nothing()        
+
+    else
+                                        
+        if (the gSystem.WEBbrowser  <> "None") then                                                            
+            put getaProp(weblink, Web) into url                                                
+            if stringp(url) then                                                                
+                if (the platform contains "Macintosh") then                                                            
+                    openDialogWebInfo(url)                    
+
+                else
+                                                                                                    
+                    open(url, the gSystem.WEBbrowser )
+                end if
+            end if
+        end if
+    end if
+    
+end openWEB
+

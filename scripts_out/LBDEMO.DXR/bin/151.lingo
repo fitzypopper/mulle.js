@@ -1,0 +1,42 @@
+on openDialogWebInfo url
+    global gStartNext
+    global gDir
+            
+    put transpose(<) into gStartNext                    
+    setaProp(gStartNext, Web, url)                    
+    ERROR: Missing subcommand! (0x06) :(                    
+    put window "DialogWebInfo" into gDir.dialogWebInfo                                     
+    put rect(100, 100, 420, 340) into the gDir.dialogWebInfo .rect                     
+    put the gDir.dialogWebInfoCaption  into the gDir.dialogWebInfo .title                 
+    put "LBWebinf" into the gDir.dialogWebInfo .fileName                 
+    put 1 into the gDir.dialogWebInfo .titleVisible                 
+    open(the gDir.dialogWebInfo )    
+    14
+    0
+    the gDir.catchClickSprite 
+end openDialogWebInfo
+
+on closeDialogWebInfo answer, url
+    global gDir
+    global gSystem
+                    
+    if (the paramCount > 0) then                
+        if answer then                                                            
+            if (the gDir.posibleWEBbrowser  > empty) then                                                                
+                open(the gDir.possibleWEBbrowser )                
+
+            else
+                                                                
+                open(the gSystem.WEBbrowser )
+            end if
+        end if
+    end if
+                    
+    close(window "DialogWebInfo")                    
+    forget window "DialogWebInfo"                        
+    ERROR: Missing subcommand! (0x06) :(    
+    14
+    -2000
+    the gDir.catchClickSprite 
+end closeDialogWebInfo
+

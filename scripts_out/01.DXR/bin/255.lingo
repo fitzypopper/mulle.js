@@ -1,0 +1,85 @@
+on beginSprite me
+        
+    set_property("Mode", Wait);        
+    set_property("currentAnimChart", ShipYard);            
+    set_property("SP", the me.spriteNum );                
+    sendSprite(the SP, setAnimNormal)                    
+    sendSprite(the SP, setAnimChart, "ShipYard")                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end beginSprite
+
+on makeMulleTalk me, argAction, argExtraInfo
+    global gDir
+        
+    ERROR: I don't know to implement the copy command! :(            
+    if (argAction = NormalTalk) then                                
+        if (the Mode = Wait) then                                    
+            put 0 into gDir.OKToTalk                                                                         
+            if (random(2) = 1) then                                
+                set_property("Mode", Talk);                
+
+            else
+                                
+                set_property("Mode", Talk);                                
+                set_property("currentAnimChart", TalkToMe);                                                                                
+                sendSprite(the SP, setAnimChart, "TalkToMe")
+            end if
+                                                            
+            sendSprite(the SP, makeAnimSpeech, argExtraInfo)
+        end if
+        
+
+    else
+        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (ERROR_EMPTY_STACK = InfoTalk) then                                                
+            if (the Mode = Wait) then                                                
+                put 0 into gDir.OKToTalk                                 
+                set_property("Mode", Talk);                                
+                set_property("currentAnimChart", TalkToMe);                                                                                
+                sendSprite(the SP, setAnimChart, "TalkToMe")                                                                                
+                sendSprite(the SP, makeAnimSpeech, argExtraInfo)
+            end if
+            
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = PrioTalk) then                                                                                                                                
+                if ((the Mode = Wait) or (the Mode = Talk)) then                                                                                                    
+                    sendSprite(the SP, playAnimSound, empty)                                                            
+                    put 0 into gDir.OKToTalk                                         
+                    set_property("Mode", Talk);                                                                                                    
+                    sendSprite(the SP, makeAnimSpeech, argExtraInfo)
+                end if
+            end if
+        end if
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end makeMulleTalk
+
+on Stopped me
+    global gDir
+        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the Mode = Talk) then                                
+        if (the currentAnimChart = TalkToMe) then                        
+            set_property("currentAnimChart", ShipYard);                                                            
+            sendSprite(the currentSpriteNum, setAnimChart, "ShipYard")
+        end if
+                                
+        sendSprite(the SP, setAnimNormal)                
+        set_property("Mode", Wait);                        
+        put 1 into gDir.OKToTalk         
+
+    else
+                
+        set_property("Mode", Wait);
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end Stopped
+

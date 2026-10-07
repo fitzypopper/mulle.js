@@ -1,0 +1,36 @@
+on beginSprite me
+    global gMulleGlobals
+                    
+    put getCurrentHullType(the gMulleGlobals.boatViewHandler ) into tmpBoat                
+    if (tmpBoat = large) then                                                        
+        ERROR: Missing subcommand! (0x06) :(
+        33
+        point(280, 171)
+        67
+    end if
+                
+    if (tmpBoat = Medium) then                                                        
+        ERROR: Missing subcommand! (0x06) :(
+        33
+        point(280, 179)
+        67
+    end if
+                
+    if (tmpBoat = Small) then                                                        
+        ERROR: Missing subcommand! (0x06) :(
+        33
+        point(200, 196)
+        67
+    end if
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    25
+    0
+    62
+end beginSprite
+
+on exitFrame 
+                
+    go(the frame)    
+end exitFrame
+

@@ -1,0 +1,17 @@
+on startMovie 
+    global gDir
+    global gStartNext
+                                
+    if (objectp(gDir) and listp(gStartNext)) then                                                                                                                                                                                                
+        put (((((((("Du skall anvnda adressen: " & return) & getaProp(gStartNext, Web)) & return) & "Stt markren i lsarens adressflt") & return) & "och klistar in [pple] + V") & return) & "Adressen finns redan i din klippbok.") into member("Message").text                                                                 
+        put getaProp(gStartNext, Web) into member("Clipp").text                                         
+        copyToClipBoard(member("Clipp"))
+    end if
+    
+end startMovie
+
+on stopMovie 
+                    
+    tell the stage to closeDialogWebInfo     
+end stopMovie
+

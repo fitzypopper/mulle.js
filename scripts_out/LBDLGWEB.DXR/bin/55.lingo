@@ -1,0 +1,5 @@
+on mouseUp 
+                    
+    tell the stage to TroggleDialogAgain     
+end mouseUp
+

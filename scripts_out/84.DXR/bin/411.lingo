@@ -1,0 +1,5 @@
+on exitFrame 
+            
+    go("justDoittank")    
+end exitFrame
+

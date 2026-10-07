@@ -1,0 +1,61 @@
+on beginSprite me
+        
+    set_property("Mode", Still);        
+    set_property("currentAnimChart", SmallRadio);            
+    set_property("SP", the me.spriteNum );                
+    sendSprite(the SP, setAnimNormal)                    
+    sendSprite(the SP, setAnimChart, "RadioTalk")                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end beginSprite
+
+on makeRadioTalk me, argAction, argExtraInfo
+    global gDir
+        
+    ERROR: I don't know to implement the copy command! :(            
+    if (argAction = smallTalk) then                                
+        if (the Mode = Still) then                                    
+            put 0 into gDir.OKToTalk                         
+            set_property("Mode", Talk);                                                            
+            sendSprite(the SP, makeAnimSpeech, argExtraInfo)
+        end if
+        
+
+    else
+        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (ERROR_EMPTY_STACK = BigTalk) then                                                
+            if (the Mode = Still) then                                                
+                put 0 into gDir.OKToTalk                                 
+                set_property("Mode", Talk);                                
+                set_property("currentAnimChart", BigRadio);                                                                                
+                sendSprite(the SP, setAnimChart, "BigRadioTalk")                                                                                
+                sendSprite(the SP, makeAnimSpeech, argExtraInfo)
+            end if
+        end if
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end makeRadioTalk
+
+on Stopped me
+    global gDir
+        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the Mode = Talk) then                                
+        if (the currentAnimChart = BigRadio) then
+        end if
+                                
+        sendSprite(the SP, setAnimNormal)                
+        set_property("Mode", Still);                        
+        put 1 into gDir.OKToTalk         
+
+    else
+                
+        set_property("Mode", Still);
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(                    
+    sendSprite(the SP, setAnimAction, the Mode)    
+end Stopped
+

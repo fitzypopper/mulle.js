@@ -1,0 +1,130 @@
+on mouseUp 
+            
+    put whichButton() into currentButton                
+    if (currentButton = "Bcance") then                        
+        puppetSound("Click2")                                                
+        ERROR: Missing subcommand! (0x06) :(                                        
+        tell the stage to closeDialogWeb  37 member("Bcance-n") 8        
+
+    else
+                                
+        if (currentButton = "Bopen") then                                    
+            puppetSound("Click2")                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            put new(xtra("FileIO")) into tempFile                                                
+            put displayOpen(tempFile) into fileName                                                
+            if stringp(fileName) then                                                                                
+                openFile(tempFile, fileName, 1)                                                                                                
+                if (status(tempFile) = 0) then                                                            
+                    closeFile(tempFile)                                                                                                                        
+                    tell the stage to closeDialogWeb fileName 37 member("Bopen-n") 4                    
+
+                else
+                                                            
+                    closeFile(tempFile)                                        
+                    nothing()
+                end if
+            end if
+                        
+            put 0 into tempFile            
+
+        else
+                        
+            nothing()
+        end if
+    end if
+    
+end mouseUp
+
+on mouseDown 
+            
+    put whichButton() into currentButton                
+    if (currentButton = "Bcance") then                        
+        puppetSound("Click1")                                                
+        ERROR: Missing subcommand! (0x06) :(        
+        37
+        member("Bcance-d")
+        8
+
+    else
+                                
+        if (currentButton = "Bopen") then                                    
+            puppetSound("Click1")                                                                        
+            ERROR: Missing subcommand! (0x06) :(            
+            37
+            member("Bopen-d")
+            4
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("Bopen-n")
+            4
+            37
+            member("Bcance-n")
+            8
+        end if
+    end if
+    
+end mouseDown
+
+on idle 
+            
+    put whichButton() into currentButton                                    
+    if (not ((currentButton = "Bopen") or (currentButton = "Bcance"))) then                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        ERROR: Missing subcommand! (0x06) :(        
+        37
+        member("Bopen-n")
+        4
+        37
+        member("Bcance-n")
+        8
+
+    else
+                                
+        if (currentButton = "Bopen") then                                                                        
+            ERROR: Missing subcommand! (0x06) :(            
+            37
+            member("Bcance-n")
+            8
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("Bopen-n")
+            4
+        end if
+    end if
+    
+end idle
+
+on whichButton 
+                            
+    put point(the mouseH, the mouseV) into p                                        
+    if inside(p, rect(13, 200, 210, 233)) then                        
+        return("Bopen")        
+
+    else
+                                                                                
+        if inside(p, rect(200, 200, 306, 233)) then                                    
+            return("Bcance")            
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("Bopen-n")
+            4
+            37
+            member("Bcance-n")
+            8
+        end if
+    end if
+    
+end whichButton
+

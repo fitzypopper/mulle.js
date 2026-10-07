@@ -97,6 +97,7 @@ BROKEN_MEMBERS = {
 # backdrops, and the key is what lets the sky show through.
 # Only 03.DXR and 04.DXR call setSky (checked against all .lingo scripts).
 COLOR_KEYED_SKIES = {
+    '02.DXR': {1},   # junk   02b001v1, 16736 keyed px (script 55 calls setSky)
     '03.DXR': {1},   # garage 03b001v1, 40632 keyed px, rows 0..181
     '04.DXR': {1},   # yard   04b001v0, 84189 keyed px, rows 0..156
 }

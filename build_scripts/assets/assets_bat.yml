@@ -89,8 +89,6 @@ junk:
         - [1, 7]
         - [17, 20]
         - 25
-      opaque:
-        - 1
 
 garage:
   03.DXR:

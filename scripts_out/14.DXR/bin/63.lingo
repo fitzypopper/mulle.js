@@ -1,0 +1,23 @@
+on mouseUp 
+    global gSound
+    global gDir
+        
+    if the downOn then                                        
+        play(gSound, "SndMouseClick", OPEFFECT)                
+        set_property("downOn", 0);                                
+        dialogueResult(gDir, Cancel)
+    end if
+    
+end mouseUp
+
+on mouseUpOutSide me
+        
+    set_property("downOn", 0);    
+end mouseUpOutSide
+
+on mouseDown me
+            
+    cursor(200)        
+    set_property("downOn", 1);    
+end mouseDown
+

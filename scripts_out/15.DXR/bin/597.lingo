@@ -1,0 +1,5 @@
+on exitFrame 
+                
+    go(1, "01")    
+end exitFrame
+

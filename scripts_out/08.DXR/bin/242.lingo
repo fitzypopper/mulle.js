@@ -1,0 +1,146 @@
+on beginSprite me
+            
+    init(me)    
+end beginSprite
+
+on init me
+    global gMulleGlobals
+                                                                                    
+    set_property("spriteList", transpose(<title, 55, Signature, 56, CarName, 59, userName, 57, to, 58, LeftR, 60, RightR, 61, LeftX, 84, RightX, 85));                                    
+    set_property("spriteStartV", transpose(<CarName, 0, userName, 0, to, 0));                    
+    if (the machineType = 256) then                                                                        
+        set_property("spriteStartV", transpose(<CarName, 6, userName, 6, to, 6));
+    end if
+        
+    put 1 into N
+    repeat while TRUE
+                                                
+        if not (N <= count(the spriteStartV)) then exit repeat                                        
+        put getPropAt(the spriteStartV, N) into tempProp                                                                                                                
+        ERROR: Missing subcommand! (0x06) :(                        
+        setProp(tempProp, (240 - getAt(the spriteStartV, N)), (getProp(the spriteList, tempProp) - 14))                                
+        put (1 + N) into N        
+        the spriteStartV
+
+    end repeat
+            
+    set_property("carStartV", -60);        
+    set_property("nrOfSteps", 3);        
+    set_property("nowAt", 1);                
+    put (812 - 300) into totHeight                
+    set_property("stepV", (totHeight / the nrOfSteps));                        
+    set_property("startV", (240 + (the nowAt * the stepV)));                                    
+    put <"00n001v0", "00n003v0", "00n005v0", "00n006v0", "00n008v0", "00n007v0" into tempMembers                                    
+    put <"08t001v0", "08t002v0", "08t003v0", "08t004v0", "08t005v0", "08t006v0" into tempText        
+    set_property("medalsSP", 63);                
+    ERROR: Missing subcommand! (0x06) :(        
+    set_property("medalsStartV", (the medalsSP - 14));        
+    put 65 into tempStartH        
+    put 90 into tempWidth        
+    put 1 into N
+    200
+    repeat while TRUE
+                                
+        if not (N <= 6) then exit repeat                                                        
+        if getMedal(the the gMulleGlobals.user .boat , N) then                                                                                                                                                            
+            ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                                    
+            ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                
+            ERROR: Missing subcommand! (0x06) :(            
+            13
+            (13 - 43)
+            ((the medalsSP + N) - 1)
+            (((the medalsSP + N) - 1) + 6)
+            13
+            (tempStartH + (tempWidth * (N - 1)))
+            ((the medalsSP + N) - 1)
+            37
+            member(getAt(tempText, N))
+            (((the medalsSP + N) - 1) + 6)
+            37
+            member(getAt(tempMembers, N))
+            ((the medalsSP + N) - 1)
+
+        else
+                                                                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                                                                                                
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("Dummy")
+            (((the medalsSP + N) - 1) + 6)
+            37
+            member("Dummy")
+            ((the medalsSP + N) - 1)
+        end if
+                                
+        put (1 + N) into N        
+
+    end repeat
+            
+    show(me)        
+    updateStage()    
+end init
+
+on ScrollToMid me
+        
+    set_property("nowAt", 2);            
+    show(me)    
+end ScrollToMid
+
+on scroll me, theDirection
+                                    
+    if ((theDirection = -1) and (the nowAt > 1)) then                                
+        set_property("nowAt", (the nowAt + theDirection));                        
+        show(me)        
+
+    else
+                                                                
+        if ((theDirection = 1) and (the nowAt < the nrOfSteps)) then                                                
+            set_property("nowAt", (the nowAt + theDirection));                                    
+            show(me)
+        end if
+    end if
+    
+end scroll
+
+on show me
+    global gDir
+                                
+    put (the startV - ((the nowAt - 1) * the stepV)) into tempV        
+    put 1 into N
+    repeat while TRUE
+                                                
+        if not (N <= count(the spriteList)) then exit repeat                                                                
+        put getaProp(the spriteStartV, getPropAt(the spriteList, N)) into tempOffset                                
+        if voidp(tempOffset) then                        
+            put 0 into tempOffset
+        end if
+                                                                        
+        ERROR: Missing subcommand! (0x06) :(                                
+        put (1 + N) into N        
+        14
+        (tempV - tempOffset)
+        getAt(the spriteList, N)
+
+    end repeat
+        
+    put 1 into N
+    repeat while TRUE
+                                
+        if not (N <= 6) then exit repeat                                                                                
+        ERROR: Missing subcommand! (0x06) :(                                                                                                                
+        ERROR: Missing subcommand! (0x06) :(                                
+        put (1 + N) into N        
+        14
+        ((tempV - the medalsStartV) + 40)
+        (((the medalsSP + N) - 1) + 6)
+        14
+        (tempV - the medalsStartV)
+        ((the medalsSP + N) - 1)
+
+    end repeat
+                                                    
+    drawBoat(point(the gDir.correctedBoatLocH , (tempV - the carStartV)), 0.75, void(), 0)    
+end show
+

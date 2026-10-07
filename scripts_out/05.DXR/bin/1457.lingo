@@ -1,0 +1,35 @@
+on new me, argChild
+        
+    put none into type            
+    return(me)    
+end new
+
+on init me
+    
+end init
+
+on kill me
+            
+    return(0)    
+end kill
+
+on steer me, toWhere, argSpeed
+    
+end steer
+
+on loop me
+    
+end loop
+
+on setSpeed me, argSpeed
+    
+end setSpeed
+
+on display me
+    
+end display
+
+on playSounds me, argYesNo
+    
+end playSounds
+

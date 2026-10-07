@@ -1,0 +1,144 @@
+on new me
+                            
+    set_property("spriteList", transpose(<BoatStart, 4, Sky, 1));        
+    set_property("deliverMap", 0);            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                
+    setSky(the gMulleGlobals.weather )                        
+    drawBoat(point(290, 160))            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+                        
+    put <"77b003v0", "77b004v0", "77b005v0" into pastrylist                                    
+    ERROR: Missing subcommand! (0x06) :(        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+        37
+        getAt(pastrylist, random(3))
+        63
+
+    else
+                
+        put 17 into objId
+    end if
+        
+    if objId then                                        
+        put getBoat(the gMulleGlobals.user ) into tmpBoat                                                
+        if isInInventory(the gMulleGlobals.user , DoctorBag) then                        
+            put "BagNoRing" into tmpStartSuffix                                                                                                            
+            setInInventory(the gMulleGlobals.user , Pills, transpose(<nr, 100))                                                            
+            addCompletedMission(the gMulleGlobals.user , 3)
+        end if
+                                                
+        if isInInventory(the gMulleGlobals.user , Swimring) then                        
+            put "Ring" into tmpStartSuffix                                                            
+            set_property("givePart", getRandomPart(the gMulleGlobals.externalParts ));                        
+            set_property("myDummyPart", 86);                                                            
+            addNewPart(the gMulleGlobals.user , the givePart)                                                            
+            deleteFromInventory(the gMulleGlobals.user , Swimring)                        
+            set_property("tmpRing", 1);                                                            
+            addCompletedMission(the gMulleGlobals.user , 2)
+        end if
+                                        
+        if (tmpStartSuffix = void()) then                                                                                                
+            set_property("myMarker", (("JustDoIt" & tmpStartSuffix) & random(2)));            
+
+        else
+                                                
+            set_property("myMarker", ("JustDoIt" & tmpStartSuffix));
+        end if
+                                                
+        if isMissionGiven(the gMulleGlobals.user , 22) then                                                                                                
+            if (isInInventory(the gMulleGlobals.user , MapPiece1) = 0) then                                                                                                                
+                setInInventory(the gMulleGlobals.user , MapPiece1, <)                                                                                
+                addCompletedMission(the gMulleGlobals.user , 22)                                                                
+                set_property("myMarker", ("deliverMap" & tmpStartSuffix));
+            end if
+        end if
+                                                
+        if isMissionGiven(the gMulleGlobals.user , 5) then                                                                                    
+            if (getProperty(tmpBoat, LuxuryFactor) > 15) then                                                                                                                                                
+                if (getMedal(the the gMulleGlobals.user .boat , 8) = 0) then                                                                                
+                    set_property("myMarker", ("JustDoItPrima" & tmpStartSuffix));                                                                                                                        
+                    addMedal(the the gMulleGlobals.user .boat , 6)                    
+
+                else
+                                                                                
+                    set_property("myMarker", ("JustDoItPrima" & tmpStartSuffix));
+                end if
+                
+
+            else
+                                                                
+                set_property("myMarker", ("cantDoItPrima" & tmpStartSuffix));
+            end if
+        end if
+                                                                
+        if (isMissionGiven(the gMulleGlobals.user , 5) = 0) then                                                                        
+            if isMissionGiven(the gMulleGlobals.user , 4) then                                                                                
+                if getProperty(tmpBoat, Doghouse) then                                                                                
+                    set_property("myMarker", ("JustDoItDog" & tmpStartSuffix));                                                                                                    
+                    addGivenMission(the gMulleGlobals.user , 5)                                                                                                                                            
+                    setInInventory(the gMulleGlobals.user , Blinddog, <)                    
+
+                else
+                                                                                
+                    set_property("myMarker", ("CantDoItDog" & tmpStartSuffix));
+                end if
+            end if
+        end if
+                                                
+        if isMissionCompleted(the gMulleGlobals.user , 5) then                                                
+            if (the tmpRing = 1) then                                
+                set_property("myMarker", "justDoItring");                
+
+            else
+                                                                                                                
+                if (getProperty(tmpBoat, LuxuryFactor) > 15) then                                                                                                                                                                                    
+                    if (getMedal(the the gMulleGlobals.user .boat , 6) = 0) then                                                                                                                                                
+                        set_property("myMarker", (("SC" & "JustDoItPrima") & tmpStartSuffix));                                                                                                                                                
+                        addMedal(the the gMulleGlobals.user .boat , 6)                        
+
+                    else
+                                                                                                                                                
+                        set_property("myMarker", (("SC" & "JustDoItPrima") & tmpStartSuffix));
+                    end if
+                    
+
+                else
+                                                                                                                        
+                    set_property("myMarker", (("SC" & "cantDoItPrima") & tmpStartSuffix));
+                end if
+            end if
+        end if
+                                
+        if (tmpStartSuffix = "BagNoRing") then                                                            
+            deleteFromInventory(the gMulleGlobals.user , DoctorBag)
+        end if
+                        
+        put the myMarker                        
+        go(the myMarker)                                                                        
+        setInInventory(the gMulleGlobals.user , Belly, transpose(<nr, 1000))
+    end if
+    
+end startMovie
+
+on primaTrip me
+    global gMulleGlobals
+                    
+    addCompletedMission(the gMulleGlobals.user , 5)    
+end primaTrip
+
+on kill me
+            
+    return(0)    
+end kill
+

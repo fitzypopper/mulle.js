@@ -1,0 +1,5 @@
+on mouseUp 
+                    
+    sendSprite(18, randomMove, 2)    
+end mouseUp
+

@@ -1,0 +1,119 @@
+on mouseUp 
+            
+    put whichButton() into currentButton                
+    if (currentButton = "Bno") then                        
+        puppetSound("Click2")                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        tell the stage to closeDialogWebConfirm 0 37 member("Bno-n") 8        
+
+    else
+                                
+        if (currentButton = "Byes") then                                    
+            puppetSound("Click2")                                                                        
+            tell the stage to closeDialogWebConfirm 1            
+
+        else
+                        
+            nothing()
+        end if
+    end if
+    
+end mouseUp
+
+on mouseDown 
+            
+    put whichButton() into currentButton                
+    if (currentButton = "Bno") then                        
+        puppetSound("Click1")                                                
+        ERROR: Missing subcommand! (0x06) :(        
+        37
+        member("Bno-d")
+        8
+
+    else
+                                
+        if (currentButton = "Byes") then                                    
+            puppetSound("Click1")                                                                        
+            ERROR: Missing subcommand! (0x06) :(            
+            37
+            member("Byes-d")
+            4
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("Byes-n")
+            4
+            37
+            member("Bno-n")
+            8
+        end if
+    end if
+    
+end mouseDown
+
+on idle 
+            
+    put whichButton() into currentButton                                    
+    if (not ((currentButton = "Byes") or (currentButton = "Bno"))) then                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        ERROR: Missing subcommand! (0x06) :(        
+        37
+        member("Byes-n")
+        4
+        37
+        member("Bno-n")
+        8
+
+    else
+                                
+        if (currentButton = "Byes") then                                                                        
+            ERROR: Missing subcommand! (0x06) :(            
+            37
+            member("Bno-n")
+            8
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("Byes-n")
+            4
+        end if
+    end if
+    
+end idle
+
+on whichButton 
+                            
+    put point(the mouseH, the mouseV) into p                
+    ERROR: Missing subcommand! (0x06) :(            
+    if inside(4, 34) then                        
+        return("Byes")        
+        p
+
+    else
+                                
+        ERROR: Missing subcommand! (0x06) :(                        
+        if inside(8, 34) then                                    
+            return("Bno")            
+            p
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                    
+            return(empty)
+            37
+            member("Byes-n")
+            4
+            37
+            member("Bno-n")
+            8
+        end if
+    end if
+    
+end whichButton
+

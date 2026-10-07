@@ -1,0 +1,29 @@
+on convToBitStr argNum
+        
+    put empty into tmpStr        
+    put 128 into tmpDiv        
+    put 1 into N
+    repeat while TRUE
+                                
+        if not (N <= 8) then exit repeat                                                
+        if ((argNum < tmpDiv) = 0) then                                                
+            put (tmpStr & "0") into tmpStr            
+
+        else
+                                                
+            put (tmpStr & "1") into tmpStr                                                
+            put (argNum - tmpDiv) into argNum
+        end if
+                                
+        put (tmpDiv / 2) into tmpDiv                                
+        put (1 + N) into N        
+
+    end repeat
+            
+    return(tmpStr)    
+end convToBitStr
+
+on getBits argStartBit, argEndBit, argValue
+    
+end getBits
+

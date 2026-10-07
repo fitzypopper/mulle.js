@@ -1,0 +1,100 @@
+on makeDirections 
+            
+    put < into tmpList        
+    put 16 into nrOfDirs        
+    put 100 into decimalPrec        
+    put 1 into N
+    repeat while TRUE
+                                
+        if not (N <= nrOfDirs) then exit repeat                                                                                                                                                                                                                                
+        put point((sin((((2 * N) * pi()) / nrOfDirs)) * decimalPrec), (-cos((((2 * N) * pi()) / nrOfDirs)) * decimalPrec)) into tmpPoint                                                
+        add(tmpList, duplicate(tmpPoint))                                
+        put (1 + N) into N        
+
+    end repeat
+                            
+    put string(tmpList) into member("DirectionList").text     
+end makeDirections
+
+on convItoS argInteger, argNrOfTokens
+                
+    put string(argInteger) into tmp                
+    put length(tmp) into tmpLen                
+    put (tmpLen + 1) into N
+    repeat while TRUE
+                                
+        if not (N <= argNrOfTokens) then exit repeat                                
+        put ("0" & tmp) into tmp                                
+        put (1 + N) into N        
+
+    end repeat
+            
+    return(tmp)                
+    if integerp(argNrOfTokens) then                
+        put 10 into tmp                
+        put 1 into N
+        repeat while TRUE
+                                                                        
+            if not (N <= (argNrOfTokens - 1)) then exit repeat                                                
+            if (argInteger < tmp) then                                
+                put empty into tmpStr                                
+                put N into m
+                repeat while TRUE
+                                                                                                                        
+                    if not (m <= (argNrOfTokens - 1)) then exit repeat                                                                                
+                    put (tmpStr & "0") into tmpStr                                                                                
+                    put (1 + m) into m                    
+
+                end repeat
+                                                                                                                
+                return((tmpStr & string(argInteger)))
+            end if
+                                                
+            put (tmp * 10) into tmp                                                
+            put (1 + N) into N            
+
+        end repeat
+                                        
+        return(string(argInteger))        
+
+    else
+                                        
+        return(string(argInteger))
+    end if
+    
+end convItoS
+
+on calcRadians argDiff
+                    
+    put getAt(argDiff, 1) into diffX                        
+    put -getAt(argDiff, 2) into diffY                                                        
+    put sqrt(((diffX * float(diffX)) + (diffY * float(diffY)))) into hypo                
+    if (diffY = 0) then                
+        put 0.1 into diffY
+    end if
+                                
+    put atan((diffX / float(diffY))) into tempDirection                
+    if (diffX > 0) then                                
+        if (diffY > 0) then                        
+            nothing()            
+
+        else
+                                                            
+            put (tempDirection + pi()) into tempDirection
+        end if
+        
+
+    else
+                                
+        if (diffY > 0) then                                                                                    
+            put (tempDirection + (2 * pi())) into tempDirection            
+
+        else
+                                                            
+            put (tempDirection + pi()) into tempDirection
+        end if
+    end if
+                            
+    return(tempDirection, hypo)
+end calcRadians
+

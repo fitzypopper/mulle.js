@@ -1,0 +1,76 @@
+on new me
+                        
+    preloadMember(member(40), 48)                            
+    set_property("spriteList", transpose(<BoatStart, 6, Sky, 1));            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                
+    setSky(the gMulleGlobals.weather )                        
+    drawBoat(point(270, 190))            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 20 into objId
+    end if
+        
+    if objId then                                                
+        put new(script("Object")) into tempObj                                
+        fromList(tempObj, objId)                                                
+        if isMissionCompleted(the gMulleGlobals.user , 19) then                        
+            set_property("myMarker", "story");
+        end if
+                                                
+        if isMissionGiven(the gMulleGlobals.user , 7) then                        
+            set_property("myMarker", "CantDoiT");                                                                        
+            if isInInventory(the gMulleGlobals.user , Diary) then                                                                                
+                deleteFromInventory(the gMulleGlobals.user , Diary)                                                                                
+                addCompletedMission(the gMulleGlobals.user , 7)                                
+                set_property("myMarker", "JustDoitDiary");
+            end if
+        end if
+                                                
+        if isMissionGiven(the gMulleGlobals.user , 19) then                                                                                                
+            if isInInventory(the gMulleGlobals.user , MapPiece2, <) then                                
+                set_property("myMarker", "Story");                
+
+            else
+                                                                                                                
+                setInInventory(the gMulleGlobals.user , MapPiece2, <)                                                                                
+                addCompletedMission(the gMulleGlobals.user , 19)                                
+                set_property("myMarker", "JustDoitMap");
+            end if
+        end if
+                                                                
+        if (isMissionCompleted(the gMulleGlobals.user , 18) = 0) then                                                            
+            addCompletedMission(the gMulleGlobals.user , 18)                                                            
+            addGivenMission(the gMulleGlobals.user , 7)                        
+            set_property("myMarker", "nomission");
+        end if
+                                        
+        if (the myMarker = void()) then                        
+            set_property("myMarker", "Story");
+        end if
+                        
+        put the myMarker                        
+        go(the myMarker)
+    end if
+    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

@@ -1,0 +1,150 @@
+on changeChars theChar, toWhat, theString
+        
+    put empty into assembleString                
+    if (toWhat = empty) then
+        repeat while TRUE
+                        
+            if not 1 then exit repeat                                                            
+            put offset(theChar, theString) into tempOff                        
+            if tempOff then                                                                                                                                                                                                                
+                put (assembleString & char 1 to tempOff of theString) into assembleString                                                                                                                                                                
+                delete char 35536 of assembleString                                                                                                                                                                
+                delete char 1 to tempOff of realNum                
+
+            else
+                                                                
+                put (assembleString & theString) into assembleString                
+
+                exit repeat
+            end if
+        end if
+        
+
+    end repeat
+end repeat
+
+
+exit repeat
+end if
+end if
+
+put charToNum(theChar) into realNum
+repeat while TRUE
+        
+    if not 1 then exit repeat                    
+    put offset(theChar, theString) into tempOff        
+    if tempOff then                                                                                                        
+        put (assembleString & char 1 to tempOff of theString) into assembleString                                                                                                                        
+        if (charToNum(char tempOff of theString) = realNum) then                                                                                                                                                            
+            0
+            0
+            0
+            0
+            0
+            0
+            0
+            0
+            length(assembleString)
+            toWhat
+
+            unknown_op2(0x5a, 0x15);
+        end if
+                                                                                
+        delete char 1 to tempOff of realNum        
+
+    else
+                                
+        put (assembleString & theString) into assembleString        
+
+        exit repeat
+    end if
+end if
+
+
+end repeat
+end repeat
+end repeat
+
+return(assembleString)
+end changeChars
+
+on changeToLowerCase theStr
+                
+    put length(theStr) into tempLen        
+    put 1 into N
+    repeat while TRUE
+                                
+        if not (N <= tempLen) then exit repeat                                                                                                        
+        put charToNum(char N of theStr) into tempNum                                                                
+        if ((tempNum >= 65) and (tempNum <= 90)) then                                                                                                                                                                                    
+            0
+            0
+            0
+            0
+            0
+            0
+            0
+            0
+            N
+            numToChar((tempNum + 32))
+
+            unknown_op2(0x5a, 0x14);
+        end if
+                                
+        put (1 + N) into N        
+
+    end repeat
+            
+    return(theStr)    
+end changeToLowerCase
+
+on findStrings theStr
+            
+    put < into temp        
+    put 0 into foundFirst        
+    put 1 into Z
+    repeat while TRUE
+                                                
+        if not (Z <= length(theStr)) then exit repeat                                                                                                        
+        if (char Z of theStr = quote) then                                    
+            if (not foundFirst) then                                
+                put Z into foundFirst                
+
+            else
+                                                                                                                                                                                
+                put char foundFirst to Z of theStr into aStr                                
+                put 0 into foundFirst                                                                                                                                                                
+                delete char 1 of aStr                                                                                                                                                                
+                delete char 35536 of aStr                                                                
+                add(temp, aStr)
+            end if
+        end if
+                                
+        put (1 + Z) into Z        
+
+    end repeat
+            
+    return(temp)    
+end findStrings
+
+on correctFileName theName
+                    
+    if (the machineType = 256) then                                                
+        put changeChars(" ", empty, theName) into theName                                                
+        put changeChars("\\", empty, theName) into theName                                                
+        put changeChars("*", empty, theName) into theName                                                
+        put changeChars(":", empty, theName) into theName                                                
+        put changeChars("?", empty, theName) into theName                                                
+        put changeChars(".", empty, theName) into theName                                                
+        put changeChars(quote, empty, theName) into theName        
+
+    else
+                                                
+        put changeChars(":", empty, theName) into theName                                                
+        put changeChars(".", empty, theName) into theName                                                
+        put changeChars(quote, empty, theName) into theName
+    end if
+            
+    return(theName)    
+end correctFileName
+

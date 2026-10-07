@@ -1,0 +1,8 @@
+on beginSprite me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    25
+    1
+    62
+end beginSprite
+

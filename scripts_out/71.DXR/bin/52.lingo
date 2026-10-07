@@ -1,0 +1,10 @@
+on CuePassed whichChannel, cuePointNumber, cuePointName
+                        
+    go((the frame + 1))    
+end CuePassed
+
+on exitFrame 
+                
+    go(the frame)    
+end exitFrame
+

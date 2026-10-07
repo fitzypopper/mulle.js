@@ -1,0 +1,5 @@
+on exitFrame 
+            
+    go("justDoITluck2")    
+end exitFrame
+

@@ -1,0 +1,53 @@
+on new me
+            
+    return(me)    
+end new
+
+on init me
+            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    set_property("givePart", getRandomPart(the gMulleGlobals.externalParts ));            
+    put the givePart        
+    set_property("myDummyPart", 8);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 0 into objId
+    end if
+                    
+    put getBoat(the gMulleGlobals.user ) into tmpBoat                            
+    if (getProperty(tmpBoat, power) >= 200) then                                
+        if (the givePart = NoPart) then                        
+            set_property("myMarker", "JustDoit");                                                            
+            addCompletedMission(the gMulleGlobals.user , 14)                                    
+            put "shit out Of luck"            
+
+        else
+                                                            
+            addNewPart(the gMulleGlobals.user , the givePart)                                                            
+            addCompletedMission(the gMulleGlobals.user , 14)                        
+            set_property("myMarker", "JustDoit");
+        end if
+        
+
+    else
+                
+        set_property("myMarker", "cantDoIt");
+    end if
+            
+    go(the myMarker)    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

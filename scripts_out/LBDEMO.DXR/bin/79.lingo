@@ -1,0 +1,5 @@
+on mouseUp 
+            
+    go("lek&ler")    
+end mouseUp
+

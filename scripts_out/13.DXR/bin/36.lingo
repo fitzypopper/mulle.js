@@ -1,0 +1,13 @@
+on beginSprite me
+                            
+    set_property("endTime", ((7 * 60) + the ticks));    
+end beginSprite
+
+on exitFrame 
+                    
+    if (the ticks < the endTime) then                                
+        go(the frame)
+    end if
+    
+end exitFrame
+

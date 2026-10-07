@@ -1,0 +1,78 @@
+on beginSprite me
+            
+    cursor(200)            
+    C_Standard(me)    
+end beginSprite
+
+on exitFrame 
+                                    
+    ERROR: Missing subcommand! (0x06) :(    
+    33
+    point(mouseH, mouseV)
+    the currentSpriteNum
+end exitFrame
+
+on C_Standard me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b001v0"
+    the currentSpriteNum
+end C_Standard
+
+on c_grab me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b006v0"
+    the currentSpriteNum
+end c_grab
+
+on c_Left me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b004v0"
+    the currentSpriteNum
+end c_Left
+
+on c_MoveLeft me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b009v0"
+    the currentSpriteNum
+end c_MoveLeft
+
+on c_click me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b010v0"
+    the currentSpriteNum
+end c_click
+
+on c_MoveIn me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b007v0"
+    the currentSpriteNum
+end c_MoveIn
+
+on C_Right me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b003v0"
+    the currentSpriteNum
+end C_Right
+
+on c_MoveRight me
+                
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    "00b008v0"
+    the currentSpriteNum
+end c_MoveRight
+

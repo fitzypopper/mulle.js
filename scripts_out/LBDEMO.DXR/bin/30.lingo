@@ -1,0 +1,5 @@
+on mouseUp 
+            
+    go("skapa")    
+end mouseUp
+

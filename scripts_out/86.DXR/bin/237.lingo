@@ -1,0 +1,11 @@
+on beginSprite me
+    global gDir
+            
+    deleteDog(gDir)    
+end beginSprite
+
+on exitFrame 
+                
+    go(the frame)    
+end exitFrame
+

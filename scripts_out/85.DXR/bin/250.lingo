@@ -1,0 +1,79 @@
+on new me
+                    
+    set_property("spriteList", transpose(<BoatStart, 6));            
+    return(me)    
+end new
+
+on init me
+                        
+    drawBoat(point(320, 155))            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 0 into objId
+    end if
+                        
+    if isMissionCompleted(the gMulleGlobals.user , 7) then                                                
+        if isMissionGiven(the gMulleGlobals.user , 8) then                        
+            set_property("myMarker", "suit");                                                                                    
+            setInInventory(the gMulleGlobals.user , Suit, <)                                                            
+            addCompletedMission(the gMulleGlobals.user , 8)            
+
+        else
+                        
+            set_property("myMarker", "leave");
+        end if
+        
+
+    else
+                                                
+        if isMissionGiven(the gMulleGlobals.user , 7) then                                                                                                
+            if (isInInventory(the gMulleGlobals.user , Diary) = 0) then                                                                                                                
+                setInInventory(the gMulleGlobals.user , Diary, <)                                
+                set_property("myMarker", "Diary");                
+
+            else
+                                
+                set_property("myMarker", "Leave");
+            end if
+            
+
+        else
+                        
+            set_property("myMarker", "Leave");
+        end if
+    end if
+                    
+    if (the myMarker = void()) then                
+        set_property("myMarker", "Leave");
+    end if
+                
+    if (the myMarker = "Diary") then                        
+        go("StartDiary")
+    end if
+                
+    if (the myMarker = "Leave") then                        
+        go("Start")
+    end if
+                
+    if (the myMarker = "suit") then                        
+        go("suit")
+    end if
+            
+    put the myMarker    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

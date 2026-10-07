@@ -1,0 +1,102 @@
+on beginSprite me
+    global gMulleGlobals
+                                        
+    if ((the inventoryCheck = none) or isInInventory(the gMulleGlobals.user , the inventoryCheck)) then                
+        set_property("active", 1);                                                
+        ERROR: Missing subcommand! (0x06) :(                                
+        set_property("spriteLoc", value(the spriteLoc));                                                                                                                
+        if ((getAt(the spriteLoc, 1) <> 0) or (getAt(the spriteLoc, 2) <> 0)) then                                                                                                                                                            
+            ERROR: Missing subcommand! (0x06) :(
+            33
+            point(getAt(the spriteLoc, 1), getAt(the spriteLoc, 2))
+            the SP
+            37
+            member(the normalPic)
+            the SP
+        end if
+                
+        set_property("soundID", 0);                                                
+        sendSprite(the me.spriteNum , activateClick, 1)        
+
+    else
+                
+        set_property("active", 0);                                                
+        sendSprite(the me.spriteNum , activateClick, 0)
+    end if
+    
+end beginSprite
+
+on activate me, argStatus
+        
+    set_property("active", argStatus);    
+end activate
+
+on mouseEnter me
+        
+    if the active then                
+        set_property("mouseOver", 1);                
+        set_property("loopCounter", 0);                                                
+        ERROR: Missing subcommand! (0x06) :(
+        37
+        member(the rollOverPic)
+        the SP
+    end if
+    
+end mouseEnter
+
+on mouseLeave me
+        
+    if the active then                
+        set_property("mouseOver", 0);                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        sendSprite((the SP - 18), mouseLeave)
+        37
+        member(the normalPic)
+        the SP
+    end if
+    
+end mouseLeave
+
+on mouseDown me
+        
+    if the active then                                                
+        ERROR: Missing subcommand! (0x06) :(
+        37
+        member(the normalPic)
+        the SP
+    end if
+    
+end mouseDown
+
+on mouseUp me
+    global gSound
+        
+    if the active then                        
+        stopAllEffects(gSound)                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        set_property("soundID", play(gSound, the infoSound, OPEFFECT));
+        37
+        member(the rollOverPic)
+        the SP
+    end if
+    
+end mouseUp
+
+on exitFrame 
+        
+    if the active then                
+        if the mouseOver then                                                
+            set_property("loopCounter", (the loopCounter + 1));                                                
+            if (the loopCounter = 15) then
+            end if
+        end if
+    end if
+    
+end exitFrame
+
+on getPropertyDescriptionList me
+                                                                                                                                                                                                                                                                
+    put transpose(<SP, transpose(<comment, "Info button SP:", format, integer, default, 0), normalPic, transpose(<comment, "Standard picture:", format, string, default, "15b073v0"), rollOverPic, transpose(<comment, "Rollover picture:", format, string, default, "15b074v0"), spriteLoc, transpose(<comment, "Sprite location:", format, string, default, "[0,0]"), infoSound, transpose(<comment, "Information sound:", format, string, default, "15d000v0"), inventoryCheck, transpose(<comment, "Check for in inventory:", format, symbol, range, <none, Blueprint1, Blueprint2, BluePrint3, default, none)) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

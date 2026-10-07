@@ -1,0 +1,19 @@
+on beginSprite me
+    
+end beginSprite
+
+on mouseEnter me
+    
+end mouseEnter
+
+on mouseLeave me
+    
+end mouseLeave
+
+on keyDown me
+    global gDir
+            
+    put 1 into gDir.keyPressed         
+    pass()    
+end keyDown
+

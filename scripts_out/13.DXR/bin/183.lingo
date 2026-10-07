@@ -1,0 +1,5 @@
+on exitFrame 
+                
+    puppetSound(2, "04e004v0")    
+end exitFrame
+

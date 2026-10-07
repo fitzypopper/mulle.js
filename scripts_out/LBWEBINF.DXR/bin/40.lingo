@@ -1,0 +1,98 @@
+on mouseUp 
+            
+    put whichButton() into currentButton                
+    if (currentButton = "Bcance") then                        
+        puppetSound("Click2")                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        tell the stage to closeDialogWebInfo 0 37 member("Bcance-n") 8        
+
+    else
+                                
+        if (currentButton = "BopWeb") then                                    
+            puppetSound("Click2")                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                            
+            if objectp(gDir) then                                                                                                                                                                                
+                tell the stage to closeDialogWebInfo 1, getaProp(gStartNext, Web) 37 member("BopWeb-n") 4
+            end if
+            
+
+        else
+            
+end mouseUp
+
+on mouseDown 
+            
+    put whichButton() into currentButton                
+    if (currentButton = "Bcance") then                        
+        puppetSound("Click1")                                                
+        ERROR: Missing subcommand! (0x06) :(        
+        37
+        member("Bcance-d")
+        8
+
+    else
+                                
+        if (currentButton = "BopWeb") then                                    
+            puppetSound("Click1")                                                                        
+            ERROR: Missing subcommand! (0x06) :(            
+            37
+            member("BopWeb-d")
+            4
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("BopWeb-n")
+            4
+            37
+            member("Bcance-n")
+            8
+        end if
+    end if
+    
+end mouseDown
+
+on idle 
+            
+    put whichButton() into currentButton                                    
+    if (not ((currentButton = "BopWeb") or (currentButton = "Bcance"))) then                                                
+        ERROR: Missing subcommand! (0x06) :(                                                
+        ERROR: Missing subcommand! (0x06) :(
+        37
+        member("BopWeb-n")
+        4
+        37
+        member("Bcance-n")
+        8
+    end if
+    
+end idle
+
+on whichButton 
+                            
+    put point(the mouseH, the mouseV) into p                                        
+    if inside(p, rect(13, 200, 210, 233)) then                        
+        return("BopWeb")        
+
+    else
+                                                                                
+        if inside(p, rect(200, 200, 306, 233)) then                                    
+            return("Bcance")            
+
+        else
+                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            ERROR: Missing subcommand! (0x06) :(
+            37
+            member("BopWeb-n")
+            4
+            37
+            member("Bcance-n")
+            8
+        end if
+    end if
+    
+end whichButton
+

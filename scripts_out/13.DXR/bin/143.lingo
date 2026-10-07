@@ -1,0 +1,6 @@
+on exitFrame 
+        
+    killall()                
+    go(1, "LBProfil")    
+end exitFrame
+

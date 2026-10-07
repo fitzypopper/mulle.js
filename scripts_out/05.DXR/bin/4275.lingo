@@ -1,0 +1,63 @@
+on xxxDrawTopo 
+        
+    put "DepthMap01" into tmpMemb                                                
+    put (the member(tmpMemb).text  & the member((tmpMemb & "-2")).text ) into tmpStr        
+    put 1 into N
+    repeat while TRUE
+                                
+        if not (N <= 11) then exit repeat                                                
+        ERROR: Missing subcommand! (0x06) :(                                                                
+        ERROR: Missing subcommand! (0x06) :(                                
+        put (1 + N) into N        
+        37
+        member("Dot")
+        (N + 1)
+        24
+        1
+        (N + 1)
+
+    end repeat
+        
+    put 1 into Y
+    repeat while TRUE
+                                                
+        if not (Y <= (198 / 11)) then exit repeat                        
+        put Y                
+        put 1 into X
+        repeat while TRUE
+                                                
+            if not (X <= 316) then exit repeat                        
+            put 0 into tmpNeedUpdate                        
+            put 1 into N
+            repeat while TRUE
+                                                                
+                if not (N <= 11) then exit repeat                                                                                                                                                                                                                                                                                                                                                                                                                
+                put charToNum(char ((((Y - 1) + ((N - 1) * 18)) * 316) + X) of tmpStr) into tmpInfo                                                                
+                if (N = 1) then                                                            
+                    put tmpInfo
+                end if
+                                
+                put 1 into tmpNeedUpdate                                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                                                                                                                                                                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                
+                put (1 + N) into N                
+                33
+                point(((X * 2) + 4), ((((Y - 1) + ((N - 1) * 18)) * 2) + 4))
+                (N + 1)
+                7
+                (tmpInfo + 1)
+                (N + 1)
+
+            end repeat
+                        
+            updateStage()                                                
+            put (1 + X) into X            
+
+        end repeat
+                                
+        put (1 + Y) into Y        
+
+    end repeat
+    
+end xxxDrawTopo
+

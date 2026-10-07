@@ -1,0 +1,6 @@
+on mouseUp 
+    global gDir
+                
+    openWEB(the gDir.httpWeb1 )    
+end mouseUp
+

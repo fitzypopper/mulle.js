@@ -1,0 +1,24 @@
+on mouseUp me
+    global gSound
+    global gMainScroller
+        
+    if the downOn then                                        
+        play(gSound, "SndMouseClick", OPEFFECT)                
+        set_property("downOn", 0);                                                        
+        put cleanString(the member("EnterField").text ) into tempStr                                        
+        sendSprite(gMainScroller, AddLine, tempStr)
+    end if
+    
+end mouseUp
+
+on mouseUpOutSide me
+        
+    set_property("downOn", 0);    
+end mouseUpOutSide
+
+on mouseDown me
+            
+    cursor(200)        
+    set_property("downOn", 1);    
+end mouseDown
+

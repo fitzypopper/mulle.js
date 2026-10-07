@@ -1,0 +1,7 @@
+on exitFrame 
+    global gSound
+            
+    stopAll(gSound)                
+    go(1, "15")    
+end exitFrame
+

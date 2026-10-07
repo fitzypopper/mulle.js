@@ -1,0 +1,19 @@
+on beginSprite me
+                                
+    set_property("soundList", <"04d029v0", "05d109v0", "83d019v0", "84e007v0", "04d027v0");                
+    ERROR: Missing subcommand! (0x06) :(    
+    put 38 into tempList                    
+    set_property("animObject", getAt(tempList, 1));                
+    put random(3) into tmpRnd                
+    if (tmpRnd <> 1) then                
+        set_property("theMember", "84e007v0");        
+        the me.spriteNum 
+
+    else
+                                                        
+        set_property("theMember", getAt(the soundList, random(4)));                                
+        makeAnimSpeech(the animObject, the theMember)
+    end if
+    
+end beginSprite
+

@@ -1,0 +1,5 @@
+on mouseUp 
+            
+    go("main")    
+end mouseUp
+

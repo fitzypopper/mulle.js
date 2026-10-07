@@ -1,0 +1,60 @@
+on new me
+            
+    return(me)    
+end new
+
+on init me
+            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("myDummyPart", 9);                    
+    set_property("givePart", getRandomPart(the gMulleGlobals.externalParts ));                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 10 into objId
+    end if
+        
+    if objId then                                                
+        put new(script("Object")) into tempObj                                
+        fromList(tempObj, objId)                                                                
+        put getAt(getSetWhenDone(tempObj, missions), 1) into MissionId                                                
+        if isInInventory(the gMulleGlobals.user , helmet) then                                                                        
+            if isInInventory(the gMulleGlobals.user , Suit) then                                                                                
+                addCompletedMission(the gMulleGlobals.user , 15)                                                                
+                if (the givePart = NoPart) then                                                            
+                    put "shit out Of luck"                    
+
+                else
+                                                                                                    
+                    addNewPart(the gMulleGlobals.user , the givePart)
+                end if
+                                
+                set_property("myMarker", "JustDoit");                
+
+            else
+                                
+                set_property("myMarker", "cantDoit");
+            end if
+            
+
+        else
+                        
+            set_property("myMarker", "cantDoit");
+        end if
+    end if
+            
+    go(the myMarker)    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

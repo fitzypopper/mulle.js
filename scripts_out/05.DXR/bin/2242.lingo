@@ -1,0 +1,166 @@
+on new me
+                            
+    set_property("directionList", value(the member("DirectionList").text ));                
+    set_property("nrOfDirections", count(the directionList));            
+    return(me)    
+end new
+
+on kill me
+            
+    return(0)    
+end kill
+
+on correctDirection me, theDir
+                
+    put (theDir mod the nrOfDirections) into theDir                
+    if (theDir <= 0) then                                        
+        return((theDir + 16))
+    end if
+            
+    return(theDir)    
+end correctDirection
+
+on getVelPoint me, theDir
+                        
+    return(getAt(the directionList, theDir))    
+end getVelPoint
+
+on calcDirection me, theStart, theEnd, argOption
+                                        
+    put (getAt(theEnd, 1) - getAt(theStart, 1)) into diffX                                        
+    put (getAt(theStart, 2) - getAt(theEnd, 2)) into diffY                                        
+    put sqrt(((diffX * diffX) + (diffY * diffY))) into hypo                
+    if (diffY = 0) then                
+        put 0.1 into diffY
+    end if
+                                
+    put atan((diffX / float(diffY))) into tempDirection                
+    if (diffX > 0) then                                
+        if (diffY > 0) then                        
+            nothing()            
+
+        else
+                                                            
+            put (tempDirection + pi()) into tempDirection
+        end if
+        
+
+    else
+                                
+        if (diffY > 0) then                                                                                    
+            put (tempDirection + (2 * pi())) into tempDirection            
+
+        else
+                                                            
+            put (tempDirection + pi()) into tempDirection
+        end if
+    end if
+                    
+    put (tempDirection / pi()) into tempDirection                                
+    put integer(((tempDirection * the nrOfDirections) / 2)) into tempDirection                
+    if (tempDirection = 0) then                
+        put the nrOfDirections into tempDirection
+    end if
+                
+    if (argOption = WithHypo) then                                                
+        return(tempDirection, hypo)
+    end if
+            
+    return(tempDirection)    
+end calcDirection
+
+on checkRadius me, argReportObject, argBoatLoc, argLoc, argOption
+                
+    put (argBoatLoc - argLoc) into tempDiff                    
+    put getAt(tempDiff, 1) into tempH                    
+    put getAt(tempDiff, 2) into tempV                                        
+    put sqrt(((tempH * tempH) + (tempV * tempV))) into hypo                                
+    if (voidp(argOption) or (argOption = both)) then                                        
+        if (hypo <= the argReportObject.OuterRadius ) then                                                            
+            if (hypo <= the argReportObject.InnerRadius ) then                                                                
+                if (not the argReportObject.insideInner ) then                                                            
+                    put 1 into argReportObject.insideInner                                                             
+                    if the argReportObject.insideOuter  then                                                                        
+                        return(EnterInnerRadius)                        
+
+                    else
+                                                                        
+                        put 1 into argReportObject.insideOuter                                                                         
+                        return(EnterBoth)
+                    end if
+                end if
+                
+
+            else
+                                                                
+                if (not the argReportObject.insideOuter ) then                                                            
+                    put 1 into argReportObject.insideOuter                                                             
+                    return(enterOuterRadius)
+                end if
+                                                
+                if the argReportObject.insideInner  then                                                            
+                    put 0 into argReportObject.insideInner                                                             
+                    return(ExitInnerRadius)
+                end if
+            end if
+            
+
+        else
+                                    
+            if the argReportObject.insideOuter  then                                                
+                put 0 into argReportObject.insideOuter                                                 
+                if the argReportObject.insideInner  then                                                            
+                    put 0 into argReportObject.insideInner                                                             
+                    return(ExitBoth)                    
+
+                else
+                                                            
+                    return(ExitOuterRadius)
+                end if
+            end if
+        end if
+        
+
+    else
+                                
+        if (argOption = Inner) then                                                            
+            if (hypo <= the argReportObject.InnerRadius ) then                                                                
+                if (not the argReportObject.insideInner ) then                                                            
+                    put 1 into argReportObject.insideInner                                                             
+                    return(EnterInnerRadius)
+                end if
+                
+
+            else
+                                                
+                if the argReportObject.insideInner  then                                                            
+                    put 0 into argReportObject.insideInner                                                             
+                    return(ExitInnerRadius)
+                end if
+            end if
+            
+
+        else
+                                                
+            if (argOption = Outer) then                                                                                
+                if (hypo <= the argReportObject.OuterRadius ) then                                                                                
+                    if (not the argReportObject.insideOuter ) then                                                                        
+                        put 1 into argReportObject.insideOuter                                                                         
+                        return(enterOuterRadius)
+                    end if
+                    
+
+                else
+                                                            
+                    if the argReportObject.insideOuter  then                                                                        
+                        put 0 into argReportObject.insideOuter                                                                         
+                        return(ExitOuterRadius)
+                    end if
+                end if
+            end if
+        end if
+    end if
+            
+    return(0)    
+end checkRadius
+

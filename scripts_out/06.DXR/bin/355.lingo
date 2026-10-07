@@ -1,0 +1,23 @@
+on mouseUp me
+    global gDir
+        
+    if the YesNo then                        
+        prepareEnterName(gDir)
+    end if
+                                        
+    ERROR: Missing subcommand! (0x06) :(                                        
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    member("Dummy")
+    getProp(the gDir.spriteList , NoButton)
+    37
+    member("Dummy")
+    getProp(the gDir.spriteList , YesButton)
+end mouseUp
+
+on getPropertyDescriptionList me
+                                                
+    put transpose(<YesNo, transpose(<comment, "Yes:", format, boolean, default, 1)) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

@@ -1,0 +1,123 @@
+on beginSprite me
+            
+    set_property("SP", the me.spriteNum );                            
+    ERROR: Missing subcommand! (0x06) :(                    
+    set_property("spriteList", <"86a002v0", "86a002v1");        
+    set_property("alterFlap", 1);        
+    set_property("altitude", 3);        
+    set_property("Mode", Still);    
+    33
+    point(5000, 5000)
+    the SP
+end beginSprite
+
+on exitFrame me
+                
+    if (the Mode = Still) then                                                
+        if (random(200) = 1) then                                                
+            randomMove(me, 2)
+        end if
+    end if
+                
+    if (the Mode = flyRight) then                                                        
+        set_property("myPoint", (the myPoint + point(15, the altitude)));                                
+        ERROR: Missing subcommand! (0x06) :(                
+        flap()                                                        
+        if (getAt(the myPoint, 1) >= the EndPoint) then                        
+            set_property("Mode", Still);
+            33
+            the myPoint
+            the SP
+        end if
+                                                        
+        if (getAt(the myPoint, 2) <= the topPoint) then                                                                        
+            set_property("LowPoint", (150 + random(50)));                                                            
+            set_property("altitude", (the altitude * -1));
+        end if
+                                                        
+        if (getAt(the myPoint, 2) >= the LowPoint) then                                                                        
+            set_property("topPoint", (10 + random(50)));                                                            
+            set_property("altitude", (the altitude * -1));
+        end if
+    end if
+                
+    if (the Mode = flyLeft) then                                                        
+        set_property("myPoint", (the myPoint - point(15, the altitude)));                                
+        ERROR: Missing subcommand! (0x06) :(                
+        flap()                                                        
+        if (getAt(the myPoint, 1) <= the EndPoint) then                        
+            set_property("Mode", Still);
+            33
+            the myPoint
+            the SP
+        end if
+                                                        
+        if (getAt(the myPoint, 2) <= the topPoint) then                                                                        
+            set_property("LowPoint", (150 + random(30)));                                                            
+            set_property("altitude", (the altitude * -1));
+        end if
+                                                        
+        if (getAt(the myPoint, 2) >= the LowPoint) then                                                                        
+            set_property("topPoint", (10 + random(50)));                                                            
+            set_property("altitude", (the altitude * -1));
+        end if
+    end if
+    
+end exitFrame
+
+on flap me
+                
+    set_property("flapMod", (the flapMod + the alterFlap));                
+    if (the flapMod >= 4) then                                        
+        set_property("alterFlap", (the alterFlap * -1));
+    end if
+                
+    if (the flapMod <= 0) then                                        
+        set_property("alterFlap", (the alterFlap * -1));
+    end if
+                        
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    (the theMember & the flapMod)
+    the SP
+end flap
+
+on randomMove me, maxRnd
+                
+    if (the Mode = Still) then                                
+        put random(maxRnd) into tempRnd                
+        ERROR: I don't know to implement the copy command! :(                        
+        if (tempRnd = 1) then                        
+            set_property("Mode", flyRight);                                                            
+            set_property("theMember", getAt(the spriteList, 2));                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                        
+            set_property("StartPoint", point(-40, 40));                        
+            set_property("myPoint", the StartPoint);                        
+            set_property("EndPoint", 680);                                    
+            put the Mode            
+            37
+            (the theMember & 0)
+            the SP
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = 2) then                                
+                set_property("Mode", flyLeft);                                                                                
+                set_property("theMember", getAt(the spriteList, 1));                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                
+                set_property("StartPoint", point(680, 40));                                
+                set_property("myPoint", the StartPoint);                                                
+                set_property("EndPoint", -40);                                                
+                put the Mode
+                37
+                (the theMember & 0)
+                the SP
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(
+    end if
+    
+end randomMove
+

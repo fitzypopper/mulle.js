@@ -1,0 +1,25 @@
+on beginSprite me
+        
+    set_property("active", 1);    
+end beginSprite
+
+on activate me, YesNo
+        
+    set_property("active", YesNo);    
+end activate
+
+on mouseUp me
+    global gSound
+    global gDir
+        
+    if the active then                                        
+        play(gSound, "SndMouseClick", OPEFFECT)                                        
+        if (the gDir.Mode  = save) then                                    
+            saveIfNecessary(gDir)
+        end if
+                        
+        go("Leave")
+    end if
+    
+end mouseUp
+

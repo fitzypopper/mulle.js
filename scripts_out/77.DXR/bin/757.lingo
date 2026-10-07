@@ -1,0 +1,14 @@
+on exitFrame 
+    global gMulleGlobals
+                                
+    if isInInventory(the gMulleGlobals.user , DoctorBag, <) then                                                        
+        deleteFromInventory(the gMulleGlobals.user , DoctorBag, <)                        
+        go("JustDoItPrimaBag")        
+
+    else
+                                                
+        go((the frame + 1))
+    end if
+    
+end exitFrame
+

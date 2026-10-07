@@ -1,0 +1,91 @@
+on beginSprite me
+    global gMulleGlobals
+                        
+    if isInInventory(the gMulleGlobals.user , the inventoryCheck) then                
+        set_property("active", 1);                                                        
+        ERROR: Missing subcommand! (0x06) :(                                                                
+        ERROR: Missing subcommand! (0x06) :(                
+        set_property("soundID", 0);        
+        33
+        point(320, 240)
+        the me.spriteNum 
+        37
+        member(the normalPic)
+        the me.spriteNum 
+
+    else
+                
+        set_property("active", 0);
+    end if
+    
+end beginSprite
+
+on activate me, argStatus
+        
+    set_property("active", argStatus);    
+end activate
+
+on mouseEnter me
+        
+    if the active then                
+        set_property("mouseOver", 1);                
+        set_property("loopCounter", 0);                                                        
+        ERROR: Missing subcommand! (0x06) :(
+        37
+        member(the rollOverPic)
+        the me.spriteNum 
+    end if
+    
+end mouseEnter
+
+on mouseLeave me
+    global gSound
+        
+    if the active then                                                                                
+        ERROR: Missing subcommand! (0x06) :(                                
+        if (not inside(the me.spriteNum , 34)) then                        
+            set_property("mouseOver", 0);                                                                                    
+            ERROR: Missing subcommand! (0x06) :(                                                
+            stop(gSound, the soundID)
+            37
+            member(the normalPic)
+            the me.spriteNum 
+            point(the mouseH, the mouseV)
+        end if
+    end if
+    
+end mouseLeave
+
+on mouseUp me
+    global gSound
+        
+    if the active then                                
+        stop(gSound, the soundID)                                                        
+        ERROR: Missing subcommand! (0x06) :(                                                
+        set_property("soundID", play(gSound, "15e002v0", OPEFFECT));                        
+        go(the goToFrame)
+        37
+        member(the normalPic)
+        the me.spriteNum 
+    end if
+    
+end mouseUp
+
+on exitFrame 
+        
+    if the active then                
+        if the mouseOver then                                                
+            set_property("loopCounter", (the loopCounter + 1));                                                
+            if (the loopCounter = 15) then
+            end if
+        end if
+    end if
+    
+end exitFrame
+
+on getPropertyDescriptionList me
+                                                                                                                                                                                                                        
+    put transpose(<inventoryCheck, transpose(<comment, "Check for in inventory:", format, symbol, range, <Blueprint1, Blueprint2, BluePrint3, default, Blueprint1), normalPic, transpose(<comment, "Standard picture:", format, string, default, "15b000v0"), rollOverPic, transpose(<comment, "Rollover picture:", format, string, default, "15b000v0"), rollOverSound, transpose(<comment, "Rollover sound:", format, string, default, "15d000v0"), goToFrame, transpose(<comment, "Frame:", format, string, default, empty)) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

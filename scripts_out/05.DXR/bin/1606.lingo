@@ -1,0 +1,70 @@
+on changeChars theChar, toWhat, theString
+        
+    put empty into assembleString                
+    if (toWhat = empty) then
+        repeat while TRUE
+                        
+            if not 1 then exit repeat                                                            
+            put offset(theChar, theString) into tempOff                        
+            if tempOff then                                                                                                                                                                                                                
+                put (assembleString & char 1 to tempOff of theString) into assembleString                                                                                                                                                                
+                delete char 35536 of assembleString                                                                                                                                                                
+                delete char 1 to tempOff of realNum                
+
+            else
+                                                                
+                put (assembleString & theString) into assembleString                
+
+                exit repeat
+            end if
+        end if
+        
+
+    end repeat
+end repeat
+
+
+exit repeat
+end if
+end if
+
+put charToNum(theChar) into realNum
+repeat while TRUE
+        
+    if not 1 then exit repeat                    
+    put offset(theChar, theString) into tempOff        
+    if tempOff then                                                                                                        
+        put (assembleString & char 1 to tempOff of theString) into assembleString                                                                                                                        
+        if (charToNum(char tempOff of theString) = realNum) then                                                                                                                                                            
+            0
+            0
+            0
+            0
+            0
+            0
+            0
+            0
+            length(assembleString)
+            toWhat
+
+            unknown_op2(0x5a, 0x15);
+        end if
+                                                                                
+        delete char 1 to tempOff of realNum        
+
+    else
+                                
+        put (assembleString & theString) into assembleString        
+
+        exit repeat
+    end if
+end if
+
+
+end repeat
+end repeat
+end repeat
+
+return(assembleString)
+end changeChars
+

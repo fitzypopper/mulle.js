@@ -1,0 +1,13 @@
+on xxxLoop 
+        
+    put 1337 into N
+    repeat while TRUE
+                                
+        if not (N <= 1392) then exit repeat                                        
+        put 1 into member(N).loop                                 
+        put (1 + N) into N        
+
+    end repeat
+    
+end xxxLoop
+

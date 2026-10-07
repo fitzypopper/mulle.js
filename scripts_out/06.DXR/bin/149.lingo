@@ -1,0 +1,17 @@
+on startMovie 
+    global gDir
+            
+    startMovie(gDir)    
+end startMovie
+
+on stopMovieX 
+    global gDir
+                
+    put kill(gDir) into gDir    
+end stopMovieX
+
+on keyDown 
+        
+    systemKeys()    
+end keyDown
+

@@ -1,0 +1,13 @@
+on beginSprite me
+                    
+    set_property("spriteList", <"79a004v0", "79a004v1");                
+    ERROR: Missing subcommand! (0x06) :(    
+    put 38 into tempList                    
+    set_property("animObject", getAt(tempList, 1));            
+    put tempList            
+    set_property("SP", the me.spriteNum );                            
+    set_property("theMember", getAt(the spriteList, random(2)));                    
+    setAnimFirstFrame(the me.animObject , the theMember)    
+    the me.spriteNum 
+end beginSprite
+

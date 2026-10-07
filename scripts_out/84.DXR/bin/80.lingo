@@ -1,0 +1,92 @@
+on new me
+                            
+    set_property("spriteList", transpose(<BoatStart, 14, Sky, 1));            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                
+    setSky(the gMulleGlobals.weather )                    
+    updateProperties(the the gMulleGlobals.user .boat )                            
+    if (getCurrentHullType(the gMulleGlobals.boatViewHandler ) = Small) then                                                                                        
+        drawBoat(point(200, 190), void(), void(), 0)        
+
+    else
+                                                                                        
+        drawBoat(point(280, 170), void(), void(), 0)
+    end if
+            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("myDummyPart", 86);        
+    set_property("givePart", 30);                    
+    put getBoat(the gMulleGlobals.user ) into tmpBoat                
+    ERROR: Missing subcommand! (0x06) :(                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+        25
+        1
+        62
+
+    else
+                
+        put 0 into objId
+    end if
+                    
+    put getBoat(the gMulleGlobals.user ) into tmpBoat                                
+    if (isMissionCompleted(the gMulleGlobals.user , 11) = 0) then                                        
+        if getProperty(tmpBoat, Watertank) then                                                            
+            addCompletedMission(the gMulleGlobals.user , 11)                        
+            set_property("myMarker", "JustDoItTank");            
+
+        else
+                        
+            set_property("myMarker", "cantDoit");
+        end if
+    end if
+                                
+    if (isMissionCompleted(the gMulleGlobals.user , 21) = 0) then                                        
+        if getProperty(tmpBoat, Watertank) then                                                            
+            addCompletedMission(the gMulleGlobals.user , 11)                        
+            set_property("myMarker", "noMissionTank");            
+
+        else
+                        
+            set_property("myMarker", "nomission");
+        end if
+                                        
+        addCompletedMission(the gMulleGlobals.user , 21)                                        
+        addNewPart(the gMulleGlobals.user , 30)                                        
+        addGivenMission(the gMulleGlobals.user , 11)
+    end if
+                    
+    if getProperty(tmpBoat, CombineHarvester) then                                                                
+        if (isMissionCompleted(the gMulleGlobals.user , 10) = 0) then                                                            
+            addCompletedMission(the gMulleGlobals.user , 10)                                                                                    
+            setInInventory(the gMulleGlobals.user , helmet, <)                        
+            set_property("myMarker", "JustDoItWeed");            
+
+        else
+                                                                        
+            set_property("myMarker", ("Done" & random(5)));
+        end if
+    end if
+                    
+    if (the myMarker = void()) then                                                
+        set_property("myMarker", ("Done" & random(5)));
+    end if
+            
+    put the myMarker            
+    go(the myMarker)    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+

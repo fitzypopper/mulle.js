@@ -1,0 +1,70 @@
+on new me
+    global gMulleGlobals
+                                    
+    set_property("spriteList", transpose(<BoatStart, 2, ToBeCaptured, 82, Scroller, 110));            
+    set_property("returnTo", the gMulleGlobals.WhereFrom );            
+    put "08" into gMulleGlobals.WhereFrom                                 
+    put getUserName(the gMulleGlobals.user ) into member("UserName").text                         
+    put getName(the the gMulleGlobals.user .boat ) into tempCarName                        
+    if (length(tempCarName) = 0) then                
+        put " " into tempCarName
+    end if
+                    
+    put tempCarName into member("SavedCarName").text                     
+    if (the machineType <> 256) then                                        
+        ERROR: Missing subcommand! (0x09) :(                                        
+        ERROR: Missing subcommand! (0x09) :(
+        7
+        36
+        0
+        "SavedCarName"
+        7
+        24
+        0
+        "08t007v0"
+    end if
+            
+    return(me)    
+end new
+
+on init me
+    global gMulleGlobals
+                    
+    put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmp                        
+    put getPart(the gMulleGlobals.parts , tmp) into tmpPart                
+    if objectp(tmpPart) then                                
+        put getUseView(tmpPart) into tmpPic                                        
+        put the member(tmpPic).width  into tmp                                                                                                                                                
+        set_property("correctedBoatLocH", (290 - integer((((tmp / 2) - getAt(the member(tmpPic).regPoint , 1)) * 0.75))));        
+
+    else
+                
+        set_property("correctedBoatLocH", 290);
+    end if
+                                        
+    drawBoat(point(the correctedBoatLocH, 340), 0.75, void(), 0)    
+end init
+
+on startMovie me
+    global gSound
+            
+    stopBG(gSound)            
+    stopAllEffects(gSound)                
+    sendSprite(115, C_Standard)                        
+    ERROR: Missing subcommand! (0x06) :(                        
+    ERROR: Missing subcommand! (0x06) :(    
+    37
+    member("Dummy")
+    120
+    37
+    member("Dummy")
+    119
+end startMovie
+
+on kill me
+                    
+    put " " into member("SavedCarName").text                     
+    put " " into member("UserName").text             
+    return(0)    
+end kill
+

@@ -1,0 +1,93 @@
+on new me
+                    
+    set_property("spriteList", transpose(<BoatStart, 6));            
+    return(me)    
+end new
+
+on init me
+            
+    cursor(200)    
+end init
+
+on startMovie me
+    global gMulleGlobals
+        
+    set_property("myDummyPart", 13);        
+    set_property("givePart", 975);        
+    set_property("testing", 0);                    
+    if objectp(the gMulleGlobals.world ) then                                        
+        put getEnteredObject(the gMulleGlobals.world ) into objId        
+
+    else
+                
+        put 0 into objId
+    end if
+        
+    set_property("myMarker", "noMission");                        
+    if isMissionGiven(the gMulleGlobals.user , 8) then                
+        set_property("myMarker", "done");        
+
+    else
+                                                                
+        if (isMissionCompleted(the gMulleGlobals.user , 8) = 0) then                                                                                    
+            setInInventory(the gMulleGlobals.user , MapPiece3, <)                                                            
+            addGivenMission(the gMulleGlobals.user , 8)            
+
+        else
+                        
+            set_property("myMarker", "done");
+        end if
+    end if
+                        
+    if isMissionCompleted(the gMulleGlobals.user , 4) then                
+        set_property("myMarker", "done");
+    end if
+                        
+    if isMissionCompleted(the gMulleGlobals.user , 8) then                                                
+        if isMissionCompleted(the gMulleGlobals.user , 4) then                        
+            set_property("myMarker", "done");            
+
+        else
+                                                                        
+            if isMissionGiven(the gMulleGlobals.user , 4) then                                                                                                
+                if isInInventory(the gMulleGlobals.user , Blinddog) then                                                                                                    
+                    addCompletedMission(the gMulleGlobals.user , 4)                                                                                                    
+                    deleteFromInventory(the gMulleGlobals.user , Blinddog)                                                                                                    
+                    addGivenMission(the gMulleGlobals.user , 10)                                                                                                                                                                
+                    if (gotPart(the gMulleGlobals.user , 975) = 0) then                                                                                                                        
+                        addNewPart(the gMulleGlobals.user , 975)
+                    end if
+                                        
+                    set_property("myMarker", "JustDoIT");                    
+
+                else
+                                        
+                    set_property("myMarker", "CantDoIT");
+                end if
+            end if
+        end if
+    end if
+                                    
+    if (getMedal(the the gMulleGlobals.user .boat , 1) = 0) then                                                
+        addMedal(the the gMulleGlobals.user .boat , 1)                        
+        go("medalStart")        
+
+    else
+                        
+        go(the myMarker)
+    end if
+            
+    put the myMarker    
+end startMovie
+
+on kill me
+            
+    return(0)    
+end kill
+
+on deleteDog me
+    global gMulleGlobals
+                    
+    deleteFromInventory(the gMulleGlobals.user , Blinddog)    
+end deleteDog
+

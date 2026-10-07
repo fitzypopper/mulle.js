@@ -1,0 +1,5 @@
+on mouseUp 
+            
+    go("Fakta")    
+end mouseUp
+

@@ -1,0 +1,318 @@
+on beginSprite me
+    global gDir
+    global gMulleGlobals
+        
+    set_property("active", 1);        
+    set_property("soundID", 0);        
+    ERROR: I don't know to implement the copy command! :(            
+    if (the spriteType = Hull) then                                                
+        put getaProp(the gDir.spriteList , CurrentHull) into tmpHullSP                                        
+        put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmpHull                                                                
+        if ((tmpHull = the woodHullID) or (tmpHull = the metalHullID)) then                                                                        
+            ERROR: Missing subcommand! (0x06) :(                                                                                    
+            ERROR: Missing subcommand! (0x06) :(
+            33
+            point(320, 240)
+            tmpHullSP
+            37
+            member(the selHullPic)
+            tmpHullSP
+        end if
+        
+
+    else
+        
+        ERROR: I don't know to implement the copy command! :(                        
+        if (ERROR_EMPTY_STACK = Rudder) then                                                                        
+            put getaProp(the gDir.spriteList , CurrentRudder) into tmpRudderSP                                                            
+            put getCurrentRudder(the gMulleGlobals.boatViewHandler ) into tmpRudder                                                
+            if (tmpRudder = the rudderPartID) then                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(
+                33
+                point(320, 240)
+                tmpRudderSP
+                37
+                member(the selRudderPic)
+                tmpRudderSP
+            end if
+        end if
+    end if
+    
+    ERROR: I don't know to implement the discard command! :(    
+end beginSprite
+
+on activate me, argStatus
+        
+    set_property("active", argStatus);    
+end activate
+
+on mouseEnter me
+    global gDir
+    global gMulleGlobals
+        
+    if the active then                
+        set_property("mouseOver", 1);                
+        set_property("loopCounter", 0);                                                
+        put getaProp(the gDir.spriteList , rollOver) into tmpSP                
+        ERROR: I don't know to implement the copy command! :(                        
+        if (the spriteType = Hull) then                                                            
+            put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmpHull                                                                                                
+            if ((tmpHull <> the woodHullID) and (tmpHull <> the metalHullID)) then                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(
+                33
+                point(320, 240)
+                tmpSP
+                37
+                member(the rollHullPic)
+                tmpSP
+            end if
+            
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = Rudder) then                                                                                
+                put getCurrentRudder(the gMulleGlobals.boatViewHandler ) into tmpRudder                                                                
+                if (tmpRudder <> the rudderPartID) then                                                                                                                        
+                    ERROR: Missing subcommand! (0x06) :(                                                                                                                                            
+                    ERROR: Missing subcommand! (0x06) :(
+                    33
+                    point(320, 240)
+                    tmpSP
+                    37
+                    member(the rollRudderPic)
+                    tmpSP
+                end if
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(
+    end if
+    
+end mouseEnter
+
+on mouseLeave me
+    global gSound
+    global gDir
+        
+    if the active then                
+        set_property("mouseOver", 0);                                
+        if (the spriteType = Hull) then                                                
+            stop(gSound, the soundID)
+        end if
+                                                
+        put getaProp(the gDir.spriteList , rollOver) into tmpSP                                                
+        ERROR: Missing subcommand! (0x06) :(
+        37
+        member("Dummy")
+        tmpSP
+    end if
+    
+end mouseLeave
+
+on mouseUp me
+    global gMulleGlobals
+    global gDir
+    global gSound
+        
+    if the active then                                        
+        put getBoat(the gMulleGlobals.user ) into tmpBoat                                                
+        put getaProp(the gDir.spriteList , rollOver) into tmpRollOverSP                                                
+        put getaProp(the gDir.spriteList , CurrentHull) into tmpHullSP                                                
+        put getaProp(the gDir.spriteList , CurrentRudder) into tmpRudderSP                                        
+        put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmpHull                                        
+        put getCurrentRudder(the gMulleGlobals.boatViewHandler ) into tmpRudder                                                                
+        put getHullType(the gMulleGlobals.boatViewHandler , <the woodHullID) into tmpPageType                                        
+        put getCurrentHullType(the gMulleGlobals.boatViewHandler ) into tmpCurrentType                                        
+        put getCurrentHullMaterial(the gMulleGlobals.boatViewHandler ) into tmpMaterial                
+        ERROR: I don't know to implement the copy command! :(                        
+        if (the spriteType = Hull) then                                                                                                
+            if ((tmpHull <> the woodHullID) and (tmpHull <> the metalHullID)) then                                                                
+                stop(gSound, the soundID)                                                                                                
+                set_property("soundID", play(gSound, "15e001v0", OPEFFECT));                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                                                                                                                
+                if (((tmpRudder <> NoRudder) and (tmpRudder <> the rudderPartID)) and ((tmpCurrentType = NoType) or (tmpCurrentType = tmpPageType))) then                                                                                                                        
+                    ERROR: Missing subcommand! (0x06) :(                                                                                                                                            
+                    ERROR: Missing subcommand! (0x06) :(                                                                                                    
+                    replacePart(tmpBoat, tmpRudder, the rudderPartID)
+                    33
+                    point(320, 240)
+                    tmpRudderSP
+                    37
+                    member(the selRudderPic)
+                    tmpRudderSP
+                    33
+                    point(320, 240)
+                    tmpHullSP
+                    37
+                    member(the selHullPic)
+                    tmpHullSP
+                    37
+                    member("Dummy")
+                    tmpRollOverSP
+                end if
+                                                                
+                if (tmpHull = NoHull) then                                        
+                    ERROR: I don't know to implement the copy command! :(                                                            
+                    if (the defaultMaterial = Wood) then                                                                                                
+                        addPart(tmpBoat, the woodHullID)                        
+
+                    else
+                        
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (ERROR_EMPTY_STACK = Metal) then                                                                                                                
+                            addPart(tmpBoat, the metalHullID)
+                        end if
+                    end if
+                    
+                    ERROR: I don't know to implement the discard command! :(                    
+
+                else
+                                                                                
+                    if (tmpCurrentType <> tmpPageType) then                                                                        
+                        trash(tmpBoat)                                                
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (the defaultMaterial = Wood) then                                                                                                                
+                            addPart(tmpBoat, the woodHullID)                            
+
+                        else
+                            
+                            ERROR: I don't know to implement the copy command! :(                                                                                    
+                            if (ERROR_EMPTY_STACK = Metal) then                                                                                                                                
+                                addPart(tmpBoat, the metalHullID)
+                            end if
+                        end if
+                        
+                        ERROR: I don't know to implement the discard command! :(                        
+
+                    else
+                                                
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (tmpMaterial = Wood) then                                                                                                                                            
+                            replacePart(tmpBoat, tmpHull, the woodHullID)                            
+
+                        else
+                            
+                            ERROR: I don't know to implement the copy command! :(                                                                                    
+                            if (ERROR_EMPTY_STACK = Metal) then                                                                                                                                                                
+                                replacePart(tmpBoat, tmpHull, the metalHullID)
+                            end if
+                        end if
+                        
+                        ERROR: I don't know to implement the discard command! :(
+                    end if
+                end if
+                
+
+            else
+                                                                
+                stop(gSound, the soundID)                                                                                                
+                set_property("soundID", play(gSound, "15e004v0", OPEFFECT));                                                                                                
+                ERROR: Missing subcommand! (0x06) :(                                                                
+                deletePart(tmpBoat, tmpHull)
+                37
+                member("Dummy")
+                tmpHullSP
+            end if
+            
+
+        else
+            
+            ERROR: I don't know to implement the copy command! :(                                    
+            if (ERROR_EMPTY_STACK = Rudder) then                                                                
+                if (tmpRudder <> the rudderPartID) then                                                                                
+                    stop(gSound, the soundID)                                                                                                                        
+                    set_property("soundID", play(gSound, "15e001v0", OPEFFECT));                                                                                                                        
+                    ERROR: Missing subcommand! (0x06) :(                                                                                                                        
+                    ERROR: Missing subcommand! (0x06) :(                                                                                                                                            
+                    ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                                                                                                                                                                                
+                    if ((((tmpHull <> NoHull) and (tmpHull <> the woodHullID)) and (tmpHull <> the metalHullID)) and (tmpCurrentType = tmpPageType)) then                                                                                                                                                
+                        ERROR: Missing subcommand! (0x06) :(                                                                                                                                                                        
+                        ERROR: Missing subcommand! (0x06) :(                                                
+                        ERROR: I don't know to implement the copy command! :(                                                                        
+                        if (tmpMaterial = Wood) then                                                                                                                                            
+                            replacePart(tmpBoat, tmpHull, the woodHullID)                            
+                            33
+                            point(320, 240)
+                            tmpHullSP
+                            37
+                            member(the selHullPic)
+                            tmpHullSP
+                            33
+                            point(320, 240)
+                            tmpRudderSP
+                            37
+                            member(the selRudderPic)
+                            tmpRudderSP
+                            37
+                            member("Dummy")
+                            tmpRollOverSP
+
+                        else
+                            
+                            ERROR: I don't know to implement the copy command! :(                                                                                    
+                            if (ERROR_EMPTY_STACK = Metal) then                                                                                                                                                                
+                                replacePart(tmpBoat, tmpHull, the metalHullID)
+                            end if
+                        end if
+                        
+                        ERROR: I don't know to implement the discard command! :(
+                    end if
+                                                                                                                                                                
+                    if ((tmpCurrentType <> NoType) and (tmpCurrentType <> tmpPageType)) then                                                                        
+                        trash(tmpBoat)                                                                                                
+                        addPart(tmpBoat, the rudderPartID)                        
+
+                    else
+                                                                                                
+                        if (tmpRudder = NoRudder) then                                                                                                                
+                            addPart(tmpBoat, the rudderPartID)                            
+
+                        else
+                                                                                                                                            
+                            replacePart(tmpBoat, tmpRudder, the rudderPartID)
+                        end if
+                    end if
+                    
+
+                else
+                                                                                
+                    stop(gSound, the soundID)                                                                                                                        
+                    set_property("soundID", play(gSound, "15e004v0", OPEFFECT));                                                                                                                        
+                    ERROR: Missing subcommand! (0x06) :(                                                                                
+                    deletePart(tmpBoat, tmpRudder)
+                    37
+                    member("Dummy")
+                    tmpRudderSP
+                end if
+            end if
+        end if
+        
+        ERROR: I don't know to implement the discard command! :(                        
+        rebuild(tmpBoat)
+    end if
+    
+end mouseUp
+
+on exitFrame 
+                        
+    if (the active and (the spriteType = Hull)) then                
+        if the mouseOver then                                                
+            set_property("loopCounter", (the loopCounter + 1));                                                
+            if (the loopCounter = 15) then
+            end if
+        end if
+    end if
+    
+end exitFrame
+
+on getPropertyDescriptionList me
+                                                                                                                                                                                                                                                                                                                                                                                                                            
+    put transpose(<spriteType, transpose(<comment, "Type:", format, symbol, range, <Hull, Rudder, default, Hull), defaultMaterial, transpose(<comment, "Default material:", format, symbol, range, <Wood, Metal, default, Wood), woodHullID, transpose(<comment, "Wood hull ID:", format, integer, default, 0), metalHullID, transpose(<comment, "Metal hull ID:", format, integer, default, 0), selHullPic, transpose(<comment, "Hull selected picture:", format, string, default, "15b000v0"), rollHullPic, transpose(<comment, "Hull rollover picture:", format, string, default, "15b000v0"), hullSound, transpose(<comment, "Hull description:", format, string, default, "15d000v0"), rudderPartID, transpose(<comment, "Rudder ID:", format, integer, default, 0), selRudderPic, transpose(<comment, "Rudder selected picture:", format, string, default, "15b000v0"), rollRudderPic, transpose(<comment, "Rudder rollover picture:", format, string, default, "15b000v0")) into p_list            
+    return(p_list)    
+end getPropertyDescriptionList
+

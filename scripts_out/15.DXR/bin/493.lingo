@@ -1,0 +1,18 @@
+on mouseUp 
+    global gSound
+    global gMulleGlobals
+            
+    stopAllEffects(gSound)                    
+    put getCurrentHull(the gMulleGlobals.boatViewHandler ) into tmpHull                    
+    put getCurrentRudder(the gMulleGlobals.boatViewHandler ) into tmpRudder                                
+    if ((tmpRudder <> NoRudder) and (tmpHull = NoHull)) then                                        
+        play(gSound, "15d027v0", EFFECT)        
+
+    else
+                                        
+        play(gSound, "15e005v0", OPEFFECT)                        
+        go("Shipyard")
+    end if
+    
+end mouseUp
+
