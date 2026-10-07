@@ -27,9 +27,10 @@ class GarageState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Mulle body sprite (simplified - no complex animation charts yet)
+    // Mulle: use characters pack member 125 (00a001v0, 76x198, regpoint 9,80)
+// at loc (320,300) -> bounds (311,220)-(387,418)
     this.mulle = new MulleSprite(this.game, 320, 300)
-    this.mulle.setDirectorMember('03.DXR', 1)
+    this.mulle.loadDirectorTexture('00a001v0')
     this.game.add.existing(this.mulle)
 
     // Navigation hotspots (invisible clickable areas)

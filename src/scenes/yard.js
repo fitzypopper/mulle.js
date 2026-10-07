@@ -98,8 +98,10 @@ class YardState extends MulleState {
 
     // Buffa at quay (member 5 = BuffaQuayAnimChart frames)
     // Using member 42-58 range for Buffa animation
-    this.buffa = new MulleSprite(this.game, 150, 200)
-    this.buffa.setDirectorMember('04.DXR', 42)
+    // Buffa (the dog): sprite channel 5 at loc(320,240) with member 75 (04a003v0, 41x72)
+    // regpoint (-154,61) -> bounds (474,179,515,251) - matches score size 41x72 exactly
+    this.buffa = new MulleSprite(this.game, 320, 240)
+    this.buffa.setDirectorMember('04.DXR', 75)
     this.game.add.existing(this.buffa)
 
     // Figge: sprite channel 3 is empty in the original score - he only appears

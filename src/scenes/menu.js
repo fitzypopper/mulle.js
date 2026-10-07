@@ -1,5 +1,6 @@
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
+import MulleSave from '../struct/savedata'
 
 class MenuState extends MulleState {
   preload () {
@@ -149,7 +150,7 @@ class MenuState extends MulleState {
     if (this.game.mulle.UsersDB[name]) {
       this.game.mulle.user = this.game.mulle.UsersDB[name]
     } else {
-      const save = new (require('../struct/savedata'))(this.game)
+      const save = new MulleSave(this.game)
       save.UserId = name
       this.game.mulle.UsersDB[name] = save
       this.game.mulle.saveData()
