@@ -90,6 +90,17 @@ BROKEN_MEMBERS = {
     'LBWEBOK.DXR': [10],
 }
 
+# Full-screen backdrops that must NOT be marked opaque even though the
+# full-screen heuristic below catches them: their sky area is the Director
+# colour key (palette index 255). `setSky` (ParentScript 142 - Weather) draws
+# the weather still 00b011-014v0 (00.CXT 78-81) on channel 1 *behind* these
+# backdrops, and the key is what lets the sky show through.
+# Only 03.DXR and 04.DXR call setSky (checked against all .lingo scripts).
+COLOR_KEYED_SKIES = {
+    '03.DXR': {1},   # garage 03b001v1, 40632 keyed px, rows 0..181
+    '04.DXR': {1},   # yard   04b001v0, 84189 keyed px, rows 0..156
+}
+
 
 def library_of(movie: str) -> str:
     return 'Standalone' if movie.endswith(('.CXT', '.CST')) else 'Internal'
@@ -219,6 +230,7 @@ def main():
                   if m[str(n)].get('castType') == 1
                   and (m[str(n)].get('imageWidth') or 0) >= 300
                   and (m[str(n)].get('imageHeight') or 0) >= 200}
+        opaque -= COLOR_KEYED_SKIES.get(movie, set())
         packs.append(emit_pack(name, movie, nums, opaque))
 
     header = (

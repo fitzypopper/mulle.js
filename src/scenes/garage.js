@@ -3,6 +3,7 @@ import MulleSprite from '../objects/sprite'
 import MulleActor from '../objects/actor'
 import DirectorHelper from '../objects/DirectorHelper'
 import MulleButton from '../objects/button'
+import { g } from '../objects/boat/lingo'
 
 class GarageState extends MulleState {
   preload () {
@@ -12,6 +13,17 @@ class GarageState extends MulleState {
   create () {
     super.create()
     this.game.mulle.addAudio('garage')
+
+    // Sky: Lingo `setSky the weather of gMulleGlobals` puts member
+    // "00b0" & (10+weatherType) & "v0" (00.CXT 78-81 = weather 1-4) on
+    // channel 1 (#Sky) at loc(320,240) -> bounds (0,0,640,268). Channel 1 sits
+    // *behind* the backdrop: the backdrop's sky area is the Director colour
+    // key (palette index 255) and lets the weather still show through.
+    const weatherType = Math.min(4, Math.max(1,
+      (g.globals && g.globals.weather && g.globals.weather.weatherType) || 1))
+    const sky = new MulleSprite(this.game, 320, 240)
+    sky.setDirectorMember('00.CXT', 77 + weatherType)
+    this.game.add.existing(sky)
 
     // Background: 03.DXR member 1 = 03b001v1 (640x480)
     const background = new MulleSprite(this.game, 320, 240)
@@ -27,9 +39,10 @@ class GarageState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Mulle: use characters pack member 125 (00a001v0, 76x198, regpoint 9,80)
-// at loc (320,300) -> bounds (311,220)-(387,418)
-    this.mulle = new MulleSprite(this.game, 320, 300)
+    // Mulle: characters pack member 125 (00a001v0, 76x198, regpoint 9,80) on
+    // ch4 (#Mulle, score index 7). Score frames 0-6 - the main view - place
+    // him at loc(557,327) -> bounds (548,247)-(624,445); no lingo moves him.
+    this.mulle = new MulleSprite(this.game, 557, 327)
     this.mulle.loadDirectorTexture('00a001v0')
     this.game.add.existing(this.mulle)
 
@@ -60,9 +73,6 @@ class GarageState extends MulleState {
 
     // Gift button (if user has gifts)
     this.checkGifts()
-
-    // Sky/weather (placeholder)
-    this.setupSky()
 
     // Subtitle lines for garage dialog (from 03d001v0-03d007v0)
     this.game.mulle.subtitle.setLines('03d001v0', 'swedish', [
@@ -136,15 +146,6 @@ class GarageState extends MulleState {
   cursorMap (name) {
     const map = { left: 'w-resize', forward: 'n-resize', point: 'pointer', default: 'default' }
     return map[name] || 'default'
-  }
-
-  setupSky () {
-    // Weather-based sky from gMulleGlobals.weather
-    // For now just a simple gradient
-    const sky = this.game.add.graphics(0, 0)
-    sky.beginFill(0x87ceeb)
-    sky.drawRect(0, 0, 640, 200)
-    sky.endFill()
   }
 
   updateLoop () {

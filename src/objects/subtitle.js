@@ -94,7 +94,7 @@ class MulleSubtitle {
   }
 
   makeObject () {
-    if (this.textObject) this.textObject.destroy()
+    if (this.textObject && this.textObject.parent) this.textObject.destroy()
 
     this.textObject = new Phaser.Text(this.game, 0, 0, '', {
       font: '20px arial',
@@ -125,9 +125,11 @@ class MulleSubtitle {
       return false
     }
 
-    if (!this.textObject) {
-      // this.game.mulle.subtitle = new MulleSubtitle( this.game );
-      // this.game.add.existing( this.game.mulle.subtitle );
+    if (!this.textObject || !this.textObject.parent) {
+      // The overlay is destroyed with the world on every scene change, so a
+      // dead reference means we are in a fresh scene: drop stale lines from
+      // the previous scene and rebuild the overlay there.
+      this.textLines = []
       this.makeObject()
     }
 
@@ -180,6 +182,8 @@ class MulleSubtitle {
   }
 
   refresh () {
+    if (!this.textObject || !this.textObject.parent) return
+
     this.textObject.clearColors()
 
     let text = ''

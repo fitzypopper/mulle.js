@@ -1,6 +1,7 @@
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
 import DirectorHelper from '../objects/DirectorHelper'
+import { g } from '../objects/boat/lingo'
 
 class YardState extends MulleState {
   preload () {
@@ -11,6 +12,17 @@ class YardState extends MulleState {
     super.create()
     
     this.game.mulle.addAudio('yard')
+
+    // Sky: Lingo `setSky the weather of gMulleGlobals` puts member
+    // "00b0" & (10+weatherType) & "v0" (00.CXT 78-81 = weather 1-4) on
+    // channel 1 (#Sky) at loc(320,240) -> bounds (0,0,640,268). Channel 1 sits
+    // *behind* the backdrop: the backdrop's sky area is the Director colour
+    // key (palette index 255) and lets the weather still show through.
+    const weatherType = Math.min(4, Math.max(1,
+      (g.globals && g.globals.weather && g.globals.weather.weatherType) || 1))
+    const sky = new MulleSprite(this.game, 320, 240)
+    sky.setDirectorMember('00.CXT', 77 + weatherType)
+    this.game.add.existing(sky)
 
     // Background: 04.DXR has multiple backgrounds (member 1 = 04b001v0, member 9 = 04b009v0, member 21 = 04b010v0)
     // Start with member 1
@@ -107,12 +119,6 @@ class YardState extends MulleState {
     // Figge: sprite channel 3 is empty in the original score - he only appears
     // when checkFigge() fires the rare #doFigge event. Rendering a member here
     // previously drew member 3 (04b003v0, a 546x89 water strip) over the scene.
-
-    // Sky: Lingo `setSky` writes member "00b0" & (10+weatherType) & "v0" onto
-    // channel 1 (#Sky) at loc(320,240). Channel 1 sits *behind* everything and the
-    // yard backdrop 04b001v0 is opaque on every row, so the weather sky is fully
-    // occluded here. The old flat 0x87ceeb rectangle was a stub that was painted
-    // *last*, covering the top 200px of the backdrop and everything under it.
 
     // First-time dialog handling
     if (this.game.mulle.user.firstTimeQuay === undefined) {

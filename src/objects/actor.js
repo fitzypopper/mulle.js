@@ -232,7 +232,7 @@ class MulleActor extends MulleSprite {
       this.setDirectorMember('11.DXR', 133)
 
       this.addAnimation('idle', [ ['11.DXR', 133] ], 1, true, false)
-      this.addAnimation('talk', [ ['11.DXR', 134], ['11.DXR', 135], ['11.DXR', 136], ['11.DXR', 137], ['11.DXR', 138], ['11.DXR', 139], ['11.DXR', 140], ['11.DXR', 141], ['11.DXR', 142], ['11.DXR', 143] ], 10, false, false)
+      this.addAnimation('talk', [ ['11.DXR', 134], ['11.DXR', 135], ['11.DXR', 136], ['11.DXR', 137], ['11.DXR', 138], ['11.DXR', 139], ['11.DXR', 140], ['11.DXR', 141], ['11.DXR', 142], ['11.DXR', 143] ], 10, true, false)
       this.addAnimation('point', [ ['11.DXR', 143] ], 1, true, false)
     } else if(!ignore) {
       console.error('invalid actor', this.actorName)
@@ -311,7 +311,7 @@ class MulleActor extends MulleSprite {
             }
           */
 
-          for (var i in lines) {
+          for (let i = 0; i < lines.length; i++) {
             if (i === 0) {
               this.game.mulle.subtitle.showLine(lines[ i ], subData.actor)
             } else {

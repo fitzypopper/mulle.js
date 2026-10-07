@@ -1,23 +1,32 @@
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
+import MulleActor from '../objects/actor'
 import MulleSave from '../struct/savedata'
 
 class MenuState extends MulleState {
   preload () {
     this.game.load.pack('menu', 'assets/menu.json', null, this)
+    // solhem pack carries the 11.DXR profile screen art (bg 86, Mulle
+    // body/head animation frames 125-149, Buffa 68-72) and the 11d001v0
+    // intro speech.
+    this.game.load.pack('solhem', 'assets/solhem.json', null, this)
     this.game.load.pack('sailing', 'assets/sailing.json', null, this)
     this.game.load.pack('characters', 'assets/characters.json', null, this)
   }
 
   create () {
     this.game.mulle.addAudio('menu')
+    this.game.mulle.addAudio('solhem')
 
-    // Background: use sailing backdrop (05.DXR member 81 = 30n001v0 640x480)
+    // Background: the original profile screen (11.DXR member 86 = 11b001v1,
+    // 640x480 opaque). The art includes the rope-framed name list box
+    // ((336,60)-(559,259)) and the wooden sign for the name field.
     const background = new MulleSprite(this.game, 320, 240)
-    background.setDirectorMember('05.DXR', 81)
+    background.setDirectorMember('11.DXR', 86)
     this.game.add.existing(background)
 
-    // Border frame
+    // Border frame (the original score draws the same four 640x4/4x472
+    // shape sprites around the frame).
     const border = this.game.add.graphics(0, 0)
     border.lineStyle(4, 0x888888, 1)
     border.moveTo(0, 0)
@@ -26,28 +35,39 @@ class MenuState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Skip MulleActor (needs 11.DXR frames 125-143 which are missing from build)
-    // Use a simple sprite instead
-    this.mulleBody = new MulleSprite(this.game, 320, 320)
-    this.mulleBody.setDirectorMember('00.CXT', 125)  // 76x198 standing frame
+    // Buffa, seen from behind (11.DXR members 68-72, 110x170, reg 113,-70)
+    // at loc (320,240) -> bounds (207,310)-(317,480), exactly as in the
+    // original score row.
+    this.buffa = new MulleSprite(this.game, 320, 240)
+    this.buffa.setDirectorMember('11.DXR', 68)
+    this.game.add.existing(this.buffa)
+
+    // Mulle body (11.DXR members 144-149, 180x228, reg 307,-12) at loc
+    // (320,240) -> bounds (13,252)-(193,480).
+    this.mulleBody = new MulleSprite(this.game, 320, 240)
+    this.mulleBody.setDirectorMember('11.DXR', 144)
     this.game.add.existing(this.mulleBody)
 
-    this.mulleHead = new MulleSprite(this.game, 320, 180)
-    this.mulleHead.setDirectorMember('00.CXT', 126)  // alternate frame
+    // Mulle head (11.DXR members 133-143, ~118x128, reg 297,106) at loc
+    // (320,240) -> bounds (23,134)-(141,262); composed with the body it
+    // forms the single standing figure of the original screen. The head
+    // talks while the intro speech plays.
+    this.mulleHead = new MulleActor(this.game, 320, 240, 'mulleHead')
+    this.mulleHead.animations.play('idle')
+    this.mulleHead.talkAnimation = 'talk'
+    this.mulleHead.silenceAnimation = 'idle'
     this.game.add.existing(this.mulleHead)
 
-    // Name input field (HTML overlay) - positioned like car game
+    // Name input field (HTML overlay). The original score places a 189x30
+    // field at (355,314) - on the wooden sign of the background art.
     this.nameInput = document.createElement('input')
     this.nameInput.style.position = 'absolute'
-    this.nameInput.style.top = '320px'
-    this.nameInput.style.left = '230px'
-    this.nameInput.style.width = '180px'
-    this.nameInput.style.height = '32px'
-    this.nameInput.style.font = '24px serif'
-    this.nameInput.style.padding = '4px 8px'
-    this.nameInput.style.border = '2px solid #888'
-    this.nameInput.style.background = 'rgba(255,255,255,0.9)'
-    this.nameInput.style.borderRadius = '4px'
+    this.nameInput.style.boxSizing = 'border-box'
+    this.nameInput.style.font = '20px serif'
+    this.nameInput.style.padding = '2px 6px'
+    this.nameInput.style.border = '1px solid #666'
+    this.nameInput.style.background = 'rgba(255,255,255,0.85)'
+    this.nameInput.style.borderRadius = '3px'
     this.nameInput.style.zIndex = '1000'
     this.nameInput.placeholder = 'Ditt namn...'
     this.nameInput.maxLength = 20
@@ -56,11 +76,11 @@ class MenuState extends MulleState {
     const rect = canvas.getBoundingClientRect()
     const scaleX = canvas.width / rect.width
     const scaleY = canvas.height / rect.height
-    this.nameInput.style.left = `${rect.left + 230 / scaleX}px`
-    this.nameInput.style.top = `${rect.top + 320 / scaleY}px`
-    this.nameInput.style.width = `${180 / scaleX}px`
-    this.nameInput.style.height = `${32 / scaleY}px`
-    this.nameInput.style.fontSize = `${24 / Math.max(scaleX, scaleY)}px`
+    this.nameInput.style.left = `${rect.left + 355 / scaleX}px`
+    this.nameInput.style.top = `${rect.top + 314 / scaleY}px`
+    this.nameInput.style.width = `${189 / scaleX}px`
+    this.nameInput.style.height = `${30 / scaleY}px`
+    this.nameInput.style.fontSize = `${20 / Math.max(scaleX, scaleY)}px`
 
     document.body.appendChild(this.nameInput)
 
@@ -70,40 +90,42 @@ class MenuState extends MulleState {
       }
     })
 
-    // OK button - simple graphics button since 11.DXR lacks dedicated button frames
-    // (car game used 10.DXR #169/#170 for toilet button)
-    const btnGfx = this.game.add.graphics(420, 330)
+    // OK button at the bottom right corner. The original score has a 104x24
+    // button sprite near (628,453); with its registration point at the
+    // bottom right that puts it at bounds (524,429)-(628,453).
+    const btnGfx = this.game.add.graphics(524, 429)
     btnGfx.beginFill(0x88cc88, 0.9)
-    btnGfx.drawRoundedRect(0, 0, 80, 36, 6)
+    btnGfx.drawRoundedRect(0, 0, 104, 24, 5)
     btnGfx.endFill()
     btnGfx.inputEnabled = true
     btnGfx.events.onInputUp.add(() => this.handleLogin(), this)
-    this.okButtonText = this.game.add.text(460, 348, 'OK', {
-      font: '20px serif',
+    this.okButtonText = this.game.add.text(576, 441, 'OK', {
+      font: '16px serif',
       fill: '#fff',
       fontWeight: 'bold'
     })
     this.okButtonText.anchor.set(0.5)
     this.okButton = btnGfx
 
-    // Existing users list (like car game)
+    // Existing users list inside the rope-framed white box of the
+    // background. The box interior is (336,60)-(559,259): 7 rows fit.
     this.userList = []
-    let y = 370
+    let y = 74
+    let rows = 0
     for (const name in this.game.mulle.UsersDB) {
-      const text = this.game.add.text(230, y, name, {
+      if (rows >= 7) break
+      const text = this.game.add.text(350, y, name, {
         font: '20px serif',
-        fill: '#333',
-        backgroundColor: 'rgba(255,255,255,0.7)',
-        padding: { x: 8, y: 4 }
+        fill: '#333'
       })
       text.inputEnabled = true
       text.events.onInputUp.add(() => {
         this.game.mulle.user = this.game.mulle.UsersDB[name]
-        this.game.mulle.activeCutscene = '11d001v0'
         this.game.state.start('garage')
       }, this)
       this.userList.push(text)
-      y += 28
+      y += 26
+      rows++
     }
 
     // Subtitle lines (from 11d001v0 - member 90)
@@ -123,21 +145,10 @@ class MenuState extends MulleState {
       "- If you've been here before, click your name in the {list}."
     ], 'mulle')
 
-    // Play intro audio and start Mulle animation
-    this.game.mulle.playAudio('10e001v0', () => {
-      this.mulleHead.animations.play('talk')
-      this.mulleBody.animations.play('talk')
-
-      // Simulate the Talk marker (frame 3) → Wait (frame 4) → IntroStart (frame 5)
-      this.game.time.events.add(3000, () => {
-        this.mulleHead.animations.play('idle')
-        this.mulleBody.animations.play('still')
-      }, this)
-
-      this.game.time.events.add(5000, () => {
-        this.mulleHead.animations.play('point')
-      }, this)
-    })
+    // Original intro speech (11d001v0, 11.3s): plays the voice, shows the
+    // subtitle lines one by one and animates the head via the actor's
+    // talk machinery.
+    this.mulleHead.talk('11d001v0')
 
     // Cursor handling
     this.setupCursors()
@@ -157,7 +168,6 @@ class MenuState extends MulleState {
       this.game.mulle.user = save
     }
 
-    this.game.mulle.activeCutscene = '11d001v0'
     this.game.state.start('garage')
   }
 
