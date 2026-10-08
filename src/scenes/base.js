@@ -86,6 +86,37 @@ class MulleState extends Phaser.State {
 
     // console.log('prelaunch', this.key);
   }
+
+  cursorMap (cursor) {
+    const map = {
+      forward: 'pointer',
+      left: 'w-resize',
+      right: 'e-resize',
+      up: 'n-resize',
+      down: 's-resize',
+      point: 'pointer'
+    }
+    return map[cursor] || 'default'
+  }
+
+  makeZone (rect, onClick, cursor) {
+    const gfx = this.game.add.graphics(0, 0)
+    gfx.beginFill(0x00ff00, 0)
+    gfx.drawRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
+    gfx.endFill()
+    gfx.inputEnabled = true
+    gfx.events.onInputUp.add(() => {
+      if (this._suppressClicks) return
+      onClick()
+    }, this)
+    gfx.events.onInputOver.add(() => {
+      this.game.canvas.style.cursor = this.cursorMap(cursor)
+    }, this)
+    gfx.events.onInputOut.add(() => {
+      this.game.canvas.style.cursor = 'default'
+    }, this)
+    return gfx
+  }
 }
 
 export default MulleState

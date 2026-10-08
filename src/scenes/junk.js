@@ -116,27 +116,6 @@ class JunkState extends MulleState {
       this.updateLoop, this)
   }
 
-  makeZone (rect, onClick, cursor) {
-    const gfx = this.game.add.graphics(0, 0)
-    gfx.beginFill(0x00ff00, 0)
-    gfx.drawRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
-    gfx.endFill()
-    gfx.inputEnabled = true
-    gfx.events.onInputUp.add(() => {
-      // Releasing a dragged part over a zone must not also navigate -
-      // the original only fires #click when the press started there.
-      if (this._suppressClicks) return
-      onClick()
-    }, this)
-    gfx.events.onInputOver.add(() => {
-      this.game.canvas.style.cursor = this.cursorMap(cursor)
-    }, this)
-    gfx.events.onInputOut.add(() => {
-      this.game.canvas.style.cursor = 'default'
-    }, this)
-    return gfx
-  }
-
   updateShelfZones () {
     if (this.upGfx) { this.upGfx.destroy(); this.upGfx = null }
     if (this.downGfx) { this.downGfx.destroy(); this.downGfx = null }
@@ -177,11 +156,6 @@ class JunkState extends MulleState {
     // Rebuild next tick: the clicked zone is currently dispatching.
     this.game.time.events.add(0, this.updateShelfZones, this)
     this.armDialogForShelf(n)
-  }
-
-  cursorMap (name) {
-    const map = { left: 'w-resize', forward: 'n-resize', point: 'pointer', default: 'default' }
-    return map[name] || 'default'
   }
 
   updateLoop () {

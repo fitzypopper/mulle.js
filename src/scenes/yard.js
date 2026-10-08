@@ -3,6 +3,7 @@ import MulleSprite from '../objects/sprite'
 import MulleJunkParts from '../objects/junkparts'
 import DirectorHelper from '../objects/DirectorHelper'
 import { g } from '../objects/boat/lingo'
+import { drawBoatAt, getDrawOffset } from '../objects/boat/boatdraw'
 
 class YardState extends MulleState {
   preload () {
@@ -11,29 +12,32 @@ class YardState extends MulleState {
 
   create () {
     super.create()
-    
+
     this.game.mulle.addAudio('yard')
-    // The 00.CXT shared voices (random chatter) and the 20d* part
-    // descriptions are global casts in the original - always mounted.
     this.game.mulle.addAudio('shared')
     this.game.mulle.addAudio('boatparts')
 
-    // Sky: Lingo `setSky the weather of gMulleGlobals` puts member
-    // "00b0" & (10+weatherType) & "v0" (00.CXT 78-81 = weather 1-4) on
-    // channel 1 (#Sky) at loc(320,240) -> bounds (0,0,640,268). Channel 1 sits
-    // *behind* the backdrop: the backdrop's sky area is the Director colour
-    // key (palette index 255) and lets the weather still show through.
+    // Sky
     const weatherType = Math.min(4, Math.max(1,
       (g.globals && g.globals.weather && g.globals.weather.weatherType) || 1))
     const sky = new MulleSprite(this.game, 320, 240)
     sky.setDirectorMember('00.CXT', 77 + weatherType)
     this.game.add.existing(sky)
 
-    // Background: 04.DXR has multiple backgrounds (member 1 = 04b001v0, member 9 = 04b009v0, member 21 = 04b010v0)
-    // Start with member 1
+    // Background
     this.background = new MulleSprite(this.game, 320, 240)
     this.background.setDirectorMember('04.DXR', 1)
     this.game.add.existing(this.background)
+
+    // Foreground deck overlay: member 2 = 04b002v0
+    this.deckOverlay = new MulleSprite(this.game, 320, 240)
+    this.deckOverlay.setDirectorMember('04.DXR', 2)
+    this.game.add.existing(this.deckOverlay)
+
+    // Water strip: member 3 = 04b003v0
+    this.water = new MulleSprite(this.game, 320, 240)
+    this.water.setDirectorMember('04.DXR', 3)
+    this.game.add.existing(this.water)
 
     // Border frame
     const border = this.game.add.graphics(0, 0)
@@ -44,24 +48,12 @@ class YardState extends MulleState {
     border.lineTo(0, 480)
     border.lineTo(0, 0)
 
-    // Mulle. spriteList maps #Mulle -> channel 66, loc (557,327) per the score.
-    // His idle frame is 00a001v0 (76x198, regpoint 9,80) - the score records
-    // sprite 66 as exactly 76x198, and the Lingo sets it via
-    // `setAnimFirstFrame "00a001v0"` -> bounds (548,247)-(624,445).
+    // Mulle
     this.mulle = new MulleSprite(this.game, 557, 327)
     this.mulle.loadDirectorTexture('00a001v0')
     this.game.add.existing(this.mulle)
 
-    // Navigation hotspots from decompiled Lingo:
-    // 1. Left edge (rect 4, 322, 56, 433) -> Shipyard/garage (03)
-    // 2. Right edge (rect 602, 97, 1640, 302) -> Yard/junk (02)
-    // 3. Top area (rect 0, 0, 508, 155) -> World/sailing (05)
-    // 4. Pole (rect 477, 331, 509, 379) -> World (with animation)
-    // 5. PhotoBook (rect 554, 115, 592, 157) -> album/photo
-    // 6. Camera (rect 550, 184, 587, 230) -> camera
-    // 7. Windmeter (rect 479, 18, 536, 70) -> wind report (mouseObject 204)
-    //    Note: the original has no Radio hotspot - the radio sprite is its own button.
-
+    // Navigation hotspots
     this.hotspots = [
       // Shipyard/Garage entrance (left edge)
       { rect: [4, 322, 56, 433], target: 'garage', label: 'Shipyard', cursor: 'left' },
@@ -85,9 +77,6 @@ class YardState extends MulleState {
       gfx.endFill()
       gfx.inputEnabled = true
       gfx.events.onInputUp.add(() => {
-        // Releasing a dragged part over a hotspot must not also
-        // navigate - the original only fires #click when the press
-        // started on the zone itself.
         if (this._suppressClicks) return
         this.navigate(hs)
       }, this)
@@ -96,11 +85,59 @@ class YardState extends MulleState {
       this.hotspotGfx.push(gfx)
     })
 
-    // Windmeter. Lingo `spriteList` maps #Windmeter -> sprite *channel* 9, whose
-    // loc is (320,240). The vane itself is member 11 (04a005v0, 55x50,
-    // regpoint -160,221), so it lands at bounds (480,19,535,69) - a 1px match for
-    // the original hotspot rect(479,18,536,70).
-    // `setWindMeter` drives frames 11..16 via #Speed1..#Speed6.
+    // Add hover effects for specific hotspots (matching original mouseObjectList from 688.lingo)
+    // Pole: rect(477,331,509,379) -> hover shows member 5 + sound 04e005v0
+    const poleZone = this.makeZone([477, 331, 509, 379], null, 'up')
+    poleZone.onEnter = () => {
+      this.pole.setDirectorMember('04.DXR', 5)
+      this.game.mulle.playAudio('04e005v0')
+    }
+    poleZone.onLeave = () => {
+      this.pole.setDirectorMember('04.DXR', 5)
+    }
+    poleZone.onClick = () => {
+      const props = this.game.mulle.refreshBoatProperties ? this.game.mulle.refreshBoatProperties(this.game) : {}
+      const hasPropulsion = props && (props.engine || props.sailwithpole || props.oar)
+      if (hasPropulsion) {
+        this.game.state.start('world')
+      } else {
+        this.game.mulle.playAudio('04d049v0')
+      }
+    }
+
+    // PhotoBook: rect(554,115,592,157) -> hover shows member 6 + sound 04e1000v0, click -> album
+    const photoBookZone = this.makeZone([554, 115, 592, 157], null, 'up')
+    photoBookZone.onEnter = () => {
+      this.photoBook.setDirectorMember('04.DXR', 6)
+      this.game.mulle.playAudio('04e1000v0')
+    }
+    photoBookZone.onLeave = () => {
+      this.photoBook.setDirectorMember('04.DXR', 6)
+    }
+    photoBookZone.onClick = () => {
+      this.game.state.start('album')
+    }
+
+    // Camera: rect(550,184,587,230) -> hover shows member 7 + "RollOver" sound
+    const cameraZone = this.makeZone([550, 184, 587, 230], null, 'up')
+    cameraZone.onEnter = () => {
+      this.camera.setDirectorMember('04.DXR', 7)
+      this.game.mulle.playAudio('04e002v0')
+    }
+    cameraZone.onLeave = () => {
+      this.camera.setDirectorMember('04.DXR', 7)
+    }
+    cameraZone.onClick = () => {
+      console.log('Camera view not yet implemented')
+    }
+
+    // Windmeter: rect(479,18,536,70) -> click -> wind report
+    const windmeterZone = this.makeZone([479, 18, 536, 70], null, 'up')
+    windmeterZone.onClick = () => {
+      this.showWindReport()
+    }
+
+    // Windmeter
     this.windmeter = new MulleSprite(this.game, 320, 240)
     this.windmeter.setDirectorMember('04.DXR', 11)
     this.windmeter.inputEnabled = true
@@ -109,8 +146,7 @@ class YardState extends MulleState {
     this.windmeter.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
     this.game.add.existing(this.windmeter)
 
-    // Radio. Channel 8 at loc(320,240) with member 33 (04a006v0, 34x68,
-    // regpoint -188,88) -> bounds (508,152,542,220): mounted on the shed wall.
+    // Radio
     this.radio = new MulleSprite(this.game, 320, 240)
     this.radio.setDirectorMember('04.DXR', 33)
     this.radio.inputEnabled = true
@@ -119,18 +155,47 @@ class YardState extends MulleState {
     this.radio.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
     this.game.add.existing(this.radio)
 
-    // Buffa at quay (member 5 = BuffaQuayAnimChart frames)
-    // Using member 42-58 range for Buffa animation
-    // Buffa (the dog): sprite channel 5 at loc(320,240) with member 75 (04a003v0, 41x72)
-    // regpoint (-154,61) -> bounds (474,179,515,251) - matches score size 41x72 exactly
+    // Boat at quay
+    const user = this.game.mulle.user
+    const parts = user.Car && user.Car.Parts ? user.Car.Parts : []
+    const drawOffset = getDrawOffset(this.game, 'Quay', parts)
+    const boatX = 315 + drawOffset.x
+    const boatY = 210 + drawOffset.y
+    this.boatGroup = drawBoatAt(this.game, parts, boatX, boatY, 'Quay', 1)
+    this.game.add.existing(this.boatGroup)
+
+    // Buffa
     this.buffa = new MulleSprite(this.game, 320, 240)
     this.buffa.setDirectorMember('04.DXR', 75)
     this.game.add.existing(this.buffa)
 
-    // Quay pile parts (JunkHandler #Quay, ch68+ - above Mulle/buffa in
-    // the original). The right-edge hotspot's dragToWhere is the Yard
-    // pile: dropping a part there moves it to the garage pile (04.DXR
-    // mouseObject list).
+    // PhotoBook
+    this.photoBook = new MulleSprite(this.game, 320, 240)
+    this.photoBook.setDirectorMember('04.DXR', 6)
+    this.game.add.existing(this.photoBook)
+
+    // Camera
+    this.camera = new MulleSprite(this.game, 320, 240)
+    this.camera.setDirectorMember('04.DXR', 7)
+    this.game.add.existing(this.camera)
+
+    // Pole
+    this.pole = new MulleSprite(this.game, 320, 240)
+    this.pole.setDirectorMember('04.DXR', 5)
+    this.game.add.existing(this.pole)
+
+    // Figge
+    this.figge = new MulleSprite(this.game, 320, 240)
+    this.figge.setDirectorMember('04.DXR', 8)
+    this.figge.visible = false
+    this.game.add.existing(this.figge)
+
+    // ToolBox
+    this.toolBox = new MulleSprite(this.game, 654, 436)
+    this.toolBox.visible = false
+    this.game.add.existing(this.toolBox)
+
+    // Quay pile parts
     this._suppressClicks = false
     this.junkParts = new MulleJunkParts(this, 'Quay',
       this.hotspots
@@ -138,9 +203,7 @@ class YardState extends MulleState {
         .map(hs => [hs.rect, hs.label]))
     this.junkParts.spawn()
 
-    // Figge: sprite channel 3 is empty in the original score - he only appears
-    // when checkFigge() fires the rare #doFigge event. Rendering a member here
-    // previously drew member 3 (04b003v0, a 546x89 water strip) over the scene.
+    // Figge: only appears on #doFigge event
 
     // First-time dialog handling
     if (this.game.mulle.user.firstTimeQuay === undefined) {
@@ -189,15 +252,13 @@ class YardState extends MulleState {
   }
 
   playRadio () {
-    // Play radio sound and show radio dialog
-    const sounds = ['04d040v0', '04d044v0'] // dorisBluePrintList
+    const sounds = ['04d040v0', '04d044v0']
     const snd = this.game.rnd.pick(sounds)
     this.game.mulle.playAudio(snd)
     this.game.mulle.subtitle.showLine('- Radio: Nyheter och väder...', 'mulle')
   }
 
   showWindReport () {
-    // Play windmeter sound
     this.game.mulle.playAudio('04e005v0')
     this.game.mulle.subtitle.showLine('- Vindmätare: Vind från väster...', 'mulle')
   }
@@ -247,6 +308,7 @@ class YardState extends MulleState {
     if (this.windmeter) { this.windmeter.destroy(); this.windmeter = null }
     if (this.radio) { this.radio.destroy(); this.radio = null }
     if (this.buffa) { this.buffa.destroy(); this.buffa = null }
+    if (this.boatGroup) { this.boatGroup.destroy(true); this.boatGroup = null }
     if (this.junkParts) {
       this.junkParts.destroy()
       this.junkParts = null
