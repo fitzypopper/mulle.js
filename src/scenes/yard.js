@@ -8,6 +8,7 @@ import { drawBoatAt, getDrawOffset } from '../objects/boat/boatdraw'
 class YardState extends MulleState {
   preload () {
     this.game.load.pack('yard', 'assets/yard.json', null, this)
+    this.game.load.pack('boatparts', 'assets/boatparts.json', null, this)
   }
 
   create () {

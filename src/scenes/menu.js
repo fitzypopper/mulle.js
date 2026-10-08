@@ -15,6 +15,8 @@ class MenuState extends MulleState {
   }
 
   create () {
+    super.create()
+
     this.game.mulle.addAudio('menu')
     this.game.mulle.addAudio('solhem')
 
