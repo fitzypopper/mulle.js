@@ -288,7 +288,7 @@ class MulleBuildCar extends Phaser.Group {
           partId = partData.master
         }
         // Place part in the junk yard
-        this.game.mulle.user.addPart('Pile1', partId, null, true)
+        this.game.mulle.user.addPart('Yard', partId, null, true)
       }
     }
 

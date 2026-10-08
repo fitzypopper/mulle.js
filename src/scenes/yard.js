@@ -1,5 +1,6 @@
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
+import MulleJunkParts from '../objects/junkparts'
 import DirectorHelper from '../objects/DirectorHelper'
 import { g } from '../objects/boat/lingo'
 
@@ -12,6 +13,10 @@ class YardState extends MulleState {
     super.create()
     
     this.game.mulle.addAudio('yard')
+    // The 00.CXT shared voices (random chatter) and the 20d* part
+    // descriptions are global casts in the original - always mounted.
+    this.game.mulle.addAudio('shared')
+    this.game.mulle.addAudio('boatparts')
 
     // Sky: Lingo `setSky the weather of gMulleGlobals` puts member
     // "00b0" & (10+weatherType) & "v0" (00.CXT 78-81 = weather 1-4) on
@@ -79,7 +84,13 @@ class YardState extends MulleState {
       gfx.drawRect(hs.rect[0], hs.rect[1], hs.rect[2] - hs.rect[0], hs.rect[3] - hs.rect[1])
       gfx.endFill()
       gfx.inputEnabled = true
-      gfx.events.onInputUp.add(() => this.navigate(hs), this)
+      gfx.events.onInputUp.add(() => {
+        // Releasing a dragged part over a hotspot must not also
+        // navigate - the original only fires #click when the press
+        // started on the zone itself.
+        if (this._suppressClicks) return
+        this.navigate(hs)
+      }, this)
       gfx.events.onInputOver.add(() => this.game.canvas.style.cursor = this.cursorMap(hs.cursor), this)
       gfx.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
       this.hotspotGfx.push(gfx)
@@ -115,6 +126,17 @@ class YardState extends MulleState {
     this.buffa = new MulleSprite(this.game, 320, 240)
     this.buffa.setDirectorMember('04.DXR', 75)
     this.game.add.existing(this.buffa)
+
+    // Quay pile parts (JunkHandler #Quay, ch68+ - above Mulle/buffa in
+    // the original). The right-edge hotspot's dragToWhere is the Yard
+    // pile: dropping a part there moves it to the garage pile (04.DXR
+    // mouseObject list).
+    this._suppressClicks = false
+    this.junkParts = new MulleJunkParts(this, 'Quay',
+      this.hotspots
+        .filter(hs => /^(Quay|Yard|Shelf[1-6])$/.test(hs.label))
+        .map(hs => [hs.rect, hs.label]))
+    this.junkParts.spawn()
 
     // Figge: sprite channel 3 is empty in the original score - he only appears
     // when checkFigge() fires the rare #doFigge event. Rendering a member here
@@ -225,6 +247,10 @@ class YardState extends MulleState {
     if (this.windmeter) { this.windmeter.destroy(); this.windmeter = null }
     if (this.radio) { this.radio.destroy(); this.radio = null }
     if (this.buffa) { this.buffa.destroy(); this.buffa = null }
+    if (this.junkParts) {
+      this.junkParts.destroy()
+      this.junkParts = null
+    }
     if (this.mulle) { this.mulle.destroy(); this.mulle = null }
     this.game.sound.stopAll()
   }

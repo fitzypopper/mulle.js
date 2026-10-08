@@ -136,7 +136,7 @@ class AlbumState extends MulleState {
         }
 
         // Place the part in the junk yard
-        this.game.mulle.user.addPart('Pile1', partId, null, true)
+        this.game.mulle.user.addPart('Yard', partId, null, true)
       }
     }
 

@@ -86,6 +86,7 @@ class MulleCarPart extends MulleSprite {
 
     this.default = {
       junkView: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.junkView),
+      shelfView: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.getShelfView()),
       UseView: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView),
       UseView2: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView2),
       offset: this.partData.offset.clone()
@@ -110,6 +111,7 @@ class MulleCarPart extends MulleSprite {
           partData: partData,
 
           junkView: game.mulle.getDirectorImage('CDDATA.CXT', partData.junkView),
+          shelfView: game.mulle.getDirectorImage('CDDATA.CXT', partData.getShelfView()),
           UseView: game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView),
           UseView2: game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView2),
 
@@ -455,7 +457,9 @@ class MulleCarPart extends MulleSprite {
     if (!this.noPhysics) {
       this.body.moves = true
       this.body.velocity.set(0)
-    } else {
+    } else if (this.sound_floor) {
+      // junk parts play the per-pile SndDropOn when their settle
+      // finishes instead (sound_floor is disabled there)
       this.game.mulle.playAudio(this.sound_floor)
     }
 

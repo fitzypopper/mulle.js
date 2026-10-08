@@ -1,6 +1,7 @@
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
 import MulleActor from '../objects/actor'
+import MulleJunkParts from '../objects/junkparts'
 import DirectorHelper from '../objects/DirectorHelper'
 import MulleButton from '../objects/button'
 import { g } from '../objects/boat/lingo'
@@ -13,6 +14,10 @@ class GarageState extends MulleState {
   create () {
     super.create()
     this.game.mulle.addAudio('garage')
+    // The 00.CXT shared voices (random chatter) and the 20d* part
+    // descriptions are global casts in the original - always mounted.
+    this.game.mulle.addAudio('shared')
+    this.game.mulle.addAudio('boatparts')
 
     // Sky: Lingo `setSky the weather of gMulleGlobals` puts member
     // "00b0" & (10+weatherType) & "v0" (00.CXT 78-81 = weather 1-4) on
@@ -65,11 +70,30 @@ class GarageState extends MulleState {
       gfx.drawRect(hs.rect[0], hs.rect[1], hs.rect[2] - hs.rect[0], hs.rect[3] - hs.rect[1])
       gfx.endFill()
       gfx.inputEnabled = true
-      gfx.events.onInputUp.add(() => this.navigate(hs), this)
+      gfx.events.onInputUp.add(() => {
+        // Releasing a dragged part over a hotspot must not also
+        // navigate - the original only fires #click when the press
+        // started on the zone itself.
+        if (this._suppressClicks) return
+        this.navigate(hs)
+      }, this)
       gfx.events.onInputOver.add(() => this.game.canvas.style.cursor = this.cursorMap(hs.cursor), this)
       gfx.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
       this.hotspotGfx.push(gfx)
     })
+
+    // Yard parts on the garage floor (JunkHandler #Yard, ch7+). The
+    // original's dragToWhere on each hotspot is the pile a dragged
+    // part lands in: the left strip is the Quay pile, the shelf
+    // openings are their Shelf1..6 piles (03.DXR mouseObject list).
+    // Created before the gift box so the gift keeps its higher channel
+    // (ch38) over the parts (ch7-16).
+    this._suppressClicks = false
+    this.junkParts = new MulleJunkParts(this, 'Yard',
+      this.hotspots
+        .filter(hs => /^(Quay|Yard|Shelf[1-6])$/.test(hs.label))
+        .map(hs => [hs.rect, hs.label]))
+    this.junkParts.spawn()
 
     // Gift button (if user has gifts)
     this.checkGifts()
@@ -98,7 +122,10 @@ class GarageState extends MulleState {
       gfx.drawRect(262, 383, 117, 95)
       gfx.endFill()
       gfx.inputEnabled = true
-      gfx.events.onInputUp.add(() => this.openGift(), this)
+      gfx.events.onInputUp.add(() => {
+        if (this._suppressClicks) return
+        this.openGift()
+      }, this)
       gfx.events.onInputOver.add(() => this.game.canvas.style.cursor = 'point', this)
       gfx.events.onInputOut.add(() => this.game.canvas.style.cursor = 'default', this)
       this.giftGfx = gfx
@@ -111,13 +138,13 @@ class GarageState extends MulleState {
   }
 
   openGift () {
-    // Add all gifted parts to user's yard
+    // Original (03.DXR mouse handler): every gift goes to the Yard pile
+    // via addJunkPart, falling back to addNewPart when the pile is full,
+    // then the gifts list is cleared.
     const gifts = this.game.mulle.user.gifts || []
     gifts.forEach(partId => {
-      // In the original, this calls addJunkPart / addNewPart
-      // For now just add to user's parts
-      if (!this.game.mulle.user.parts.includes(partId)) {
-        this.game.mulle.user.parts.push(partId)
+      if (!this.game.mulle.user.addPart('Yard', partId)) {
+        this.game.mulle.user.addNewPart(partId)
       }
     })
     this.game.mulle.user.gifts = []
@@ -125,6 +152,9 @@ class GarageState extends MulleState {
 
     if (this.giftGfx) { this.giftGfx.destroy(); this.giftGfx = null }
     if (this.giftIcon) { this.giftIcon.destroy(); this.giftIcon = null }
+
+    // The new parts land visibly on the garage floor
+    if (this.junkParts) this.junkParts.redraw()
 
     // Play gift sound
     this.game.mulle.playAudio('GiftSnd1')
@@ -177,6 +207,10 @@ class GarageState extends MulleState {
     }
     this.hotspotGfx.forEach(g => g.destroy())
     this.hotspotGfx = []
+    if (this.junkParts) {
+      this.junkParts.destroy()
+      this.junkParts = null
+    }
     if (this.giftGfx) { this.giftGfx.destroy(); this.giftGfx = null }
     if (this.giftIcon) { this.giftIcon.destroy(); this.giftIcon = null }
     this.game.sound.stopAll()

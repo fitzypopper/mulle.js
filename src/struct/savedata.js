@@ -1,4 +1,52 @@
 import MulleCar from './cardata'
+import { FLOORS, MAX, MAX_SOUNDS, PILES, pileKind } from './junkview'
+
+/**
+ * Fresh-save junk store - verbatim port of the original member
+ * "InitialJunkDB" (cst_out_new/CDDATA.CXT/Standalone/2.txt).
+ *
+ * The positions are the sprite locH/locV the original ships with; they
+ * sit exactly on the shelf boards (the four parts half a pixel above a
+ * board settle that last 0.5px on the first frames, just like in the
+ * original).
+ *
+ * @return {Object} pile name -> { partId: Phaser.Point }
+ */
+function initialJunk () {
+  return {
+    Shelf1: {
+      109: new Phaser.Point(557, 167),
+      101: new Phaser.Point(402, 394),
+      3: new Phaser.Point(197, 379)
+    },
+    Shelf2: {
+      107: new Phaser.Point(504, 277),
+      124: new Phaser.Point(467, 63),
+      25: new Phaser.Point(425, 391)
+    },
+    Shelf3: {
+      99: new Phaser.Point(216, 66),
+      26: new Phaser.Point(279, 188),
+      697: new Phaser.Point(434, 301)
+    },
+    Shelf4: {
+      78: new Phaser.Point(314, 83),
+      12: new Phaser.Point(566, 72),
+      122: new Phaser.Point(446, 183)
+    },
+    Shelf5: {
+      123: new Phaser.Point(393, 285),
+      51: new Phaser.Point(175, 287),
+      54: new Phaser.Point(404, 166)
+    },
+    Shelf6: {
+      255: new Phaser.Point(195, 175),
+      27: new Phaser.Point(347, 176)
+    },
+    Quay: {},
+    Yard: {}
+  }
+}
 
 class MulleSave {
   constructor (game, data) {
@@ -22,43 +70,8 @@ class MulleSave {
 
     this.Car = new MulleCar(this.game)
 
-    // default junk locations
-    this.Junk = {
-      Pile1: {
-        66: new Phaser.Point(296, 234),
-        29: new Phaser.Point(412, 311),
-        143: new Phaser.Point(416, 186),
-        178: new Phaser.Point(570, 255) },
-      Pile2: {
-        215: new Phaser.Point(545, 222),
-        47: new Phaser.Point(386, 304),
-        12: new Phaser.Point(239, 269),
-        140: new Phaser.Point(352, 187) },
-      Pile3: {
-        153: new Phaser.Point(512, 153),
-        131: new Phaser.Point(464, 298),
-        307: new Phaser.Point(246, 285),
-        112: new Phaser.Point(561, 293),
-        30: new Phaser.Point(339, 189) },
-      Pile4: {
-        190: new Phaser.Point(182, 143),
-        23: new Phaser.Point(346, 203),
-        126: new Phaser.Point(178, 301),
-        211: new Phaser.Point(75, 193) },
-      Pile5: {
-        6: new Phaser.Point(192, 377),
-        90: new Phaser.Point(102, 290),
-        203: new Phaser.Point(33, 122),
-        158: new Phaser.Point(186, 164),
-        119: new Phaser.Point(375, 268) },
-      Pile6: {
-        2: new Phaser.Point(160, 351),
-        214: new Phaser.Point(130, 172),
-        210: new Phaser.Point(281, 300),
-        121: new Phaser.Point(85, 275)},
-      shopFloor: {},
-      yard: {}
-    }
+    // default junk locations (original InitialJunkDB)
+    this.Junk = initialJunk()
 
     this.NrOfBuiltCars = 0
     this.Saves = []
@@ -120,23 +133,150 @@ class MulleSave {
   }
 
   /**
-   * @param {string}       pile   Pile name
+   * Put a part in a junk pile (original User.addJunkPart).
+   *
+   * @param {string}       pile   Pile name (Shelf1..6 / Quay / Yard)
    * @param {number}       partId Part ID
-   * @param {Phaser.Point} pos    Position in pile
+   * @param {Phaser.Point} pos    Drop position; random on a floor line when missing
    * @param {Boolean}      noSave Don't save user data
+   * @return {boolean}             false when the part is already there or the pile is full
    */
   addPart (pile, partId, pos, noSave = false) {
-    if (!this.Junk[pile]) return false
+    if (!this.Junk || !this.Junk[pile]) return false
+    if (this.Junk[pile][partId] !== undefined) return false
 
-    if (!pos) pos = new Phaser.Point(this.game.rnd.integerInRange(0, 640), this.game.rnd.integerInRange(0, 480))
+    const kind = pileKind(pile)
+    const max = MAX[kind]
+
+    if (max !== undefined && Object.keys(this.Junk[pile]).length >= max) {
+      // original: makeMulleTalk(gDir, getMaxSound(junkViewHandler, pile))
+      const sounds = MAX_SOUNDS[kind]
+      if (sounds) this.game.mulle.playAudio(this.game.rnd.pick(sounds))
+      return false
+    }
+
+    if (!pos) pos = this.getRandomPosition(pile, partId)
 
     this.Junk[pile][partId] = pos
-
-    console.log('part added', pile, partId, pos)
 
     if (!noSave) this.save()
 
     return true
+  }
+
+  /**
+   * Remove a part from a pile (original User.removeJunkPart; the
+   * original's master-id rewrite is unneeded - the port always stores
+   * and reads the same id).
+   *
+   * @param {string} pile   Pile name
+   * @param {number} partId Part ID
+   * @return {void}
+   */
+  removePart (pile, partId) {
+    if (!this.Junk || !this.Junk[pile]) return
+    delete this.Junk[pile][partId]
+  }
+
+  /**
+   * Add a brand new part to the Yard pile, moving one Yard part to a
+   * random shelf to make room when it is full (original User.addNewPart).
+   *
+   * @param  {number} partId Part ID
+   * @return {boolean}       false when the user already has the part or everything is full
+   */
+  addNewPart (partId) {
+    if (this.hasPart(partId)) return false
+
+    let ok = true
+
+    if (Object.keys(this.Junk.Yard).length >= MAX.Yard) {
+      const shelf = this.getRandomShelf()
+
+      if (shelf) {
+        const removeId = Object.keys(this.Junk.Yard)[0]
+        this.removePart('Yard', removeId)
+        this.addPart(shelf, removeId, null, true)
+      } else {
+        ok = false
+        // original: makeMulleTalk(gDir, getMaxSound(..., #AllFull))
+        this.game.mulle.playAudio(this.game.rnd.pick(MAX_SOUNDS.AllFull))
+      }
+    }
+
+    if (ok) ok = this.addPart('Yard', partId)
+
+    return ok
+  }
+
+  /**
+   * Random non-full shelf (original JunkViewHandler.getRandomShelf).
+   *
+   * @return {string|null} Pile name, null when all six shelves are full
+   */
+  getRandomShelf () {
+    const free = []
+
+    for (let n = 1; n <= 6; n++) {
+      const pile = 'Shelf' + n
+      if (Object.keys(this.Junk[pile]).length < MAX.Shelf) free.push(pile)
+    }
+
+    if (free.length === 0) return null
+
+    return this.game.rnd.pick(free)
+  }
+
+  /**
+   * Random resting position on a pile's floor line (original
+   * JunkViewHandler.getRandomPosition): pick one of the pile's floor
+   * lines, then place the picture's centre at line.top - height/2 with
+   * its horizontal centre randomised inside the line. Shelf piles use
+   * the ShelfView dimensions, Quay/Yard the JunkView.
+   *
+   * @param  {string} pile   Pile name
+   * @param  {number} partId Part ID
+   * @return {Phaser.Point}
+   */
+  getRandomPosition (pile, partId) {
+    const kind = pileKind(pile)
+    const floors = FLOORS[kind] || FLOORS.Shelf
+    const floor = floors[ this.game.rnd.integerInRange(0, floors.length - 1) ]
+
+    const part = this.game.mulle.getPart(partId)
+    const view = part ? (kind === 'Shelf' ? part.getShelfView() : part.getJunkView()) : ''
+    const img = view ? this.game.mulle.getDirectorImage('CDDATA.CXT', view) : false
+
+    if (!img) return new Phaser.Point(floor[0], floor[1])
+
+    const w = img.frame.width
+    const h = img.frame.height
+
+    // original: left + random(right - left - width) + width / 2
+    const range = Math.max(1, floor[2] - floor[0] - w)
+    const left = floor[0] + this.game.rnd.integerInRange(1, range) + (w / 2)
+    const top = floor[1] - (h / 2)
+
+    return new Phaser.Point(left, top)
+  }
+
+  /**
+   * Normalise the junk store to the original Shelf1-6/Quay/Yard keys.
+   *
+   * Old port saves carried invented Pile1-6/shopFloor/yard piles (and the
+   * default user built in scenes/base.js has no Junk member at all).
+   * Nothing ever rendered or mutated those keys, so anything that is not
+   * an original-shaped store is replaced wholesale with InitialJunkDB.
+   */
+  migrateJunk () {
+    if (!this.Junk || this.Junk.Shelf1 === undefined) {
+      this.Junk = initialJunk()
+      return
+    }
+
+    for (const pile of PILES) {
+      if (!this.Junk[pile]) this.Junk[pile] = {}
+    }
   }
 
   calculateParts () {
@@ -181,6 +321,7 @@ class MulleSave {
     this.Car = new MulleCar(this.game, data.Car)
 
     this.Junk = data.Junk
+    this.migrateJunk()
 
     this.NrOfBuiltCars = data.NrOfBuiltCars
     this.Saves = data.Saves

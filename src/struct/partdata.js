@@ -1,5 +1,7 @@
 'use strict'
 
+import { pileKind } from './junkview'
+
 /**
  * Lingo properties are case insensitive, but the extracted part data keeps the
  * original cast member names (`Offset`, `Master`, `JunkView`) while older
@@ -32,8 +34,12 @@ class MullePartData {
     this.data = partData // game.mulle.PartsDB[ partId ];
 
     this.junkView = pick(this.data, 'junkView', 'JunkView')
+    this.shelfView = pick(this.data, 'shelfView', 'ShelfView') || ''
     this.UseView = pick(this.data, 'UseView')
     this.UseView2 = pick(this.data, 'UseView2')
+
+    // per-pile drop sounds: { Shelf, Quay, Yard }
+    this.sndDropOn = pick(this.data, 'sndDropOn', 'SndDropOn') || null
 
     this.description = pick(this.data, 'description', 'Description') || ''
 
@@ -75,6 +81,64 @@ class MullePartData {
         this.properties[ n.toLowerCase() ] = this.data.Properties[n]
       }
     }
+  }
+
+  /**
+   * Junk scene view (original Part.getJunkView): own view, or the
+   * master's when this part carries none.
+   *
+   * @return {string} Cast member name
+   */
+  getJunkView () {
+    if (this.junkView) return this.junkView
+
+    if (this.master) {
+      const mp = this.game.mulle.getPart(this.master)
+      if (mp && mp !== this) {
+        const v = mp.getJunkView()
+        if (v) return v
+      }
+    }
+
+    return ''
+  }
+
+  /**
+   * Shelf scene view (original Part.getShelfView): own view, or the
+   * master's when this part carries none.
+   *
+   * @return {string} Cast member name
+   */
+  getShelfView () {
+    if (this.shelfView) return this.shelfView
+
+    if (this.master) {
+      const mp = this.game.mulle.getPart(this.master)
+      if (mp && mp !== this) {
+        const v = mp.getShelfView()
+        if (v) return v
+      }
+    }
+
+    return this.junkView || ''
+  }
+
+  /**
+   * Drop sound for a pile (original Part.getSndDropOn): Shelf1..6 use
+   * the #Shelf entry, unknown/empty entries fall back via master.
+   *
+   * @param  {string} where Pile name
+   * @return {string}       Cast member name, '' when unknown
+   */
+  getSndDropOn (where) {
+    let snd = this.sndDropOn ? (this.sndDropOn[ pileKind(where) ] || '') : ''
+
+    if (!snd && this.master) {
+      const mp = this.game.mulle.getPart(this.master)
+      if (mp && mp !== this) return mp.getSndDropOn(where)
+    }
+
+    return snd
   }
 
   getProperty (name, defVal = null) {

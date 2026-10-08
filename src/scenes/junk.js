@@ -18,6 +18,7 @@
 
 import MulleState from './base'
 import MulleSprite from '../objects/sprite'
+import MulleJunkParts from '../objects/junkparts'
 import { g } from '../objects/boat/lingo'
 
 class JunkState extends MulleState {
@@ -28,6 +29,10 @@ class JunkState extends MulleState {
   create () {
     super.create()
     this.game.mulle.addAudio('junk')
+    // The 00.CXT shared voices (random chatter) and the 20d* part
+    // descriptions are global casts in the original - always mounted.
+    this.game.mulle.addAudio('shared')
+    this.game.mulle.addAudio('boatparts')
 
     // Sky: Lingo `setSky the weather of gMulleGlobals` puts member
     // "00b0" & (10+weatherType) & "v0" (00.CXT 78-81 = weather 1-4) on
@@ -87,10 +92,16 @@ class JunkState extends MulleState {
     this.updateShelfZones()
 
     // Junk parts: the original's JunkHandler.drawParts reads the save's
-    // per-shelf junk store into channels 6+. The port keeps parts on
-    // user.parts only, so the shelf renders empty - which is also what a
-    // fresh save shows in the original.
-    this.partSprites = []
+    // per-shelf junk store into channels 6+. The exit strips double as
+    // dragToWhere zones: dropping a part on the top strip moves it to
+    // the Quay pile, on the bottom strip to the Yard pile (02.DXR
+    // script 55's mouseObject list).
+    this._suppressClicks = false
+    this.junkParts = new MulleJunkParts(this, 'Shelf' + this.currentShelf, [
+      [[48, 0, 137, 287], 'Quay'],
+      [[0, 313, 137, 480], 'Yard']
+    ])
+    this.junkParts.spawn()
 
     // Idle dialog (script 55 `on loop`): the first time a shelf is
     // visited, play firstDialogList [02d002v0, 02d003v0] in order, then
@@ -111,7 +122,12 @@ class JunkState extends MulleState {
     gfx.drawRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
     gfx.endFill()
     gfx.inputEnabled = true
-    gfx.events.onInputUp.add(onClick, this)
+    gfx.events.onInputUp.add(() => {
+      // Releasing a dragged part over a zone must not also navigate -
+      // the original only fires #click when the press started there.
+      if (this._suppressClicks) return
+      onClick()
+    }, this)
     gfx.events.onInputOver.add(() => {
       this.game.canvas.style.cursor = this.cursorMap(cursor)
     }, this)
@@ -156,6 +172,8 @@ class JunkState extends MulleState {
     this.game.mulle.playAudio('02e003v0')
     this.currentShelf = n
     this.door.setDirectorMember('02.DXR', 1 + n)
+    this.junkParts.where = 'Shelf' + n
+    this.junkParts.redraw()
     // Rebuild next tick: the clicked zone is currently dispatching.
     this.game.time.events.add(0, this.updateShelfZones, this)
     this.armDialogForShelf(n)
@@ -200,9 +218,9 @@ class JunkState extends MulleState {
     if (this.upGfx) { this.upGfx.destroy(); this.upGfx = null }
     if (this.downGfx) { this.downGfx.destroy(); this.downGfx = null }
     if (this.door) { this.door.destroy(); this.door = null }
-    if (this.partSprites) {
-      this.partSprites.forEach(s => s.destroy())
-      this.partSprites = []
+    if (this.junkParts) {
+      this.junkParts.destroy()
+      this.junkParts = null
     }
     this.game.sound.stopAll()
   }
