@@ -129,8 +129,8 @@ const SPRITE_LIST = {
   '#TransToNext': 120
 }
 
-// Valid cheat boat: hull (1) + engine/steer (3) + engine/fuel (120) + rudder (848)
-const CHEAT_BOAT_PARTS = [1, 3, 120, 848]
+// Valid cheat boat: hull (1) + engine/steer (3) + sail (30) + engine/fuel (120) + oar (123) + rudder (848)
+const CHEAT_BOAT_PARTS = [1, 3, 30, 120, 123, 848]
 
 /**
  * The default save has no usable drive, in which case the original falls back
