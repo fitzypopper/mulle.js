@@ -186,7 +186,7 @@ function buildFrameIndex (game) {
       if (fr.dirFile && fr.dirNum !== undefined && fr.dirNum !== null) {
         if (!byMovie[fr.dirFile]) byMovie[fr.dirFile] = {}
         if (byMovie[fr.dirFile][fr.dirNum] === undefined) {
-          byMovie[fr.dirFile][fr.dirNum] = [key, fr.name]
+          byMovie[fr.dirFile][fr.dirNum] = [key, fr.dirName || fr.name]
         }
       }
 
